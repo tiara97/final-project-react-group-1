@@ -21,6 +21,10 @@ const useStyles = makeStyles((theme)=>({
   listMenu:{
       display: "flex",
       flexDirection: "column"
+  },
+  link:{
+    textDecoration: "none",
+    color: "#000"
   }
 }));
 
@@ -41,7 +45,7 @@ export default function TemporaryDrawer() {
     setState({ ...state, [anchor]: open });
   };
 
-  const categories = ["Meja", "Sofa", "Kursi", "Lemari"]
+  const categories = ["Produk", "Kategori"]
 
   const list = (anchor) => (
     <div
@@ -54,10 +58,12 @@ export default function TemporaryDrawer() {
     >
       <List className={classes.listMenu}>
         {categories.map((text, index) => (
-          <ListItem button key={text}>
-            {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
-            <ListItemText primary={<Link>{text}</Link>} />
-          </ListItem>
+          <Link to={`/${text}`} className={classes.link} key={index}>
+            <ListItem button>
+              {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
+              <ListItemText primary={text} />
+            </ListItem>
+          </Link>
         ))}
       </List>
     </div>
@@ -65,11 +71,11 @@ export default function TemporaryDrawer() {
 
   return (
     <div>
-        <IconButton edge="start" className={classes.menuButton} onClick={toggleDrawer("top", true)} color="inherit" aria-label="menu">
+        <IconButton edge="start" className={classes.menuButton} onClick={toggleDrawer("left", true)} color="inherit" aria-label="menu">
             <MenuIcon />
         </IconButton>
-          <Drawer anchor={"top"} open={state["top"]} onClose={toggleDrawer("top", false)}>
-            {list("top")}
+          <Drawer anchor={"left"} open={state["left"]} onClose={toggleDrawer("left", false)}>
+            {list("left")}
           </Drawer>
     </div>
   );
