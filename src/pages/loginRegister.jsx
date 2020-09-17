@@ -21,6 +21,7 @@ const loginRegister = () => {
         let user = usernameL.value
         let pass = passwordL.value
         console.log(user, pass)
+        console.log('test')
     }
 
     const handleRegister = () => {
