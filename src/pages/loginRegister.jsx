@@ -17,10 +17,8 @@ const LoginRegister = () => {
     const [visible1R, setVisible1R] = React.useState(false);
     const [visible2R, setVisible2R] = React.useState(false);
 
-    const handleLogin = (test) => {
-        let user = usernameL
-        let pass = passwordL
-        console.log(user, pass)
+    const handleLogin = () => {
+        console.log(usernameL, passwordL)
     }
 
     const handleRegister = () => {
@@ -59,21 +57,19 @@ const LoginRegister = () => {
                 <Button variant="contained" color="primary" style={styles.button} onClick={handleLogin}>
                     Login
                 </Button>
-                <Button variant="outlined" color="primary" style={styles.button}>
-                    Register
-                </Button>
             </Paper>
 
             <Paper style={styles.container} elevation={5}>
                 <h1 style={styles.text}>Register Page</h1>
-                <TextField style={styles.input} id="outlined-basic" label="Username" variant="outlined" inputRef={value => setUsernameR(value)} />
-                <TextField style={styles.input} id="outlined-basic" label="Email" variant="outlined" inputRef={value => setEmailR(value)} />
+                <TextField style={styles.input} id="outlined-basic" label="Username" variant="outlined" onChange={(event)=> setUsernameR(event.target.value)} />
+                <TextField style={styles.input} id="outlined-basic" label="Email" variant="outlined" onChange={(event)=> setEmailR(event.target.value)} />
+                <TextField style={styles.input} id="outlined-basic" label="Email" variant="outlined"  />
                 <FormControl variant="outlined" style={styles.input}>
                     <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
                     <OutlinedInput
                         id="outlined-adornment-password"
                         type={visible1R ? "text" : "password"}
-                        inputRef={(value) => setPasswordR(value)}
+                        onChange={(event)=> setPasswordR(event.target.value)}
                         helpertext="Incorrect entry."
                         endAdornment={
                             <InputAdornment position="end">
@@ -94,7 +90,7 @@ const LoginRegister = () => {
                     <OutlinedInput
                         id="outlined-adornment-password"
                         type={visible2R ? "text" : "password"}
-                        inputRef={(value) => setConfpasswordR(value)}
+                        onChange={(event)=> setConfpasswordR(event.target.value)}
                         helpertext="Incorrect entry."
                         endAdornment={
                             <InputAdornment position="end">
@@ -113,9 +109,6 @@ const LoginRegister = () => {
                 <Button style={styles.button} variant="contained" color="primary" onClick={handleRegister}>
                     Register
                 </Button>
-                <Button style={styles.button} variant="outlined" color="primary">
-                    Login
-                </Button>
             </Paper>
         </div>
     )
@@ -128,7 +121,6 @@ const styles = {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        // margin: 5
     },
     container: {
         backgroundColor: '#ffffff',
