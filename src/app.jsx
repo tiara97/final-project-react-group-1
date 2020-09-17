@@ -4,14 +4,16 @@ import {Route} from "react-router-dom"
 import Navbar from "./component/navbar"
 
 import Home from "./pages/homepage"
-import loginRegister from "./pages/loginRegister"
+import Category from "./pages/categoryPage"
+import LoginRegister from "./pages/loginRegister"
 
 const App = () =>{
     return(
         <div>
             <Navbar/>
             <Route path="/" component={Home} exact/>
-            <Route path="/login-register" component={loginRegister} />
+            <Route path="/Kategori" component={Category}/>
+            <Route path="/login-register" component={LoginRegister} />
         </div>
     )
 }

@@ -4,7 +4,8 @@ import Axios from "axios"
 export const getCarousel = () =>{
     return async(dispatch)=>{
         try {
-            const res = await Axios.get(URL)
+            const res = await Axios.get(URL + "/carousel/get")
+            console.log(res.data)
             dispatch({type: GET_CAROUSEL, payload: res.data})
         } catch (error) {
             console.log(error.response? error.response.data : error)   
