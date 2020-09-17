@@ -1,7 +1,7 @@
 import React from "react"
+import {Link} from "react-router-dom"
 import { makeStyles } from '@material-ui/core/styles';
 import {AppBar, Toolbar, Typography, Button, IconButton, Menu, MenuItem}  from "@material-ui/core"
-import MenuIcon from "@material-ui/icons/Menu"
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import SearchIcon from '@material-ui/icons/Search';
@@ -18,6 +18,8 @@ const useStyles = makeStyles((theme) => ({
     },
     title: {
       flexGrow: 1,
+      color: "#fff",
+      cursor: "pointer"
     },
   }));
 
@@ -35,13 +37,15 @@ const Navbar = () =>{
     }
     return(
         <div className={classes.root}>
-            <AppBar position="static">
+            <AppBar position="fixed">
             <Toolbar>
                 <TemporaryDrawer/>
                 
-                <Typography variant="h6" className={classes.title}>
-                    News
-                </Typography>
+                <Link to="/" className={classes.title}>
+                    <Typography variant="h6" >
+                        Furniture
+                    </Typography>
+                </Link>
                 <div>
                     <IconButton
                         aria-controls="account-menu"

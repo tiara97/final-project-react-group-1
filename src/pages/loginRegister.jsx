@@ -3,7 +3,7 @@ import { TextField, Button, Paper, IconButton, OutlinedInput, InputAdornment, Fo
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
-const loginRegister = () => {
+const LoginRegister = () => {
     // login state
     const [usernameL, setUsernameL] = React.useState('');
     const [passwordL, setPasswordL] = React.useState('');
@@ -17,31 +17,30 @@ const loginRegister = () => {
     const [visible1R, setVisible1R] = React.useState(false);
     const [visible2R, setVisible2R] = React.useState(false);
 
-    const handleLogin = () => {
-        let user = usernameL.value
-        let pass = passwordL.value
+    const handleLogin = (test) => {
+        let user = usernameL
+        let pass = passwordL
         console.log(user, pass)
-        console.log('test')
     }
 
     const handleRegister = () => {
-        let user = usernameR.value
-        let mail = emailR.value
-        let pass = passwordR.value
-        let confpass = confpasswordR.value
+        let user = usernameR
+        let mail = emailR
+        let pass = passwordR
+        let confpass = confpasswordR
         console.log(user, mail, pass, confpass)
     }
     return (
         <div style={styles.root}>
             <Paper style={styles.container} elevation={5}>
             <h1 style={styles.text}>Login</h1>
-                <TextField style={styles.input} id="outlined-basic" label="Username" variant="outlined" inputRef={value => setUsernameL(value)} />
+                <TextField style={styles.input} id="outlined-basic" label="Username" variant="outlined" onChange={(event)=> setUsernameL(event.target.value)} />
                 <FormControl variant="outlined" style={styles.input}>
                         <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
                         <OutlinedInput
                             id="outlined-adornment-password"
                             type={visibleL ? "text" : "password"}
-                            inputRef={(value) => setPasswordL(value)}
+                            onChange={(event)=> setPasswordL(event.target.value)}
                             helpertext="Incorrect entry."
                             endAdornment={
                                 <InputAdornment position="end">
@@ -151,4 +150,4 @@ const styles = {
         margin: 10
     }
 }
-export default loginRegister
+export default LoginRegister
