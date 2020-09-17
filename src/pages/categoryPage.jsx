@@ -12,9 +12,9 @@ const useStyles = makeStyles(()=>({
         alignItems: "center",
         paddingTop: "10vh"
     },
-   media:{
-       height: "30vw"
-   },
+//    media:{
+//        height: "30vw"
+//    },
    cardContainer: {
        display: "flex",
        justifyContent: "space-evenly",
@@ -26,9 +26,11 @@ const useStyles = makeStyles(()=>({
        height: "70vh",
        marginBottom: "2vh",
        marginTop: "2vh", 
+       display: "flex",
+       flexDirection: "column"
    },
    media:{
-       height: "100%"
+       flexGrow: 1
    },
    link:{
     textDecoration: "none",

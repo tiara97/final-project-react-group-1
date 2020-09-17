@@ -68,10 +68,12 @@ const Navbar = () =>{
                         color="inherit">
                         <SearchIcon/>
                     </IconButton>
-                    <IconButton
-                        color="inherit">
-                        <ShoppingCartIcon/>
-                    </IconButton>
+                    <Link to="/Cart">
+                        <IconButton
+                            color="inherit">
+                            <ShoppingCartIcon/>
+                        </IconButton>
+                    </Link>
                 </div>
             </Toolbar>
             </AppBar>
