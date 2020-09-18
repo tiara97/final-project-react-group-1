@@ -1,17 +1,45 @@
 import React from 'react'
-import { TextField, Button, Paper, IconButton, OutlinedInput, InputAdornment, FormControl, InputLabel, makeStyles, Typography } from '@material-ui/core'
+import { TextField, Button, Paper, IconButton, OutlinedInput, InputAdornment, FormControl, InputLabel, makeStyles, Typography, Dialog, DialogActions, DialogTitle, DialogContent, DialogContentText } from '@material-ui/core'
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import {useSelector, useDispatch} from "react-redux"
-import {Link, Redirect, useHistory} from "react-router-dom"
+import { useSelector, useDispatch } from "react-redux"
+import { Redirect } from "react-router-dom"
 
 // import action
-import {userLogin, userRegister} from '../action'
+import { userLogin, userRegister } from '../action'
+
+const AlertDialog = (props) => {
+    const {title, open, close} = props
+    return (
+      <div>
+        <Dialog
+          open={open}
+          onClose={close}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Untuk menyelesaikan proses registrasi, silahkan cek email Anda untuk memverifikasi akun yang sudah dibuat. Selamat berbelanja!
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={close} color="primary" autoFocus>
+              OK
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+    );
+  }
 
 const LoginRegister = () => {
     // declare className
     const classes = useStyles()
-    const history = useHistory()
+
+    // dialog state
+    const [open, setOpen] = React.useState(false);
 
     // login state
     const [usernameL, setUsernameL] = React.useState('');
@@ -27,7 +55,7 @@ const LoginRegister = () => {
     const [visible2R, setVisible2R] = React.useState(false);
 
     // get data from reducer
-    const {id, errorLogin, errorReg} = useSelector(state => {
+    const { id, errorLogin, errorReg } = useSelector(state => {
         return {
             id: state.userReducer.id,
             errorLogin: state.userReducer.errorLogin,
@@ -36,70 +64,65 @@ const LoginRegister = () => {
     })
     // invoke action
     const dispatch = useDispatch()
-    const handleLogin = async() => {
+    const handleLogin = () => {
         let username = usernameL
         let password = passwordL
-        const body = {username, password}
+        const body = { username, password }
         console.log(body)
-        await dispatch(userLogin(body))
-        setUsernameL('')
-        setPasswordL('')
+        dispatch(userLogin(body))
         console.log(id)
-        if(id) {history.push('/'); console.log('jjj')}
-        // ERROR-ini baru jalan pas pencet tombol kedua kali, krn id awalnya null. redirect to home ????
     }
     const handleRegister = () => {
         let username = usernameR
         let email = emailR
         let password = passwordR
         let confPassword = confpasswordR
-        const body = {username, password, confPassword, email}
+        const body = { username, password, confPassword, email }
         console.log(body)
-        dispatch(userRegister(body))
+        // dispatch(userRegister(body))
         setUsernameR('')
         setEmailR('')
         setPasswordR('')
         setConfpasswordR('')
+        setOpen(true)
     }
-
-    // React.useEffect(()=> {
-    //     if(id) {
-    //         return <Redirect to='/' />
-    //     }
-    // })
+    // gimana cara setelah register nampilin modal dulu baru pindah ke home???
+    if (id) {
+        return <Redirect to='/' />
+    }
     return (
         <div className={classes.root}>
             {/* login component */}
             <Paper className={classes.container} elevation={5}>
-            <h1 className={classes.text}>Login</h1>
-                <TextField className={classes.input} id="outlined-basic" 
-                label="Username" 
-                variant="outlined" 
-                onChange={(event)=> setUsernameL(event.target.value)}
-                error={errorLogin ? true : false} />
+                <h1 className={classes.text}>Login</h1>
+                <TextField className={classes.input} id="outlined-basic"
+                    label="Username"
+                    variant="outlined"
+                    onChange={(event) => setUsernameL(event.target.value)}
+                    error={errorLogin ? true : false} />
                 <FormControl variant="outlined" className={classes.input}>
-                        <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-                        <OutlinedInput
-                            id="outlined-adornment-password"
-                            type={visibleL ? "text" : "password"}
-                            onChange={(event)=> setPasswordL(event.target.value)}
-                            error={errorLogin ? true : false}
-                            endAdornment={
-                                <InputAdornment position="end">
-                                    <IconButton
-                                        aria-label="toggle password visibility"
-                                        edge="end"
-                                        onClick={() => setVisibleL(!visibleL)}
-                                    >
-                                        { visibleL ? <Visibility/> : <VisibilityOff/>}
-                                    </IconButton>
-                                </InputAdornment>
-                            }
-                            labelWidth={70}
-                            
-                        />
-                    </FormControl>
-                <Typography className={classes.error}>{errorLogin? errorLogin : ''}</Typography>
+                    <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+                    <OutlinedInput
+                        id="outlined-adornment-password"
+                        type={visibleL ? "text" : "password"}
+                        onChange={(event) => setPasswordL(event.target.value)}
+                        error={errorLogin ? true : false}
+                        endAdornment={
+                            <InputAdornment position="end">
+                                <IconButton
+                                    aria-label="toggle password visibility"
+                                    edge="end"
+                                    onClick={() => setVisibleL(!visibleL)}
+                                >
+                                    {visibleL ? <Visibility /> : <VisibilityOff />}
+                                </IconButton>
+                            </InputAdornment>
+                        }
+                        labelWidth={70}
+
+                    />
+                </FormControl>
+                <Typography className={classes.error}>{errorLogin ? errorLogin : ''}</Typography>
                 <Button variant="contained" color="primary" className={classes.button} onClick={handleLogin}>
                     Login
                 </Button>
@@ -108,14 +131,14 @@ const LoginRegister = () => {
             {/* register component */}
             <Paper className={classes.container} elevation={5}>
                 <h1 className={classes.text}>Register Page</h1>
-                <TextField className={classes.input} id="outlined-basic" label="Username" variant="outlined" onChange={(event)=> setUsernameR(event.target.value)} error={errorReg ? true : false} />
-                <TextField className={classes.input} id="outlined-basic" label="Email" variant="outlined" onChange={(event)=> setEmailR(event.target.value)} error={errorReg ? true : false} />
+                <TextField className={classes.input} id="outlined-basic" label="Username" variant="outlined" onChange={(event) => setUsernameR(event.target.value)} error={errorReg ? true : false} />
+                <TextField className={classes.input} id="outlined-basic" label="Email" variant="outlined" onChange={(event) => setEmailR(event.target.value)} error={errorReg ? true : false} />
                 <FormControl variant="outlined" className={classes.input}>
                     <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
                     <OutlinedInput
                         id="outlined-adornment-password"
                         type={visible1R ? "text" : "password"}
-                        onChange={(event)=> setPasswordR(event.target.value)}
+                        onChange={(event) => setPasswordR(event.target.value)}
                         error={errorReg ? true : false}
                         endAdornment={
                             <InputAdornment position="end">
@@ -136,7 +159,7 @@ const LoginRegister = () => {
                     <OutlinedInput
                         id="outlined-adornment-password"
                         type={visible2R ? "text" : "password"}
-                        onChange={(event)=> setConfpasswordR(event.target.value)}
+                        onChange={(event) => setConfpasswordR(event.target.value)}
                         error={errorReg ? true : false}
                         endAdornment={
                             <InputAdornment position="end">
@@ -152,15 +175,16 @@ const LoginRegister = () => {
                         labelWidth={70}
                     />
                 </FormControl>
-                <Typography className={classes.error}>{errorReg? errorReg : ''}</Typography>
+                <Typography className={classes.error}>{errorReg ? errorReg : ''}</Typography>
                 <Button className={classes.button} variant="contained" color="primary" onClick={handleRegister}>
                     Register
                 </Button>
             </Paper>
+            <AlertDialog open={open} title={`Welcome! :)`} close={()=> setOpen(false)} />
         </div>
     )
 }
-const useStyles = makeStyles(()=> ({
+const useStyles = makeStyles(() => ({
     root: {
         backgroundColor: 'pink',
         width: '100vw',
