@@ -1,25 +1,24 @@
-import {URL, GET_PROFILE, GET_FAVORITE} from "./helper"
+import {URL, GET_ORDER_ALL, GET_ORDER_ID } from "./helper"
 import Axios from "axios"
 
-export const getProfile = () =>{
+export const getAllOrder = () =>{
     return async(dispatch)=>{
         try {
-            let id = localStorage.getItem('id')
-            const res = await Axios.get(URL + `/profiles/get/${id}`)
+            const res = await Axios.get(URL + `/orders/get`)
             console.log(res.data)
-            dispatch({type: GET_PROFILE, payload: res.data})
+            dispatch({type: GET_ORDER_ALL, payload: res.data})
         } catch (error) {
             console.log(error.response? error.response.data : error)
         }
     }
 }
-export const getFavorite = () =>{
+export const userOrder = () =>{
     return async(dispatch)=>{
         try {
             let id = localStorage.getItem('id')
-            const res = await Axios.get(URL + `/profiles/getFavorite/${id}`)
+            const res = await Axios.get(URL + `/orders/getByUserID/${id}`)
             console.log(res.data)
-            dispatch({type: GET_FAVORITE, payload: res.data})
+            dispatch({type: GET_ORDER_ID, payload: res.data})
         } catch (error) {
             console.log(error.response? error.response.data : error)
         }

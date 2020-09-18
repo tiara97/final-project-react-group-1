@@ -1,5 +1,6 @@
 import React from 'react'
 import {Route} from "react-router-dom"
+import { useSelector, useDispatch } from "react-redux"
 
 import Navbar from "./component/navbar"
 
@@ -10,7 +11,13 @@ import Login from "./pages/login"
 import Account from './pages/account'
 import Verification from './pages/verification'
 
+import {userKeepLogin} from './action'
+
 const App = () =>{
+    const dispatch = useDispatch()
+    React.useEffect(()=> {
+        dispatch(userKeepLogin())
+    }, [])
     return(
         <div>
             <Navbar/>

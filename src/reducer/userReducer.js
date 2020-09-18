@@ -1,4 +1,4 @@
-import { LOG_IN, REGISTER, LOG_IN_ERROR, REGISTER_ERROR } from "../action"
+import { LOG_IN, REGISTER, LOG_IN_ERROR, REGISTER_ERROR, LOG_OUT, KEEP_LOGIN } from "../action"
 
 const INITIAL_STATE = {
     id: null,
@@ -26,7 +26,7 @@ const userReducer = (state = INITIAL_STATE, action) => {
         case LOG_IN_ERROR:
             return { ...state, errorLogin: action.payload }
         case REGISTER:
-            return { 
+            return {
                 ...state,
                 id: action.payload.id,
                 username: action.payload.username,
@@ -37,6 +37,8 @@ const userReducer = (state = INITIAL_STATE, action) => {
             }
         case REGISTER_ERROR:
             return { ...state, errorReg: action.payload.errors }
+        case LOG_OUT:
+            return INITIAL_STATE
         default:
             return state
     }

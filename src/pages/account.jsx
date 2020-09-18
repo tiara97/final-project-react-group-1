@@ -1,7 +1,7 @@
 import React from 'react'
 import { Tab, Tabs, makeStyles, Box, Button } from '@material-ui/core'
 import { useSelector, useDispatch } from "react-redux"
-import { getProfile, getFavorite } from '../action'
+import { getProfile, getFavorite, userOrder, userLogin } from '../action'
 
 function TabPanel(props) {
     const { children, value, index } = props;
@@ -11,9 +11,7 @@ function TabPanel(props) {
             hidden={value !== index}
             id={`vertical-tabpanel-${index}`}
         >
-            <Box p={3}>
-                <h1>{children}</h1>
-            </Box>
+            {children}
         </div>
     );
 }
@@ -54,13 +52,15 @@ const Account = () => {
     const { profile, favorite } = useSelector((state) => {
         return {
             profile: state.profileReducer.profile,
-            favorite: state.profileReducer.favorite
+            favorite: state.profileReducer.favorite,
+            order: state.profileReducer.order
         }
     })
     const dispatch = useDispatch()
     React.useEffect(() => {
-        dispatch(getProfile(13))
-        dispatch(getFavorite(13))
+        dispatch(getProfile())
+        dispatch(getFavorite())
+        dispatch(userOrder())
     }, [])
 
     const handleChange = (event, newValue) => {
@@ -69,59 +69,55 @@ const Account = () => {
     };
 
     const TabProfile = (props) => {
-        const { children, value, index } = props;
         return profile.map((item, ind) => {
             return (
-                <div
-                    role="tabpanel"
-                    hidden={value !== index}
-                    id={`vertical-tabpanel-${index}`}
-                    key={ind}
-                >
                     <Box p={3} className={classes.box}>
                         <h1>{item.user_id}</h1>
                         <h1>{item.phone}</h1>
                         <h1>{item.gender}</h1>
                         <Button onClick={() => console.log('test')}>Test</Button>
                     </Box>
-                </div>
             )
         })
     }
     const TabFavorite = (props) => {
-        const { children, value, index } = props;
         return favorite.map((item, ind) => {
             return (
-                <div
-                    role="tabpanel"
-                    hidden={value !== index}
-                    id={`vertical-tabpanel-${index}`}
-                    key={ind}
-                >
-                    <Box p={3}>
-                        <h1>{item.product_id}</h1>
-                        <h1>{item.color_id}</h1>
-                        <h1>{item.qty}</h1>
-                        <h1>{item.price_each}</h1>
-                        <Button onClick={() => console.log('test')}>Test</Button>
-                    </Box>
-                </div>
+                <Box p={3}>
+                    <h1>{item.product_id}</h1>
+                    <h1>{item.color_id}</h1>
+                    <h1>{item.qty}</h1>
+                    <h1>{item.price_each}</h1>
+                    <Button onClick={() => console.log('test')}>Test</Button>
+                </Box>
             )
         })
     }
-    const TabSetting = (props) => {
-        const { children, value, index } = props;
-        return (
-            <div
-                role="tabpanel"
-                hidden={value !== index}
-                id={`vertical-tabpanel-${index}`}
-            >
-                <Box p={3}>
-                    <Button onClick={() => console.log('test')}>Test</Button>
-                </Box>
-            </div>
-        )
+    // const TabHistory = (props) => {
+    //     return order.map((item, ind) => {
+    //         return (
+    //             <Box p={3}>
+    //                 <h1>{item.product_id}</h1>
+    //                 <h1>{item.color_id}</h1>
+    //                 <h1>{item.qty}</h1>
+    //                 <h1>{item.price_each}</h1>
+    //                 <Button onClick={() => console.log('test')}>Test</Button>
+    //             </Box>
+    //         )
+    //     })
+    // }
+    const TabUser = (props) => {
+        // return order.map((item, ind) => {
+        //     return (
+        //         <Box p={3}>
+        //             <h1>{item.product_id}</h1>
+        //             <h1>{item.color_id}</h1>
+        //             <h1>{item.qty}</h1>
+        //             <h1>{item.price_each}</h1>
+        //             <Button onClick={() => console.log('test')}>Test</Button>
+        //         </Box>
+        //     )
+        // })
     }
     return (
         <div className={classes.root}>
@@ -142,14 +138,18 @@ const Account = () => {
                     <Tab label="Riwayat Belanja" />
                     <Tab label="Pengaturan" />
                 </Tabs>
-                <TabProfile value={value} index={0} />
-                <TabFavorite value={value} index={1} />
+                <TabPanel value={value} index={0}>
+                    <TabProfile />
+                </TabPanel>
+                <TabPanel value={value} index={1}>
+                    <TabFavorite />
+                </TabPanel>
                 <TabPanel value={value} index={2}>
-                    Item Three
-            </TabPanel>
+                    Test
+                </TabPanel>
                 <TabPanel value={value} index={3}>
                     Setting
-            </TabPanel>
+                </TabPanel>
             </div>
         </div>
     )

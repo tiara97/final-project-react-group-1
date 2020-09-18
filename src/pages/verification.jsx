@@ -2,8 +2,6 @@ import React from 'react'
 import { makeStyles, Button } from '@material-ui/core'
 import { useSelector, useDispatch } from "react-redux"
 import { Link } from "react-router-dom"
-import Axios from 'axios'
-import { URL } from '../action/helper'
 import {userVerify} from '../action'
 
 const Verification = (props) => {
