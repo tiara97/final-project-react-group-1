@@ -1,4 +1,5 @@
 export const URL = "http://localhost:2000/api"
+export const URL_IMG = 'http://localhost:2000/'
 export const GET_CAROUSEL = "GET_CAROUSEL"
 export const GET_CATEGORY = "GET_CATEGORY"
 
@@ -15,6 +16,7 @@ export const LOG_OUT = "LOG_OUT"
 // PROFILE
 export const GET_PROFILE = "GET_PROFILE"
 export const GET_FAVORITE = "GET_FAVORITE"
+export const UPLOAD_PIC_ERROR = "UPLOAD_PIC_ERROR"
 
 // ORDER
 export const GET_ORDER_ALL = "GET_ORDER_ALL"
