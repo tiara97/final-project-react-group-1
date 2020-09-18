@@ -1,4 +1,4 @@
-import {URL, LOG_IN, LOG_IN_ERROR, REGISTER, REGISTER_ERROR} from "./helper"
+import {URL, LOG_IN, LOG_IN_ERROR, REGISTER, REGISTER_ERROR, VERIFY, VERIFY_ERROR} from "./helper"
 import Axios from "axios"
 
 export const userLogin = (body) =>{
@@ -22,6 +22,18 @@ export const userRegister = (body) =>{
         } catch (error) {
             console.log(error.response? error.response.data : error)
             dispatch({type: REGISTER_ERROR, payload: error.response.data})
+        }
+    }
+}
+export const userVerify = (token) =>{
+    return async(dispatch)=>{
+        try {
+            const res = await Axios.post(URL + '/users/verification', {token})
+            console.log(res.data)
+            dispatch({type: VERIFY, payload: res.data})
+        } catch (error) {
+            console.log(error.response? error.response.data : error)
+            dispatch({type: VERIFY_ERROR, payload: error.response.data})
         }
     }
 }
