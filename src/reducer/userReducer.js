@@ -1,4 +1,4 @@
-import { LOG_IN, REGISTER, LOG_IN_ERROR, REGISTER_ERROR, LOG_OUT, KEEP_LOGIN } from "../action"
+import { LOG_IN, REGISTER, LOG_IN_ERROR, REGISTER_ERROR, LOG_OUT } from "../action"
 
 const INITIAL_STATE = {
     id: null,

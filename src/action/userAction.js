@@ -1,4 +1,4 @@
-import {URL, LOG_IN, LOG_IN_ERROR, REGISTER, REGISTER_ERROR, VERIFY, VERIFY_ERROR, KEEP_LOGIN, LOG_OUT} from "./helper"
+import {URL, LOG_IN, LOG_IN_ERROR, REGISTER, REGISTER_ERROR, VERIFY, VERIFY_ERROR, LOG_OUT} from "./helper"
 import Axios from "axios"
 
 export const userLogin = (body) =>{
@@ -43,7 +43,7 @@ export const userKeepLogin = () =>{
     return async(dispatch)=>{
         try {
             const token = localStorage.getItem('token')
-            const id = localStorage.getItem('id')
+            // const id = localStorage.getItem('id')
             const res = await Axios.post(URL + '/users/keepLogin', {token})
             console.log(res.data)
             dispatch({ type : LOG_IN, payload : res.data })
