@@ -66,8 +66,10 @@ const Cart = () =>{
         }
     })
 
+
     React.useEffect(()=>{
-        dispatch(getCart(13))
+        const id = localStorage.getItem("id")
+        dispatch(getCart(id))
     },[])
 
     const handleEdit = (id, qty)=>{
@@ -108,7 +110,8 @@ const Cart = () =>{
     }
 
     const renderTable = ()=>{
-        return cart.map((item)=>{
+        
+        return cart.length > 0? (cart.map((item)=>{
             return item.id === editIndex? (
                 <TableRow key={item.id}>
                     <TableCell>
@@ -179,7 +182,13 @@ const Cart = () =>{
              </Dialog>
              </>
             )
-        })
+        })) : (
+        <TableRow>
+            <TableCell colSpan="5" align="center">
+                <Typography variant="body1">Keranjang belanja anda kosong</Typography>
+            </TableCell>
+        </TableRow>
+        )
     }
     console.log(error)
     return(
@@ -201,6 +210,7 @@ const Cart = () =>{
                     </TableHead>
                     <TableBody>
                         {renderTable()}
+                        {cart.length > 0? (
                         <TableRow>
                             <TableCell colSpan="3" align="right">Total</TableCell>
                             <TableCell>Rp. {total.toLocaleString()}</TableCell>
@@ -213,7 +223,8 @@ const Cart = () =>{
                                     </Button>
                                 </Link>
                             </TableCell>
-                        </TableRow>
+                        </TableRow>) 
+                        :(null)}
                     </TableBody>
                 </Table>
             </TableContainer>

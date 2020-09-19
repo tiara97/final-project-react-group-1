@@ -7,7 +7,7 @@ export const getCart = (id)=>{
             dispatch({type: GET_CART_START})
 
             const cart = await Axios.get(URL + "/cart/" + id)
-            dispatch({type: GET_CART, payload: cart.data})
+            dispatch({type: GET_CART, payload: cart.data })
 
             dispatch({type: GET_CART_END})
         } catch (error) {
