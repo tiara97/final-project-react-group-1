@@ -1,4 +1,5 @@
 import React from "react"
+import {useDispatch, useSelector} from "react-redux"
 import {Link} from "react-router-dom"
 import { makeStyles } from '@material-ui/core/styles';
 import {AppBar, Toolbar, Typography, Button, IconButton, Menu, MenuItem}  from "@material-ui/core"
@@ -6,8 +7,11 @@ import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import SearchIcon from '@material-ui/icons/Search';
 
-
+// import component
 import TemporaryDrawer from "./drawer"
+
+// import action
+import {userLogout} from "../action"
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -27,12 +31,17 @@ const Navbar = () =>{
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const classes = useStyles()
+    const dispatch = useDispatch()
 
     const handleOpen = (event) =>{
         setAnchorEl(event.currentTarget)
     }
 
     const handleClose = ()=>{
+        setAnchorEl(null)
+    }
+    const handleLogout=()=>{
+        dispatch(userLogout())
         setAnchorEl(null)
     }
     return(
@@ -62,16 +71,35 @@ const Navbar = () =>{
                           }}
                         open={open}
                         onClose={handleClose}>
-                        <MenuItem>Login</MenuItem>
+                        {localStorage.getItem("id")?( 
+                            <div>
+                                <Link to="/Akun">
+                                    <MenuItem>Akun</MenuItem>
+                                </Link>
+                                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                                
+                            </div>):( 
+                            <div>
+                                <Link to="/Login">
+                                    <MenuItem>Masuk</MenuItem>
+                                </Link>
+                                <Link to="/Register">
+                                    <MenuItem>Daftar</MenuItem>
+                                </Link>
+                            </div>                           
+                            )}
+                       
                     </Menu>
                     <IconButton
                         color="inherit">
                         <SearchIcon/>
                     </IconButton>
-                    <IconButton
-                        color="inherit">
-                        <ShoppingCartIcon/>
-                    </IconButton>
+                    <Link to="/Cart">
+                        <IconButton
+                            color="inherit">
+                            <ShoppingCartIcon/>
+                        </IconButton>
+                    </Link>
                 </div>
             </Toolbar>
             </AppBar>
