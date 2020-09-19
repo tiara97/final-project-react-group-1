@@ -8,3 +8,7 @@ export const GET_CART_END = "GET_CART_END"
 
 export const DELETE_CART = "DELETE_CART"
 export const EDIT_CART = "EDIT_CART"
+
+export const GET_WAREHOUSE = "GET_WAREHOUSE"
+export const GET_WAREHOUSE_START = "GET_WAREHOUSE_START"
+export const GET_WAREHOUSE_END = "GET_WAREHOUSE_END"

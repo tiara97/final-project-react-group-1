@@ -1,5 +1,6 @@
 import React from "react"
 import {useSelector, useDispatch} from "react-redux"
+import {Link} from "react-router-dom"
 import {makeStyles, 
         Table, 
         TableBody, 
@@ -12,7 +13,11 @@ import {makeStyles,
         IconButton,
         TextField,
         Dialog,
-        DialogActions, DialogContent, DialogContentText, Button} from "@material-ui/core"
+        DialogActions, 
+        DialogContent, 
+        DialogContentText, 
+        Button,
+        Typography} from "@material-ui/core"
 import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/AddCircleOutline';
 import RemoveIcon from '@material-ui/icons/Remove';
@@ -40,13 +45,15 @@ const useStyles = makeStyles((theme)=>({
         width: "20px",
     }
 }))
+
 const Cart = () =>{
     const [editIndex, setEditIndex] = React.useState(null)
     const [qtyEdit, setQtyEdit] = React.useState(0)
     // test stock
     const [stock, setStock] = React.useState(5)
     const [error, setError] = React.useState("")
-    const [open, setOpen] = React.useState(false)
+    const [openQty, setOpenQty] = React.useState(false)
+    const [openDel, setOpenDel] = React.useState(false)
     const classes = useStyles()
     const dispatch = useDispatch()
     
@@ -69,6 +76,7 @@ const Cart = () =>{
     }
     const handleDelete = (id, user_id)=>{
         dispatch(deleteCart(id, user_id))
+        setOpenDel(false)
     }
     
     const handleCancel = ()=>{
@@ -85,7 +93,7 @@ const Cart = () =>{
         }
         if(body.qty > stock){
             setError(`Stok yang tersedia saat ini untuk produk ${item.name} hanya ${stock} buah`)
-            setOpen(true)
+            setOpenQty(true)
             return
         }
         dispatch(editCart(item.id,body))
@@ -93,8 +101,12 @@ const Cart = () =>{
     }
 
     const handleClose=()=>{
-        setOpen(false)
+        setOpenQty(false)
     }
+    const handleCloseDel=()=>{
+        setOpenDel(false)
+    }
+
     const renderTable = ()=>{
         return cart.map((item)=>{
             return item.id === editIndex? (
@@ -111,7 +123,7 @@ const Cart = () =>{
                         </IconButton>
                         <TextField 
                             value={qtyEdit} 
-                            onChange={(event)=>setQtyEdit(parseInt(event.target.value? event.target.value : 0))}
+                            onChange={(event)=>setQtyEdit(parseInt(event.target.value? event.target.value : 1))}
                             className={classes.input}/>
                         {/* {qtyEdit} */}
                         <IconButton onClick={()=>setQtyEdit((prevstate)=>parseInt(prevstate + 1))}>
@@ -129,7 +141,7 @@ const Cart = () =>{
                     </TableCell>
                 </TableRow>
                 ):
-                (
+                (<>
                 <TableRow key={item.id}>
                     <TableCell>
                         {/* <img src={} alt=""/>                        */}
@@ -141,11 +153,31 @@ const Cart = () =>{
                         <IconButton onClick={()=> handleEdit(item.id, item.qty)}>
                             <EditIcon/>
                         </IconButton>
-                        <IconButton onClick={()=> handleDelete(item.id, item.user_id)}>
+                        <IconButton onClick={()=> setOpenDel(true)}>
                             <DeleteIcon/>
                         </IconButton>
                     </TableCell>
                 </TableRow>
+                 <Dialog 
+                 open={openDel}
+                 onClose={handleCloseDel}>
+                 <DialogContent>
+                     <DialogContentText>
+                         <Typography variant="body">Anda yakin akan menghapus produk ini?</Typography>
+                     </DialogContentText>
+                 </DialogContent>
+                 <DialogActions>
+                     <Button
+                         onClick={()=>handleDelete(item.id, item.user_id)}>
+                         Ya
+                     </Button>
+                     <Button
+                         onClick={handleCloseDel}>
+                         Tidak
+                     </Button>
+                 </DialogActions>
+             </Dialog>
+             </>
             )
         })
     }
@@ -172,13 +204,22 @@ const Cart = () =>{
                         <TableRow>
                             <TableCell colSpan="3" align="right">Total</TableCell>
                             <TableCell>Rp. {total.toLocaleString()}</TableCell>
-                            <TableCell></TableCell>
+                            <TableCell>
+                                <Link to="/Checkout">
+                                    <Button
+                                        variant="contained" 
+                                        color="primary">
+                                        Checkout
+                                    </Button>
+                                </Link>
+                            </TableCell>
                         </TableRow>
                     </TableBody>
                 </Table>
             </TableContainer>
+           
             <Dialog 
-                open={open}
+                open={openQty}
                 onClose={handleClose}>
                 <DialogContent>
                     <DialogContentText>
@@ -186,7 +227,8 @@ const Cart = () =>{
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose}>
+                    <Button
+                        onClick={handleClose}>
                         Tutup
                     </Button>
                 </DialogActions>
