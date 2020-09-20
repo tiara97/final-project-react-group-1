@@ -8,6 +8,11 @@ import Navbar from "./component/navbar"
 // import page
 import Home from "./pages/homepage"
 import Category from "./pages/categoryPage"
+
+import LoginRegister from "./pages/loginRegister"
+import Products from "./pages/products"
+import ProductDetails from "./pages/productDetails"
+
 import Cart from "./pages/cartPage"
 import CheckOut from "./pages/checkOutPage"
 import Register from "./pages/register"
@@ -16,6 +21,7 @@ import Account from './pages/account'
 import Verification from './pages/verification'
 
 import {userKeepLogin} from './action'
+
 
 const App = () =>{
     const dispatch = useDispatch()
@@ -26,6 +32,8 @@ const App = () =>{
         <div>
             <Navbar/>
             <Route path="/" component={Home} exact/>
+            <Route path="/Produk" component={Products} />
+            <Route path="/Produk-Detail" component={ProductDetails} />
             <Route path="/Kategori" component={Category}/>
             <Route path="/Cart" component={Cart}/>
             <Route path="/Checkout" component={CheckOut}/>
