@@ -2,9 +2,7 @@ import React from 'react';
 import clsx from 'clsx';
 import {Link} from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles';
-import {Drawer, IconButton, List, Divider, ListItem, ListItemText, ListItemIcon} from "@material-ui/core"
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
+import {Drawer, IconButton, List, ListItem, ListItemText} from "@material-ui/core"
 import MenuIcon from "@material-ui/icons/Menu"
 
 
