@@ -8,11 +8,8 @@ import Navbar from "./component/navbar"
 // import page
 import Home from "./pages/homepage"
 import Category from "./pages/categoryPage"
-
-import LoginRegister from "./pages/loginRegister"
 import Products from "./pages/products"
 import ProductDetails from "./pages/productDetails"
-
 import Cart from "./pages/cartPage"
 import CheckOut from "./pages/checkOutPage"
 import Register from "./pages/register"
