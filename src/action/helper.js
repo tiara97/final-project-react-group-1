@@ -3,6 +3,13 @@ export const URL_IMG = 'http://localhost:2000/'
 export const GET_CAROUSEL = "GET_CAROUSEL"
 export const GET_CATEGORY = "GET_CATEGORY"
 
+
+// PRODUCT
+export const GET_PRODUCT = "GET_PRODUCT"
+export const GET_PRODUCT_DETAILS = "GET_PRODUCT_DETAILS"
+export const GET_PRODUCT_CATEGORY = "GET_PRODUCT_CATEGORY"
+export const ADD_PRDOCUT = "ADD_PRODUCT"
+
 export const GET_CART = "GET_CART"
 export const GET_CART_START = "GET_CART_START"
 export const GET_CART_END = "GET_CART_END"
@@ -31,3 +38,4 @@ export const UPLOAD_PIC_ERROR = "UPLOAD_PIC_ERROR"
 // ORDER
 export const GET_ORDER_ALL = "GET_ORDER_ALL"
 export const GET_ORDER_ID = "GET_ORDER_ID"
+

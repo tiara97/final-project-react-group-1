@@ -57,7 +57,7 @@ const Category = () =>{
     const renderCard = ()=>{
         return category.map((item)=>{
             return(
-                <Link to="/" className={classes.link} key={item.id}>
+                <Link to={{pathname:'/Produk', search: `category=${item.category}`, state: {id:`${item.id}`}}} className={classes.link} key={item.id}>
                     <Grow in={checked}  {...(checked ? { timeout: 1000 } : {})}>
                         <Card className={classes.card} >
                             <CardContent >
@@ -68,8 +68,7 @@ const Category = () =>{
                                 image={carousel[item.id].image}/>
                         </Card>
                     </Grow>
-                    </Link>
-
+                </Link>
             )
         })
     } 

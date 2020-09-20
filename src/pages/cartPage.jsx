@@ -69,7 +69,9 @@ const Cart = () =>{
 
     React.useEffect(()=>{
         const id = localStorage.getItem("id")
-        dispatch(getCart(id))
+        console.log("test : ",id)
+        dispatch(getCart(19))
+        
     },[])
 
     const handleEdit = (id, qty)=>{
@@ -191,6 +193,7 @@ const Cart = () =>{
         )
     }
     console.log(error)
+    console.log(cart)
     return(
         <div className={classes.root}>
             <Backdrop className={classes.backdrop} open={loading}>

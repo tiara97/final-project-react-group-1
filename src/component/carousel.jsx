@@ -22,7 +22,7 @@ const CarouselComp = ()=>{
                 <div style={{backgroundImage: `url(${item.image})`, ...styles.carousel}} key={item.id}>
                 </div>
             )
-            })
+        })
     }
     return(
         <div style={styles.container} >
@@ -34,7 +34,6 @@ const CarouselComp = ()=>{
                 showThumbs={false}
                 swipeable={true}
                 emulateTouch={true}
-               
                 >
                 {renderCarousel()}
             </Carousel>
