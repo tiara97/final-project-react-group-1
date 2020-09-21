@@ -32,7 +32,8 @@ const useStyles = makeStyles(() => ({
         flexDirection: "row",
         justifyContent: "center",
         alignItems: "center",
-        width: '80%'
+        width: '80%',
+        padding: '2%'
     },
     container_carousel:{
         flex: 2
