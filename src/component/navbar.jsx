@@ -2,7 +2,7 @@ import React from "react"
 import {useDispatch, useSelector} from "react-redux"
 import {Link} from "react-router-dom"
 import { makeStyles } from '@material-ui/core/styles';
-import {AppBar, Toolbar, Typography, Button, IconButton, Menu, MenuItem}  from "@material-ui/core"
+import {AppBar, Toolbar, Typography, Button, IconButton, Menu, MenuItem, Avatar}  from "@material-ui/core"
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import SearchIcon from '@material-ui/icons/Search';
@@ -11,7 +11,8 @@ import SearchIcon from '@material-ui/icons/Search';
 import TemporaryDrawer from "./drawer"
 
 // import action
-import {userLogout} from "../action"
+import {userLogout, getProfile} from "../action"
+import { URL_IMG } from '../action/helper'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -33,6 +34,15 @@ const Navbar = () =>{
     const classes = useStyles()
     const dispatch = useDispatch()
 
+    React.useEffect(() => {
+        dispatch(getProfile())
+    }, [])
+    const { profile, username } = useSelector((state) => {
+        return {
+            profile: state.profileReducer.profile,
+            username: state.userReducer.username
+        }
+    })
     const handleOpen = (event) =>{
         setAnchorEl(event.currentTarget)
     }
@@ -44,6 +54,10 @@ const Navbar = () =>{
         dispatch(userLogout())
         setAnchorEl(null)
     }
+    if(profile[0]) {
+        console.log(profile[0].image)
+    }
+    
     return(
         <div className={classes.root}>
             <AppBar position="fixed">
@@ -60,7 +74,12 @@ const Navbar = () =>{
                         aria-controls="account-menu"
                         onClick={handleOpen}
                         color="inherit">
-                        <AccountCircleIcon/>
+                        {profile[0] ? (
+                            <Avatar src={URL_IMG + profile[0].image} />
+                        ) : (
+                            <Avatar>{username.charAt(0)}</Avatar>
+                        )}
+                        
                     </IconButton>
                     <Menu
                         id="account-menu"
