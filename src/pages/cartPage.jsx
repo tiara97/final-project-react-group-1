@@ -12,21 +12,18 @@ import {makeStyles,
         CircularProgress, 
         IconButton,
         TextField,
-        Dialog,
-        DialogActions, 
-        DialogContent, 
-        DialogContentText, 
         Button,
         Typography} from "@material-ui/core"
 import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/AddCircleOutline';
-import RemoveIcon from '@material-ui/icons/Remove';
-import DoneIcon from '@material-ui/icons/Done';
+import RemoveCircleOutlineOutlinedIcon from '@material-ui/icons/RemoveCircleOutlineOutlined';import DoneIcon from '@material-ui/icons/Done';
 import ClearIcon from '@material-ui/icons/Clear';
 import DeleteIcon from '@material-ui/icons/Delete';
 
+import DialogComp from "../component/dialog"
+
 // import action
-import {getCart, deleteCart, editCart} from "../action"
+import {getCart, deleteCart, editCart, deleteError} from "../action"
 
 const useStyles = makeStyles((theme)=>({
    
@@ -49,29 +46,26 @@ const useStyles = makeStyles((theme)=>({
 const Cart = () =>{
     const [editIndex, setEditIndex] = React.useState(null)
     const [qtyEdit, setQtyEdit] = React.useState(0)
-    // test stock
-    const [stock, setStock] = React.useState(5)
-    const [error, setError] = React.useState("")
-    const [openQty, setOpenQty] = React.useState(false)
     const [openDel, setOpenDel] = React.useState(false)
     const classes = useStyles()
     const dispatch = useDispatch()
     
     // import redux
-    const {cart, total, loading} = useSelector((state)=>{
+    const {cart, total, loading, errorCart, id} = useSelector((state)=>{
         return{
             cart: state.cartReducer.cart,
             total: state.cartReducer.total,
-            loading: state.cartReducer.loading
+            loading: state.cartReducer.loading,
+            errorCart: state.cartReducer.error,
+            id: state.userReducer.id
         }
     })
-
+    
 
     React.useEffect(()=>{
-        const id = localStorage.getItem("id")
-        console.log("test : ",id)
-        dispatch(getCart(19))
-        
+        if(id){
+            dispatch(getCart(id))
+        }
     },[])
 
     const handleEdit = (id, qty)=>{
@@ -93,26 +87,22 @@ const Cart = () =>{
         setQtyEdit(0)
         const body = {
             user_id: item.user_id,
-            qty: qtyEdit
-        }
-        if(body.qty > stock){
-            setError(`Stok yang tersedia saat ini untuk produk ${item.name} hanya ${stock} buah`)
-            setOpenQty(true)
-            return
+            qty: qtyEdit,
+            color_id: item.color_id
         }
         dispatch(editCart(item.id,body))
-
+       
     }
 
     const handleClose=()=>{
-        setOpenQty(false)
+        dispatch(deleteError())
     }
     const handleCloseDel=()=>{
         setOpenDel(false)
     }
 
     const renderTable = ()=>{
-        
+
         return cart.length > 0? (cart.map((item)=>{
             return item.id === editIndex? (
                 <TableRow key={item.id}>
@@ -124,7 +114,7 @@ const Cart = () =>{
                         <IconButton 
                             disabled={qtyEdit === 1} 
                             onClick={()=>setQtyEdit((prevstate)=>parseInt(prevstate - 1))}>
-                            <RemoveIcon/>
+                            <RemoveCircleOutlineOutlinedIcon/>
                         </IconButton>
                         <TextField 
                             value={qtyEdit} 
@@ -163,25 +153,21 @@ const Cart = () =>{
                         </IconButton>
                     </TableCell>
                 </TableRow>
-                 <Dialog 
-                 open={openDel}
-                 onClose={handleCloseDel}>
-                 <DialogContent>
-                     <DialogContentText>
-                         <Typography variant="body">Anda yakin akan menghapus produk ini?</Typography>
-                     </DialogContentText>
-                 </DialogContent>
-                 <DialogActions>
-                     <Button
-                         onClick={()=>handleDelete(item.id, item.user_id)}>
-                         Ya
-                     </Button>
-                     <Button
-                         onClick={handleCloseDel}>
-                         Tidak
-                     </Button>
-                 </DialogActions>
-             </Dialog>
+                <DialogComp
+                    open={openDel}
+                    onClose={handleCloseDel}
+                    text={"Anda yakin akan menghapus produk ini?"}
+                    action={
+                        <>
+                        <Button
+                            onClick={()=>handleDelete(item.id, item.user_id)}>
+                            Ya
+                        </Button>
+                        <Button
+                            onClick={handleCloseDel}>
+                            Tidak
+                        </Button>
+                        </>}/>
              </>
             )
         })) : (
@@ -192,8 +178,8 @@ const Cart = () =>{
         </TableRow>
         )
     }
-    console.log(error)
-    console.log(cart)
+
+    
     return(
         <div className={classes.root}>
             <Backdrop className={classes.backdrop} open={loading}>
@@ -231,22 +217,16 @@ const Cart = () =>{
                     </TableBody>
                 </Table>
             </TableContainer>
-           
-            <Dialog 
-                open={openQty}
-                onClose={handleClose}>
-                <DialogContent>
-                    <DialogContentText>
-                        {error}
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
+            <DialogComp
+                 open={errorCart? true : false}
+                 onClose={handleClose}
+                 text={errorCart}
+                 action={
                     <Button
                         onClick={handleClose}>
                         Tutup
                     </Button>
-                </DialogActions>
-            </Dialog>
+                 }/>
         </div>
     )
 }
