@@ -1,5 +1,5 @@
 import React from "react"
-import {Typography} from "@material-ui/core"
+import {Typography, Button} from "@material-ui/core"
 
 // import component
 import CarouselComp from "../component/carousel"
