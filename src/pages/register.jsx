@@ -9,30 +9,30 @@ import { Redirect, Link } from "react-router-dom"
 import { userRegister } from '../action'
 
 const AlertDialog = (props) => {
-    const {title, open, close} = props
+    const { title, open, close } = props
     return (
-      <div>
-        <Dialog
-          open={open}
-          onClose={close}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              Untuk menyelesaikan proses registrasi, silahkan cek email Anda untuk memverifikasi akun yang sudah dibuat. Selamat berbelanja!
+        <div>
+            <Dialog
+                open={open}
+                onClose={close}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Untuk menyelesaikan proses registrasi, silahkan cek email Anda untuk memverifikasi akun yang sudah dibuat. Selamat berbelanja!
             </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={close} color="primary" autoFocus>
-              OK
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={close} color="primary" autoFocus>
+                        OK
             </Button>
-          </DialogActions>
-        </Dialog>
-      </div>
+                </DialogActions>
+            </Dialog>
+        </div>
     );
-  }
+}
 
 const Register = () => {
     // declare className
@@ -48,89 +48,107 @@ const Register = () => {
     const [confPassword, setConfpassword] = React.useState('');
     const [visible1, setVisible1] = React.useState(false);
     const [visible2, setVisible2] = React.useState(false);
+    const [user_fullname, setFullname] = React.useState('');
+    const [phone, setPhone] = React.useState('');
+    const [address, setAddress] = React.useState('');
+    const [city, setCity] = React.useState('');
+    const [province, setProvince] = React.useState('');
+    const [postcode, setPostcode] = React.useState('');
 
     // get data from reducer
     const { id, errorReg } = useSelector(state => {
         return {
             id: state.userReducer.id,
+            // nampilin eror jg masalah, krn dia nampilin eror yg pertama terjadi aja
             errorReg: state.userReducer.errorReg
         }
     })
     // invoke action
     const dispatch = useDispatch()
     const handleRegister = () => {
-        const body = { username, password, confPassword, email }
+        const body = { username, password, confPassword, email, user_fullname, phone, address, city, province, postcode }
         console.log(body)
         dispatch(userRegister(body))
-        setUsername('')
-        setEmail('')
-        setPassword('')
-        setConfpassword('')
-        setOpen(true)
+        // setUsername('')
+        // setEmail('')
+        // setPassword('')
+        // setConfpassword('')
+        // ini masih masalah, kapan buka modalnya ???
+        // if (errorReg !== '') {
+        //     setOpen(true)
+        // }
     }
 
-    if (id && open === false) {
-        return <Redirect to='/' />
+    if (id) {
+        // setOpen(true)
+        // if(open === false) {
+            return <Redirect to='/' />
+        // }
     }
     return (
         <div className={classes.root}>
             <Paper className={classes.container} elevation={5}>
-                <h1 className={classes.text}>Register Page</h1>
-                <TextField className={classes.input} id="outlined-basic" label="Username" variant="outlined" onChange={(event) => setUsername(event.target.value)} error={errorReg ? true : false} />
-                <TextField className={classes.input} id="outlined-basic" label="Email" variant="outlined" onChange={(event) => setEmail(event.target.value)} error={errorReg ? true : false} />
-                <FormControl variant="outlined" className={classes.input}>
-                    <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-                    <OutlinedInput
-                        id="outlined-adornment-password"
-                        type={visible1 ? "text" : "password"}
-                        onChange={(event) => setPassword(event.target.value)}
-                        error={errorReg ? true : false}
-                        endAdornment={
-                            <InputAdornment position="end">
-                                <IconButton
-                                    aria-label="toggle password visibility"
-                                    edge="end"
-                                    onClick={() => setVisible1(!visible1)}
-                                >
-                                    {visible1 ? <Visibility /> : <VisibilityOff />}
-                                </IconButton>
-                            </InputAdornment>
-                        }
-                        labelWidth={70}
-                    />
-                </FormControl>
-                <FormControl variant="outlined" className={classes.input}>
-                    <InputLabel htmlFor="outlined-adornment-password">Confirm Password</InputLabel>
-                    <OutlinedInput
-                        id="outlined-adornment-password"
-                        type={visible2 ? "text" : "password"}
-                        onChange={(event) => setConfpassword(event.target.value)}
-                        error={errorReg ? true : false}
-                        endAdornment={
-                            <InputAdornment position="end">
-                                <IconButton
-                                    aria-label="toggle password visibility"
-                                    edge="end"
-                                    onClick={() => setVisible2(!visible2)}
-                                >
-                                    {visible2 ? <Visibility /> : <VisibilityOff />}
-                                </IconButton>
-                            </InputAdornment>
-                        }
-                        labelWidth={70}
-                    />
-                </FormControl>
-                <Typography className={classes.error}>{errorReg ? errorReg : ''}</Typography>
+                <div className={classes.titleCont}>
+                    <h1 className={classes.title}>Register</h1>
+                </div>
+                <div className={classes.inputCont}>
+                    <div className={classes.divLeft}>
+                        <h3 className={classes.text}>Info Akun</h3>
+                        <TextField className={classes.input} id="outlined-basic" label="Username" variant="outlined" onChange={(event) => setUsername(event.target.value)} error={errorReg ? true : false} size='small' />
+                        <TextField className={classes.input} id="outlined-basic" label="Email" variant="outlined" onChange={(event) => setEmail(event.target.value)} error={errorReg ? true : false} size='small' />
+                        <TextField className={classes.input} id="outlined-basic" label="Password" variant="outlined" onChange={(event) => setPassword(event.target.value)} error={errorReg ? true : false} size='small' type={visible1 ? "text" : "password"}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="start">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            edge="end"
+                                            onClick={() => setVisible1(!visible1)}
+                                        >
+                                            {visible2 ? <Visibility /> : <VisibilityOff />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            }} />
+                        <TextField className={classes.input} id="outlined-basic" label="Confirm Password" variant="outlined" onChange={(event) => setConfpassword(event.target.value)} error={errorReg ? true : false} size='small' type={visible2 ? "text" : "password"}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="start">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            edge="end"
+                                            onClick={() => setVisible2(!visible2)}
+                                        >
+                                            {visible2 ? <Visibility /> : <VisibilityOff />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            }} />
+                    </div>
+                    <div className={classes.divRight}>
+                        <h3 className={classes.text}>Info Personal</h3>
+                        <TextField className={classes.input} id="outlined-basic" label="Nama" variant="outlined" onChange={(event) => setFullname(event.target.value)} error={errorReg ? true : false} size='small' />
+                        <TextField className={classes.input} id="outlined-basic" label="Nomor Handphone" variant="outlined" onChange={(event) => setPhone(event.target.value)} error={errorReg ? true : false} size='small' />
+                        <TextField className={classes.input} id="outlined-basic" label="Alamat" variant="outlined" onChange={(event) => setAddress(event.target.value)} error={errorReg ? true : false} size='small' />
+                        <TextField className={classes.input} id="outlined-basic" label="Kota" variant="outlined" onChange={(event) => setCity(event.target.value)} error={errorReg ? true : false} size='small' />
+                        <div className={classes.address}>
+                            <TextField className={classes.input} id="outlined-basic" label="Provinsi" variant="outlined" onChange={(event) => setProvince(event.target.value)} error={errorReg ? true : false} size='small' />
+                            <TextField className={classes.input} id="outlined-basic" label="Kodepos" variant="outlined" onChange={(event) => setPostcode(event.target.value)} error={errorReg ? true : false} size='small' />
+                        </div>
+                    </div>
+                </div>
+                <Typography className={classes.error}> {errorReg ? errorReg : ''}</Typography>
+                {/* <Typography className={classes.error}> {errorReg ? `${errorReg.join(', ')}` : ''}</Typography> */}
                 <Button className={classes.button} variant="contained" color="primary" onClick={handleRegister}>
                     Register
                 </Button>
-                <Link to='/Login'>
-                <Button className={classes.button} variant="outlined" color="primary">
-                    Login
+                <Link to='/Login' style={{ textDecoration: 'none' }}>
+                    <Button className={classes.button} variant="outlined" color="primary" style={{ width: 354 }}>
+                        Login
                 </Button>
                 </Link>
             </Paper>
-            <AlertDialog open={open} title={`Welcome! :)`} close={()=> setOpen(false)} />
+            <AlertDialog open={open} title={`Welcome! :)`} close={() => setOpen(false)} />
         </div>
     )
 }
@@ -146,15 +164,40 @@ const useStyles = makeStyles(() => ({
     },
     container: {
         backgroundColor: '#ffffff',
-        width: '40vw',
-        height: '80vh',
+        width: '60vw',
+        height: 'auto',
         padding: 10,
         display: 'flex',
         flexDirection: 'column',
-        margin: '0 5%'
+        // margin: '0 5%'
+        // marginTop: '15vh'
+    },
+    divLeft: {
+        borderRight: '1px solid black',
+        flex: 2,
+        padding: 10,
+        display: 'flex',
+        flexDirection: 'column'
+    },
+    divRight: {
+        padding: 10,
+        flex: 3,
+        display: 'flex',
+        flexDirection: 'column'
+    },
+    inputCont: {
+        display: 'flex'
+    },
+    titleCont: {
+        padding: 5
+    },
+    title: {
+        textAlign: 'center',
+        margin: 0
     },
     text: {
-        textAlign: 'center'
+        margin: 0,
+        marginBottom: 10,
     },
     error: {
         color: 'red',
@@ -162,10 +205,14 @@ const useStyles = makeStyles(() => ({
         margin: '0 10px'
     },
     input: {
-        margin: 10
+        marginBottom: 10,
+    },
+    address: {
+        display: 'flex',
+        justifyContent: 'space-between'
     },
     button: {
-        margin: 10
+        margin: 10,
     }
 }
 
