@@ -1,7 +1,8 @@
 import React from 'react'
 import {useSelector, useDispatch} from 'react-redux'
-import {getProductDetails} from '../action'
+import {getProductDetails, addToCart, deleteError} from '../action'
 import {Carousel} from 'react-responsive-carousel'
+import DialogComp from "../component/dialog"
 
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Redirect, Link } from 'react-router-dom'
@@ -10,9 +11,13 @@ import { makeStyles } from '@material-ui/core/styles';
 import {
     Button, 
     Typography, 
-    Paper
+    Paper, 
+    IconButton,
+    TextField,
 } from '@material-ui/core';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
+import AddIcon from '@material-ui/icons/AddCircleOutline';
+import RemoveCircleOutlineOutlinedIcon from '@material-ui/icons/RemoveCircleOutlineOutlined';
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -49,7 +54,7 @@ const useStyles = makeStyles(() => ({
     },
     contentQty:{
         display: "flex",
-        flexDirection: "row",
+        flexDirection: "column",
         padding: '1%'
     },
     media: {
@@ -71,27 +76,45 @@ const useStyles = makeStyles(() => ({
     },
     link: {
         textDecoration: 'none'
+    },
+    input:{
+        width: "20px",
+    },
+    button:{
+        margin: 10
     }
 }))
 
 const Color = ({code, onPress, border = 0}) => {
     return (
-        <div onClick={onPress} style={{backgroundColor: code, width: 50, height: 50, borderRadius: '50%', marginRight: '2%', border: `black solid ${border}px`}}></div>
+        <div 
+            onClick={onPress} 
+            style={
+                {backgroundColor: code, 
+                    width: 50, 
+                    height: 50, 
+                    borderRadius: '50%', 
+                    marginRight: '2%', 
+                    border: `black solid ${border}px`}}>
+        </div>
     )
 }
 
 export default function ProductDetails ({location: {state: {id}}}) {
     const classes = useStyles()
-
     const [quantity, setQuantity] = React.useState(0)
     const [colorButton, setColorButton] = React.useState({
         name: '',
         id: null
     })
-    
-    const { productDetails } = useSelector((state) => {
+    const [toCart, setToCart] = React.useState(false)
+    const [openDialog, setOpenDialog] = React.useState(false)
+    // import reducer
+    const { productDetails, user_id, errorCart } = useSelector((state) => {
         return {
-            productDetails: state.productReducer.productDetails
+            productDetails: state.productReducer.productDetails,
+            user_id: state.userReducer.id,
+            errorCart: state.cartReducer.error
         }
     })
     const dispatch = useDispatch()
@@ -140,14 +163,33 @@ export default function ProductDetails ({location: {state: {id}}}) {
     }
  
     const handleCart = () => {
-        // user_id, product_id, color_id, qty, price_each => parameter yang dibutuhkan untuk addToCart di cartController
-        // kurang user_id => ada di userAction
-        let product_id = id
-        let price_each = productDetails.price
-        console.log('price', price_each)
-        console.log(`product_id: ${product_id}, qty: ${quantity}, color_id: ${colorButton.id}`)
+        const body ={
+            user_id: user_id,
+            product_id: id, 
+            color_id: colorButton.id, 
+            qty: quantity, 
+            price_each: productDetails.price
+        }
+        console.log(body)
+        dispatch(addToCart(body))
+
+        setOpenDialog(true)
     }
 
+    const handleClose=()=>{
+        setOpenDialog(false)
+        dispatch(deleteError())
+    }
+
+    const handleProceed=()=>{
+        setOpenDialog(false)
+        setToCart(true)
+    }
+ 
+    if(toCart){
+        return <Redirect to="/Cart"/>
+    }
+    // console.log(errorCart)
     return (
         <div className={classes.root}>
             <Paper elevation = {2} className={classes.up_container}>
@@ -196,19 +238,32 @@ export default function ProductDetails ({location: {state: {id}}}) {
                         <Typography style={{fontSize: 18}}>Limited Stock! {productDetails.stock_available ? productDetails.stock_available.reduce((a, b) => parseInt(a) + parseInt(b)) : 0} Available</Typography>
                     </div>
                     <div className={classes.contentQty}>
-                        <button 
+                        <div>
+
+                            <IconButton
                             disabled={quantity <= 0 ? true : false}
                             variant="outlined"
                             style={{width:'50px'}}
-                            onClick={() => setQuantity((prev) => prev - 1)}>-</button>
-                        <h3>{quantity}</h3>
-                        <button 
+                            onClick={() => setQuantity((prev) => prev - 1)}
+                            >
+                                <RemoveCircleOutlineOutlinedIcon/>
+                            </IconButton>
+                            <TextField 
+                                value={quantity} 
+                                onChange={(event)=>setQuantity(parseInt(event.target.value? event.target.value : 1))}
+                                className={classes.input}/>
+                            {/* <h3>{quantity}</h3> */}
+                            <IconButton
                             disabled={quantity >= stock ? true : false}
                             variant="outlined"
                             style={{width:'50px'}}
-                            onClick={() => setQuantity((prev) => prev + 1)}>+</button>
-                        &nbsp;&nbsp;
+                            onClick={() => setQuantity((prev) => prev + 1)}
+                            >
+                                <AddIcon/>
+                            </IconButton>
+                        </div>
                         <Button
+                            className={classes.button}
                             variant="contained"
                             color="default"
                             startIcon={<AddShoppingCartIcon/>}
@@ -219,6 +274,20 @@ export default function ProductDetails ({location: {state: {id}}}) {
                     </div>
                 </div>
             </Paper>
+            
+            <DialogComp
+                 open={openDialog}
+                 onClose={handleClose}
+                 text={errorCart? errorCart : "Produk berhasil dimasukkan ke keranjang!"}
+                 action={errorCart? (
+                    <Button
+                        onClick={handleClose}>
+                        Tutup
+                    </Button>) :(
+                    <Button
+                        onClick={handleProceed}>
+                        Lanjut
+                    </Button>)}/>
         </div>
     )
 }
