@@ -1,8 +1,9 @@
 import React from "react"
 import {useSelector, useDispatch} from "react-redux"
-import {makeStyles, Backdrop, CircularProgress, Button} from "@material-ui/core"
+import {makeStyles, Backdrop, CircularProgress, Button, Typography, Paper} from "@material-ui/core"
+import DialogComp from "../component/dialog"
 
-import {getWarehouse} from "../action"
+import {getAddress, updateWarehouseID, getWarehouse} from "../action"
 
 const useStyles = makeStyles((theme)=>({
     root:{
@@ -23,81 +24,78 @@ const useStyles = makeStyles((theme)=>({
 const CheckOut = () =>{
     const classes = useStyles()
     const dispatch = useDispatch()
-    const [warehouseID, setWarehouseID] = React.useState(null)
-    const [warehouseName, setWarehouseName] = React.useState("")
-
-    // test lat long
-    const geoloc = {
-        lat: -6.396763,
-        long: 106.781426
-    }
-
-    // import redux
-    const {warehouse, loading} = useSelector((state)=>{
+    const [choose, setChoose] = React.useState(false)
+    const [addressID, setAddressID] = React.useState(0)
+    const [wareHouseID, setWareHouseID] = React.useState(0)
+    
+    const{id, address, cart, total, warehouse} = useSelector((state)=>{
         return{
-            warehouse: state.warehouseReducer.warehouse,
-            loading: state.warehouseReducer.loading
+            address: state.addressReducer.userAddress,
+            id: state.userReducer.id,
+            cart: state.cartReducer.cart,
+            total: state.cartReducer.total,
+            warehouse: state.warehouseReducer.warehouse
         }
     })
 
-    // get data on first render
     React.useEffect(()=>{
+        if(id){
+            dispatch(getAddress(id))
+        }
         dispatch(getWarehouse())
     },[])
 
-    let R = 6371e3
-    let φ1 = 0
-    let φ2 = 0
-    let Δφ = 0
-    let Δλ = 0
-    let a = 0
-    let c =0
-    let d = 0
-    let lat1 = geoloc.lat
-    let lat2 = 0
-    let lon1 = geoloc.long
-    let lon2 = 0
-    let jarak = []
-    let id = null
+    const renderAddress = ()=>{
+        return address.map((item)=>{
+            return(          
+                <>
+                    <Typography>{item.type}</Typography>
+                    <Typography>{item.address}</Typography>
+                    <Typography>{item.city}</Typography>
+                    <Typography>{item.province}</Typography>
+                    <Typography>{item.postcode}</Typography>
+                </>
+            )
+            
+        })
+    }
+    const handleClose = ()=>{
+        setChoose(false)
+    }
 
-    const getClosestWarehouse = ()=>{
-        
-        warehouse.map((item)=>{
-            return(
-                lat2 = item.latitude,
-                lon2 = item.longitude,
-                φ1 =lat1 * Math.PI/180, // φ, λ in radians
-                φ2 = lat2 * Math.PI/180,
-                Δφ = (lat2-lat1) * Math.PI/180,
-                Δλ = (lon2-lon1) * Math.PI/180,
-                a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-                        Math.cos(φ1) * Math.cos(φ2) *
-                        Math.sin(Δλ/2) * Math.sin(Δλ/2),
-                c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)),
-                d = R * c, // in metres
-                jarak.push(d),
-                d === Math.min(...jarak)? id = item.id : null
-                )
-                
-            })
-       console.log("id : ", id)
-       setWarehouseID(id)
-       console.log(jarak)
-       console.log("Min ", Math.min(...jarak))
+    const proceed = ()=>{
+        const body = {
+            order_number: cart[0].order_number,
+            id: address[addressID].id
+        }
+        console.log("proceed id",address[addressID].id)
+        console.log("order number : ", cart[0].order_number)
+        dispatch(updateWarehouseID(body))
+        setWareHouseID(cart[0].warehouse_id - 1)
     }
   
-    console.log(warehouse)
-    console.log(warehouseID)
     return(
         <div className={classes.root}>
-            <Button onClick={getClosestWarehouse}>
-                Get Warehouse
-            </Button>
-            {/* {getClosestWarehouse()} */}
-            <Backdrop className={classes.backdrop} open={loading}>
-                <CircularProgress/>
-            </Backdrop>
             <h1>Checkout Page</h1>
+            <Paper>
+                <Typography>Alamat Pengiriman</Typography>
+                <Typography>{address.length !== 0? address[addressID].type : null}</Typography>
+                <Typography>{address.length !== 0? address[addressID].address : null}</Typography>
+                <Typography>{address.length !== 0? address[addressID].city : null}</Typography>
+                <Typography>{address.length !== 0? address[addressID].province : null}</Typography>
+                <Typography>{address.length !== 0? address[addressID].postcode : null}</Typography>
+                <Button onClick={()=> proceed()}>
+                    Lanjut
+                </Button>
+                <Button onClick={()=> setChoose(true)}>
+                    Pilih Alamat Lain
+                </Button>
+                <Typography>Barang dikirim dari gudang {warehouse[wareHouseID]? warehouse[wareHouseID].name : null}</Typography>
+            </Paper>
+            <DialogComp
+                open={choose}
+                onClose={handleClose}
+                text={renderAddress}/>
         </div>
     )
 }

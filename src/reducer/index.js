@@ -8,6 +8,7 @@ import warehouseReducer from "./warehouseReducer"
 import profileReducer from "./profileReducer"
 import userReducer from "./userReducer"
 import orderReducer from "./orderReducer"
+import addressReducer from "./addressReducer"
 
 const allReducers = combineReducers({carouselReducer, 
                                      categoryReducer, 
@@ -16,7 +17,8 @@ const allReducers = combineReducers({carouselReducer,
                                      cartReducer, 
                                      warehouseReducer, 
                                      userReducer, 
-                                     orderReducer
+                                     orderReducer,
+                                     addressReducer
                                     })
 
 

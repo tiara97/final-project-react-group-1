@@ -39,3 +39,5 @@ export const UPLOAD_PIC_ERROR = "UPLOAD_PIC_ERROR"
 export const GET_ORDER_ALL = "GET_ORDER_ALL"
 export const GET_ORDER_ID = "GET_ORDER_ID"
 
+// ADDRESS
+export const GET_ADDRESS = "GET_ADDRESS" 
