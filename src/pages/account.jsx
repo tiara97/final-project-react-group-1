@@ -1,12 +1,12 @@
 import React from 'react'
-import { Tab, Tabs, makeStyles, Box, Button, Typography, Card, CardContent, CardActions, IconButton } from '@material-ui/core'
+import { Tab, Tabs, makeStyles, Box, Button, Typography, Card, CardContent, CardActions, IconButton, TextField, FormControl, FormLabel, FormControlLabel, Radio, RadioGroup } from '@material-ui/core'
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useSelector, useDispatch } from "react-redux"
 
-import { getProfile, getFavorite, userOrder } from '../action'
-import {URL_IMG} from '../action/helper'
-import {uploadPic} from '../action'
+import { getProfile, getFavorite, userOrder, editProfile } from '../action'
+import { URL_IMG } from '../action/helper'
+import { uploadPic } from '../action'
 import avatar from '../assets/avatar.jpg'
 
 // Kontainer Tab
@@ -30,26 +30,38 @@ function SimpleCard(props) {
     const classes = useStyles();
     const { index, order_number, status, total } = props;
     return (
-      <Card className={classes.rootCard} key={index}>
-        <CardContent className={classes.contentCard}>
-          <Typography variant="h5">
-            {order_number}
-          </Typography>
-          <Typography >
-            Status : {status}
-          </Typography>
-          <Typography>
-            Rp. {total}
-          </Typography>
-        </CardContent>
-        <CardActions>
-          <IconButton>
-              <ExpandMoreIcon />
-          </IconButton>
-        </CardActions>
-      </Card>
+        <Card className={classes.rootCard} key={index}>
+            <CardContent className={classes.contentCard}>
+                <Typography variant="h5">
+                    {order_number}
+                </Typography>
+                <Typography >
+                    Status : {status}
+                </Typography>
+                <Typography>
+                    Rp. {total}
+                </Typography>
+            </CardContent>
+            <CardActions>
+                <IconButton>
+                    <ExpandMoreIcon />
+                </IconButton>
+            </CardActions>
+        </Card>
     );
-  }
+}
+
+function EditProfile(props) {
+    const classes = useStyles();
+    return (
+        <div className={classes.divInfo}>
+            <TextField id="outlined-basic"
+                label="Username"
+                variant="outlined" />
+            <Button variant='contained' color='primary'>Edit Profile</Button>
+        </div>
+    )
+}
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -104,27 +116,32 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'column',
         backgroundColor: 'lavender',
         padding: '10px 40px',
+        justifyContent: 'space-between'
+    },
+    divInfoButton: {
+        display: 'flex',
+        justifyContent: 'center'
     },
     // card style
     rootCard: {
         backgroundColor: 'lavender',
         display: 'flex',
         justifyContent: 'space-between'
-      },
-      contentCard: {
+    },
+    contentCard: {
         display: 'flex'
-      },
-      bulletCard: {
+    },
+    bulletCard: {
         display: 'inline-block',
         margin: '0 2px',
         transform: 'scale(0.8)',
-      },
-      titleCard: {
+    },
+    titleCard: {
         fontSize: 14,
-      },
-      posCard: {
+    },
+    posCard: {
         marginBottom: 12,
-      }, 
+    },
 }));
 
 
@@ -157,7 +174,6 @@ const Account = () => {
     };
 
     // fungsi untuk upload picture
-    // udh bisa upload tp fotonya ga nongol????
     const handleUpload = (props) => {
         let fileProps = props.target.files[0]
         console.log(fileProps)
@@ -167,7 +183,31 @@ const Account = () => {
         dispatch(uploadPic(data))
     };
 
+    // const handleEdit = (props) => {
+    //     console.log(edit)
+    //     setEdit(true)
+    // }
+    // const handleCancelEdit = (props) => {
+    //     setEdit(false)
+    // }
+
     const TabProfile = (props) => {
+        // state edit profile
+        const [edit, setEdit] = React.useState(false);
+        const [user_fullname, setFullname] = React.useState(profile[0] ? profile[0].user_fullname : '');
+        const [phone, setPhone] = React.useState(profile[0] ? profile[0].phone : '');
+        const [gender, setGender] = React.useState('male');
+
+        const handleChange = (event) => {
+            setGender(event.target.value);
+          };
+        const handleSave = () => {
+            const body = { user_fullname, phone, gender}
+            console.log(body)
+            dispatch(editProfile(body))
+            setEdit(false)
+        }
+
         return profile.map((item, index) => {
             return (
                 <Box p={3} className={classes.boxProfile} key={index}>
@@ -188,13 +228,40 @@ const Account = () => {
                             <Button variant="contained" color="primary" component="span"
                                 startIcon={<PhotoCamera />}>
                                 Upload
-                            </Button>
+                                </Button>
                         </label>
                     </div>
                     <div className={classes.divInfo}>
-                        <h1>{item.user_id}</h1>
-                        <h1>{item.phone}</h1>
-                        <h1>{item.gender}</h1>
+                        <h3>{username}</h3>
+                        <h4>{email}</h4>
+                        <TextField id="outlined-basic"
+                            label="Nama" variant='outlined' onChange={(event) => setFullname(event.target.value)} defaultValue={item.user_fullname} small disabled={edit ? false : true} />
+                        <TextField id="outlined-basic"
+                            label="Nomor Handphone" onChange={(event) => setPhone(event.target.value)} variant='outlined' inputMode='numeric' defaultValue={item.phone} small disabled={edit ? false : true} />
+                        {edit ? (
+                            <FormControl component="fieldset">
+                                <FormLabel component="legend">Gender</FormLabel>
+                                <RadioGroup aria-label="gender" name="gender1" value={gender} defaultValue={gender} onChange={handleChange} style={{display: 'flex'}}>
+                                    <FormControlLabel value="male" control={<Radio />} label="Laki-laki" />
+                                    <FormControlLabel value="female" control={<Radio />} label="Perempuan" />
+                                </RadioGroup>
+                            </FormControl>
+                        )
+                            :
+                            <TextField id="outlined-basic"
+                                label="Gender" variant='outlined' value={item.gender} small disabled />
+                        }
+                        <Typography></Typography>
+                        {edit ? (
+                            <div className={classes.divInfoButton}>
+                                <Button style={{ marginRight: 10 }} variant='contained' color='primary' onClick={handleSave}>Save</Button>
+                                <Button variant='contained' color='secondary' onClick={() => setEdit(false)}>Cancel</Button>
+                            </div>
+                        ) : (
+                                <div className={classes.divInfoButton}>
+                                    <Button variant='contained' color='primary' onClick={() => setEdit(true)}>Edit Profil</Button>
+                                </div>
+                            )}
                     </div>
                 </Box>
             )
@@ -202,9 +269,28 @@ const Account = () => {
     }
     const TabFavorite = (props) => {
         return favorite.map((item, index) => {
+            // dispatch(getProductDetails(item.product_id))
             return (
                 <Box p={3} className={classes.box} key={index}>
-                    <h1>{item.product_id}</h1>
+                    <Card className={classes.rootCard} key={index}>
+                        <CardContent className={classes.contentCard}>
+                            <Typography variant="h5">
+
+                            </Typography>
+                            <Typography >
+                                Status :
+                            </Typography>
+                            <Typography>
+                                Rp.
+                            </Typography>
+                        </CardContent>
+                        <CardActions>
+                            <IconButton>
+                                <ExpandMoreIcon />
+                            </IconButton>
+                        </CardActions>
+                    </Card>
+                    <h1></h1>
                     <h1>{item.color_id}</h1>
                     <h1>{item.qty}</h1>
                     <h1>{item.price_each}</h1>
@@ -223,14 +309,14 @@ const Account = () => {
         })
     }
     const TabUser = (props) => {
-            return (
-                <Box p={3} className={classes.box}>
-                    <h1>{username}</h1>
-                    <h1>{email}</h1>
-                    <h1>{status}</h1>
-                    <Button onClick={() => console.log('test')}>Test</Button>
-                </Box>
-            )
+        return (
+            <Box p={3} className={classes.box}>
+                <h1>{username}</h1>
+                <h1>{email}</h1>
+                <h1>{status}</h1>
+                <Button onClick={() => console.log('test')}>Test</Button>
+            </Box>
+        )
     }
     return (
         <div className={classes.root}>

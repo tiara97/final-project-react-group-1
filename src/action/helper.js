@@ -33,9 +33,12 @@ export const LOG_OUT = "LOG_OUT"
 // PROFILE
 export const GET_PROFILE = "GET_PROFILE"
 export const GET_FAVORITE = "GET_FAVORITE"
+export const EDIT_PROFILE = "EDIT_PROFILE"
 export const UPLOAD_PIC_ERROR = "UPLOAD_PIC_ERROR"
 
 // ORDER
 export const GET_ORDER_ALL = "GET_ORDER_ALL"
 export const GET_ORDER_ID = "GET_ORDER_ID"
 
+// ADDRESS
+export const GET_ADDRESS = "GET_ADDRESS"
