@@ -9,6 +9,8 @@ import { TextField,
         InputLabel, 
         makeStyles, 
         Typography, 
+        Backdrop,
+        CircularProgress
          } from '@material-ui/core'
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
@@ -16,7 +18,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { Redirect, Link } from "react-router-dom"
 
 // import action
-import { userLogin } from '../action'
+import { userLogin, getProfile } from '../action'
 
 const Login = () => {
     // declare className
@@ -28,10 +30,11 @@ const Login = () => {
     const [visible, setVisible] = React.useState(false);
 
     // get data from reducer
-    const { id, errorLogin } = useSelector(state => {
+    const { id, errorLogin, loading } = useSelector(state => {
         return {
             id: state.userReducer.id,
-            errorLogin: state.userReducer.errorLogin
+            errorLogin: state.userReducer.errorLogin,
+            loading: state.userReducer.loadingLogin
         }
     })
     // invoke action
@@ -47,6 +50,9 @@ const Login = () => {
     }
     return (
         <div className={classes.root}>
+            <Backdrop className={classes.backdrop} open={loading}>
+                <CircularProgress/>
+            </Backdrop>
             <Paper className={classes.container} elevation={5}>
                 <h1 className={classes.text}>Login</h1>
                 <TextField className={classes.input} id="outlined-basic"
@@ -88,7 +94,7 @@ const Login = () => {
         </div>
     )
 }
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
     root: {
         backgroundColor: 'pink',
         width: '100vw',
@@ -107,6 +113,10 @@ const useStyles = makeStyles(() => ({
         flexDirection: 'column',
         margin: '0 5%'
     },
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
+      },
     text: {
         textAlign: 'center'
     },
