@@ -16,6 +16,7 @@ import Register from "./pages/register"
 import Login from "./pages/login"
 import Account from './pages/account'
 import Verification from './pages/verification'
+import Confirmation from "./pages/confirmation"
 
 import {userKeepLogin} from './action'
 
@@ -38,6 +39,7 @@ const App = () =>{
             <Route path="/Login" component={Login} />
             <Route path="/Verifikasi" component={Verification} />
             <Route path="/Akun" component={Account} />
+            <Route path="/Konfirmasi" component={Confirmation}/>
         </div>
     )
 }

@@ -167,7 +167,8 @@ export default function ProductDetails ({location: {state: {id}}}) {
             product_id: id, 
             color_id: colorButton.id, 
             qty: quantity, 
-            price_each: productDetails.price
+            price_each: productDetails.price,
+            weight: productDetails.weight
         }
         console.log(body)
         dispatch(addToCart(body))

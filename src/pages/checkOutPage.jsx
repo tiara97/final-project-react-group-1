@@ -1,9 +1,21 @@
 import React from "react"
 import {useSelector, useDispatch} from "react-redux"
-import {makeStyles, Backdrop, CircularProgress, Button, Typography, Paper} from "@material-ui/core"
-import DialogComp from "../component/dialog"
+import {Redirect} from "react-router-dom"
+import {makeStyles, 
+        Backdrop, 
+        CircularProgress, 
+        Button, 
+        Typography, 
+        Paper, 
+        Dialog, 
+        List, 
+        ListItem, 
+        ListItemText,
+        Radio, RadioGroup, FormControl, FormControlLabel, FormLabel} from "@material-ui/core"
 
-import {getAddress, updateWarehouseID, getWarehouse} from "../action"
+import DialogComp from "../component/dialog"        
+
+import {getAddress, updateWarehouseID, getWarehouse, checkoutAction} from "../action"
 
 const useStyles = makeStyles((theme)=>({
     root:{
@@ -17,16 +29,41 @@ const useStyles = makeStyles((theme)=>({
         zIndex: theme.zIndex.drawer + 1,
         color: '#fff',
       },
+    paper:{
+        width: "70vw",
+        padding: 20,
+        display: "flex",
+        flexDirection: "column"
+    },
+    list:{
+        display: "flex",
+        flexDirection: "column"
+    },
+    listitem:{
+        textAlign: "left"
+    },
+    paperlist:{
+        margin: 10,
+        cursor: "pointer"
+    },
+    button:{
+        margin: 5
+    }
 }))
 
 
 
-const CheckOut = () =>{
+const CheckOut = ({location: {search}}) =>{
     const classes = useStyles()
     const dispatch = useDispatch()
-    const [choose, setChoose] = React.useState(false)
     const [addressID, setAddressID] = React.useState(0)
     const [wareHouseID, setWareHouseID] = React.useState(0)
+    const [whName, setWhName] = React.useState("")
+    const [openDialog, setOpenDialog] = React.useState(false)
+    const [radio, setRadio] = React.useState(true)
+    const [pay, setPay] = React.useState(true)
+    const [confirm, setConfirm] =React.useState(false)
+    const [toConfirmPage, setToConfirmPage] = React.useState(false)
     
     const{id, address, cart, total, warehouse} = useSelector((state)=>{
         return{
@@ -46,21 +83,27 @@ const CheckOut = () =>{
     },[])
 
     const renderAddress = ()=>{
-        return address.map((item)=>{
+        return address.map((item,index)=>{
             return(          
-                <>
-                    <Typography>{item.type}</Typography>
-                    <Typography>{item.address}</Typography>
-                    <Typography>{item.city}</Typography>
-                    <Typography>{item.province}</Typography>
-                    <Typography>{item.postcode}</Typography>
-                </>
+                <Paper elevation={2} className={classes.paperlist}>
+                    <ListItem key={item.id} className={classes.list} onClick={()=> handleChoose(index)}>
+                        <ListItemText className={classes.listitem}>{item.type}</ListItemText>
+                        <ListItemText className={classes.listitem}>{item.address}</ListItemText>
+                        <ListItemText className={classes.listitem}>{item.city}</ListItemText>
+                        <ListItemText className={classes.listitem}>{item.province}</ListItemText>
+                        <ListItemText className={classes.listitem}>{item.postcode}</ListItemText>
+                    </ListItem>
+                </Paper>
             )
             
         })
     }
+    const handleChoose = (id)=>{
+        setOpenDialog(false)
+        setAddressID(id)
+    }
     const handleClose = ()=>{
-        setChoose(false)
+        setOpenDialog(false)
     }
 
     const proceed = ()=>{
@@ -71,31 +114,91 @@ const CheckOut = () =>{
         console.log("proceed id",address[addressID].id)
         console.log("order number : ", cart[0].order_number)
         dispatch(updateWarehouseID(body))
-        setWareHouseID(cart[0].warehouse_id - 1)
+        setWareHouseID(cart[0].warehouse_id)
+        // renderWarehouse()
+        setRadio(false)
+    }
+
+    const renderWarehouse = ()=>{
+        return warehouse.map((item)=>{
+           return item.id === wareHouseID? (setWhName(item.name)) : (null)
+        })
+    }
+ 
+    const handleChange = () =>{
+        setPay(false)
+    }
+
+    const handleCloseConfirm = () =>{
+        setConfirm(false)
+        
+    }
+
+    const handleToConfirm = ()=>{
+        dispatch(checkoutAction(cart[0].order_number))
+        setConfirm(false)
+        setToConfirmPage(true)
+    }
+
+    if(toConfirmPage){
+        return <Redirect to={{pathname:`/Konfirmasi`, search:`${cart[0].order_number}`}}/>
     }
   
     return(
         <div className={classes.root}>
             <h1>Checkout Page</h1>
-            <Paper>
+            <Paper className={classes.paper}>
                 <Typography>Alamat Pengiriman</Typography>
                 <Typography>{address.length !== 0? address[addressID].type : null}</Typography>
                 <Typography>{address.length !== 0? address[addressID].address : null}</Typography>
                 <Typography>{address.length !== 0? address[addressID].city : null}</Typography>
                 <Typography>{address.length !== 0? address[addressID].province : null}</Typography>
                 <Typography>{address.length !== 0? address[addressID].postcode : null}</Typography>
-                <Button onClick={()=> proceed()}>
-                    Lanjut
+                <div>
+                    <Button className={classes.button} variant="contained" onClick={()=> proceed()}>
+                        Lanjut
+                    </Button>
+                    <Button className={classes.button} variant="contained" onClick={()=> setOpenDialog(true)}>
+                        Pilih Alamat Lain
+                    </Button>
+                </div>
+            
+                {/* {whName !== ""?
+                <Typography>Barang dikirim dari gudang {whName}</Typography> : null} */}
+                <Typography>Pilih Metode Pembayaran</Typography>
+            
+                <FormControl disabled={radio} component="fieldset" onChange={handleChange}>
+                    <RadioGroup aria-label="gender" name="gender1" >
+                        <FormControlLabel value="female" control={<Radio />} label="Bank Transfer" />
+                        <FormControlLabel value="male" control={<Radio />} label="Cicilan 0% " />
+                        <FormControlLabel value="other" control={<Radio />} label="Gopay" />
+                    </RadioGroup>
+                </FormControl>
+
+                <Button 
+                    className={classes.button} 
+                    variant="contained" 
+                    disabled={pay}
+                    onClick={()=>setConfirm(true)}>
+                    Lanjut Ke Pembayaran
                 </Button>
-                <Button onClick={()=> setChoose(true)}>
-                    Pilih Alamat Lain
-                </Button>
-                <Typography>Barang dikirim dari gudang {warehouse[wareHouseID]? warehouse[wareHouseID].name : null}</Typography>
             </Paper>
+            <Dialog
+                open={openDialog}
+                onClose={handleClose}>
+                <List>
+                    {renderAddress()}
+                </List>
+            </Dialog>
             <DialogComp
-                open={choose}
-                onClose={handleClose}
-                text={renderAddress}/>
+                open={confirm}
+                onClose={handleCloseConfirm}
+                text="Pesanan anda berhasil, silakan lakukan konfirmasi pembayaran!"
+                action={<Button
+                            onClick={handleToConfirm}>
+                            Lanjut
+                        </Button>}
+            />
         </div>
     )
 }

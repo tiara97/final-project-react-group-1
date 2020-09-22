@@ -1,11 +1,10 @@
 import { URL, GET_ADDRESS} from "./helper"
 import Axios from "axios"
 
-export const getAddress = () => {
+export const getAddress = (id) => {
     return async (dispatch) => {
         try {
-            const id = localStorage.getItem('id')
-            const res = await Axios.get(URL + `/profiles/get/${id}`)
+            const res = await Axios.get(URL + `/address/get/`+ id)
             console.log(res.data)
             dispatch({ type: GET_ADDRESS, payload: res.data })
         } catch (error) {

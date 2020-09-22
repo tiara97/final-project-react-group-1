@@ -24,3 +24,29 @@ export const userOrder = () =>{
         }
     }
 }
+
+export const getOrderByNumber = (order_number) =>{
+    return async(dispatch)=>{
+        try {
+            const res = await Axios.get(URL + "/orders/getByOrderNumber/" + order_number)
+            console.log(res.data)
+            dispatch({type: GET_ORDER_ID, payload: res.data})
+        } catch (error) {
+            console.log(error.response? error.response.data : error)
+        }
+    }
+}
+
+export const checkoutAction = (order_number) =>{
+    return async(dispatch)=>{
+        try {
+            const checkout = await Axios.patch(URL + "/transaction/checkout/" + order_number)
+            let id = localStorage.getItem('id')
+            const res = await Axios.get(URL + `/orders/getByUserID/${id}`)
+            console.log(res.data)
+            dispatch({type: GET_ORDER_ID, payload: res.data})
+        } catch (error) {
+            console.log(error.response? error.response.data : error)
+        }
+    }
+}

@@ -1,7 +1,8 @@
 import { GET_ORDER_ALL, GET_ORDER_ID } from "../action"
 
 const INITIAL_STATE = {
-    order: []
+    order: [],
+    total: 0,
 }
 
 const orderReducer = (state = INITIAL_STATE, action) => {
@@ -9,7 +10,7 @@ const orderReducer = (state = INITIAL_STATE, action) => {
         case GET_ORDER_ALL:
             return { ...state, order: action.payload }
         case GET_ORDER_ID:
-            return { ...state, order: action.payload }
+            return { ...state, order: action.payload}
         default:
             return state
     }
