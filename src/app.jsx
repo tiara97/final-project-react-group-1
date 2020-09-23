@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux"
 
 // import component
 import Navbar from "./component/navbar"
+import Footer from "./component/footer"
 
 // import page
 import Home from "./pages/homepage"
@@ -16,6 +17,7 @@ import Register from "./pages/register"
 import Login from "./pages/login"
 import Account from './pages/account'
 import Verification from './pages/verification'
+import Confirmation from "./pages/confirmation"
 
 import {userKeepLogin} from './action'
 import ProductAdmin from './pages/productAdmin'
@@ -39,7 +41,9 @@ const App = () =>{
             <Route path="/Login" component={Login} />
             <Route path="/Verifikasi" component={Verification} />
             <Route path="/Akun" component={Account} />
+            <Route path="/Konfirmasi" component={Confirmation}/>
             <Route path="/Produk-Admin" component={ProductAdmin}/>
+            <Footer/>
         </div>
     )
 }
