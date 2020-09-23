@@ -1,4 +1,4 @@
-import { URL, GET_PROFILE, GET_FAVORITE, EDIT_PROFILE, UPLOAD_PIC_ERROR, LOG_OUT } from "./helper"
+import { URL, GET_PROFILE, UPLOAD_PIC_ERROR, LOG_OUT } from "./helper"
 import Axios from "axios"
 
 export const getProfile = () => {
@@ -20,19 +20,20 @@ export const editProfile = (body) => {
             const edit = await Axios.patch(URL + `/profiles/edit/${id}`, body)
             const res = await Axios.get(URL + `/profiles/get/${id}`)
             console.log(res.data)
-            dispatch({ type: EDIT_PROFILE, payload: res.data })
+            dispatch({ type: GET_PROFILE, payload: res.data })
         } catch (error) {
             console.log(error.response ? error.response.data : error)
         }
     }
 }
-export const getFavorite = () => {
+export const addMainAddress = (body) => {
     return async (dispatch) => {
         try {
             const id = localStorage.getItem('id')
-            const res = await Axios.get(URL + `/profiles/getFavorite/${id}`)
+            const add = await Axios.patch(URL + `/profiles/addAddress/${id}`, body)
+            const res = await Axios.get(URL + `/profiles/get/${id}`)
             console.log(res.data)
-            dispatch({ type: GET_FAVORITE, payload: res.data })
+            dispatch({ type: GET_PROFILE, payload: res.data })
         } catch (error) {
             console.log(error.response ? error.response.data : error)
         }
