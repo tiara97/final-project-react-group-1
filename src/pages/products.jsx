@@ -15,22 +15,26 @@ import Carousel from '../component/carousel'
 
 const useStyles = makeStyles(() => ({
     root: {
+        margin: 0,
         paddingTop: "10vh",
+        boxSizing: "border-box",
+        background: "linear-gradient(to bottom right, #0f2027, #203a43, #2c5364)"
       },
       header: {
         height: "70vh",
-        width: "80vw",
+        width: "100%",
         backgroundSize: "cover", 
         backgroundPosition: "center",
-        margin: '0 auto',
+        margin: 0,
       },
       title: {
         fontSize: 36,
-        marginLeft: '10%'
+        marginLeft: '1%'
       },
     media: {
         height: 0,
-        paddingTop: '56.25%', // 16:9
+        paddingTop: '100%', // 16:9
+        
     },
     productCard: {
         width : '100%',
@@ -41,7 +45,7 @@ const useStyles = makeStyles(() => ({
     },
     card : {
         flexBasis : '19%',
-        minWidth : '300px',
+        minWidth : '15vw',
         marginBottom : '1%',
         marginRight : '1%',
     },
@@ -76,8 +80,10 @@ export default function Products({location: {search}}) {
                     <Button>
                         <Card className={classes.card}>
                             <CardMedia className={classes.media} image={item.image[0]}/>
-                            <Typography>{item.name}</Typography>
-                            <Typography>Rp. {item.price.toLocaleString()}</Typography>
+                            <CardContent>
+                                <Typography>{item.name}</Typography>
+                                <Typography>Rp. {item.price.toLocaleString()}</Typography>
+                            </CardContent>
                         </Card>
                     </Button>
                 </Link>

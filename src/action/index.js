@@ -7,4 +7,5 @@ export * from "./warehouseAction"
 export * from "./profileAction"
 export * from "./userAction"
 export * from "./orderAction"
-
+export * from "./addressAction"
+export * from "./favoriteAction"
