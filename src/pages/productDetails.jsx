@@ -189,7 +189,7 @@ export default function ProductDetails ({location: {state: {id}}}) {
     if(toCart){
         return <Redirect to="/Cart"/>
     }
-    // console.log(errorCart)
+    
     return (
         <div className={classes.root}>
             <Paper elevation = {2} className={classes.up_container}>

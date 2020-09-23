@@ -18,6 +18,7 @@ import Account from './pages/account'
 import Verification from './pages/verification'
 
 import {userKeepLogin} from './action'
+import ProductAdmin from './pages/productAdmin'
 
 
 const App = () =>{
@@ -38,6 +39,7 @@ const App = () =>{
             <Route path="/Login" component={Login} />
             <Route path="/Verifikasi" component={Verification} />
             <Route path="/Akun" component={Account} />
+            <Route path="/Produk-Admin" component={ProductAdmin}/>
         </div>
     )
 }
