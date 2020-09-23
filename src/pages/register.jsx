@@ -1,5 +1,5 @@
 import React from 'react'
-import { TextField, Button, Paper, IconButton, OutlinedInput, InputAdornment, FormControl, InputLabel, makeStyles, Typography, Dialog, DialogActions, DialogTitle, DialogContent, DialogContentText } from '@material-ui/core'
+import { TextField, Button, Paper, IconButton, OutlinedInput, InputAdornment, FormControl, InputLabel, makeStyles, Typography, Dialog, DialogActions, DialogTitle, DialogContent, DialogContentText, Backdrop, CircularProgress } from '@material-ui/core'
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { useSelector, useDispatch } from "react-redux"
@@ -56,17 +56,30 @@ const Register = () => {
     const [postcode, setPostcode] = React.useState('');
 
     // get data from reducer
-    const { id, errorReg } = useSelector(state => {
+    const { id, errorReg, loading } = useSelector(state => {
         return {
             id: state.userReducer.id,
             // nampilin eror jg masalah, krn dia nampilin eror yg pertama terjadi aja
-            errorReg: state.userReducer.errorReg
+            errorReg: state.userReducer.errorReg,
+            loading: state.userReducer.loadingReg
         }
     })
-    // invoke action
     const dispatch = useDispatch()
-    const handleRegister = () => {
-        const body = { username, password, confPassword, email, user_fullname, phone, address, city, province, postcode }
+    
+    const handleLoc = () => {
+        const successCB = (position) => {
+            console.log(position)
+            let lat = position.coords.latitude
+            let long = position.coords.longitude
+            handleRegister(lat, long)
+        }
+        const errorCB = (error) => {
+            console.log(error)
+        }
+        navigator.geolocation.getCurrentPosition(successCB, errorCB)
+    }
+    const handleRegister = (lat,long) => {
+        const body = { username, password, confPassword, email, user_fullname, phone, address, city, province, postcode, latitude: lat, longitude: long }
         console.log(body)
         dispatch(userRegister(body))
         // setUsername('')
@@ -87,6 +100,9 @@ const Register = () => {
     }
     return (
         <div className={classes.root}>
+            <Backdrop className={classes.backdrop} open={loading}>
+                <CircularProgress/>
+            </Backdrop>
             <Paper className={classes.container} elevation={5}>
                 <div className={classes.titleCont}>
                     <h1 className={classes.title}>Register</h1>
@@ -105,7 +121,7 @@ const Register = () => {
                                             edge="end"
                                             onClick={() => setVisible1(!visible1)}
                                         >
-                                            {visible2 ? <Visibility /> : <VisibilityOff />}
+                                            {visible1 ? <Visibility /> : <VisibilityOff />}
                                         </IconButton>
                                     </InputAdornment>
                                 ),
@@ -139,20 +155,18 @@ const Register = () => {
                 </div>
                 <Typography className={classes.error}> {errorReg ? errorReg : ''}</Typography>
                 {/* <Typography className={classes.error}> {errorReg ? `${errorReg.join(', ')}` : ''}</Typography> */}
-                <Button className={classes.button} variant="contained" color="primary" onClick={handleRegister}>
+                <Button className={classes.button} variant="contained" color="primary" onClick={handleLoc}>
                     Register
                 </Button>
-                <Link to='/Login' style={{ textDecoration: 'none' }}>
-                    <Button className={classes.button} variant="outlined" color="primary" style={{ width: 354 }}>
+                    <Button className={classes.button} component={Link} to='/Login' variant="outlined" color="primary">
                         Login
                 </Button>
-                </Link>
             </Paper>
             <AlertDialog open={open} title={`Welcome! :)`} close={() => setOpen(false)} />
         </div>
     )
 }
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
     root: {
         backgroundColor: 'pink',
         width: '100vw',
@@ -172,6 +186,10 @@ const useStyles = makeStyles(() => ({
         // margin: '0 5%'
         // marginTop: '15vh'
     },
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
+      },
     divLeft: {
         borderRight: '1px solid black',
         flex: 2,

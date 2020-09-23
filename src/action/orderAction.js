@@ -12,7 +12,7 @@ export const getAllOrder = () =>{
         }
     }
 }
-export const userOrder = () =>{
+export const getUserOrder = () =>{
     return async(dispatch)=>{
         try {
             let id = localStorage.getItem('id')

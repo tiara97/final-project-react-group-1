@@ -9,6 +9,7 @@ import profileReducer from "./profileReducer"
 import userReducer from "./userReducer"
 import orderReducer from "./orderReducer"
 import addressReducer from "./addressReducer"
+import favoriteReducer from "./favoriteReducer"
 
 const allReducers = combineReducers({carouselReducer, 
                                      categoryReducer, 
@@ -18,8 +19,8 @@ const allReducers = combineReducers({carouselReducer,
                                      warehouseReducer, 
                                      userReducer, 
                                      orderReducer,
-                                     addressReducer
+                                     addressReducer,
+                                     favoriteReducer
                                     })
-
 
 export default allReducers
