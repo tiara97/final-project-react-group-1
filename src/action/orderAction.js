@@ -1,4 +1,4 @@
-import {URL, GET_ORDER_ALL, GET_ORDER_ID } from "./helper"
+import {URL, GET_ORDER_ALL, GET_ORDER_USER } from "./helper"
 import Axios from "axios"
 
 export const getAllOrder = () =>{
@@ -18,7 +18,20 @@ export const getUserOrder = () =>{
             let id = localStorage.getItem('id')
             const res = await Axios.get(URL + `/orders/getByUserID/${id}`)
             console.log(res.data)
-            dispatch({type: GET_ORDER_ID, payload: res.data})
+            dispatch({type: GET_ORDER_USER, payload: res.data})
+        } catch (error) {
+            console.log(error.response? error.response.data : error)
+        }
+    }
+}
+// UNTUK USER !!
+export const getUserOrderByStatus = (body) =>{
+    return async(dispatch)=>{
+        try {
+            let id = localStorage.getItem('id')
+            const res = await Axios.get(URL + `/orders/getByOrderUserIDStatus/${id}`, body)
+            console.log(res.data)
+            dispatch({type: GET_ORDER_USER, payload: res.data})
         } catch (error) {
             console.log(error.response? error.response.data : error)
         }
