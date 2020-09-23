@@ -1,4 +1,4 @@
-import { GET_ORDER_ALL, GET_ORDER_ID,UPLOAD_PAYMENT_ERROR } from "../action"
+import { GET_ORDER_ALL, GET_ORDER_ID, UPLOAD_PAYMENT_ERROR, GET_ORDER_USER } from "../action"
 
 const INITIAL_STATE = {
     order: [],
@@ -9,6 +9,8 @@ const INITIAL_STATE = {
 const orderReducer = (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case GET_ORDER_ALL:
+            return { ...state, order: action.payload }
+        case GET_ORDER_USER:
             return { ...state, order: action.payload }
         case GET_ORDER_ID:
             return { ...state, order: action.payload}
