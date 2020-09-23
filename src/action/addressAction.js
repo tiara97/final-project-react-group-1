@@ -1,7 +1,7 @@
 import { URL, GET_ADDRESS, ADD_ADDRESS, EDIT_ADDRESS, DELETE_ADDRESS} from "./helper"
 import Axios from "axios"
 
-export const getAddress = () => {
+export const getAddress = (id) => {
     return async (dispatch) => {
         try {
             const id = localStorage.getItem('id')

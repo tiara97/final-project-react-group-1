@@ -12,9 +12,6 @@ const useStyles = makeStyles(()=>({
         alignItems: "center",
         paddingTop: "10vh"
     },
-//    media:{
-//        height: "30vw"
-//    },
    cardContainer: {
        display: "flex",
        justifyContent: "space-evenly",
@@ -27,7 +24,9 @@ const useStyles = makeStyles(()=>({
        marginBottom: "2vh",
        marginTop: "2vh", 
        display: "flex",
-       flexDirection: "column"
+       flexDirection: "column",
+       justifyContent: "center",
+    //    alignItems: "center"
    },
    media:{
        flexGrow: 1
@@ -35,6 +34,10 @@ const useStyles = makeStyles(()=>({
    link:{
     textDecoration: "none",
     color: "#000"
+  },
+  content:{
+      position: "absolute",
+      color: "inherit"
   }
 }))
 
@@ -60,8 +63,8 @@ const Category = () =>{
                 <Link to={{pathname:'/Produk', search: `category=${item.category}`, state: {id:`${item.id}`}}} className={classes.link} key={item.id}>
                     <Grow in={checked}  {...(checked ? { timeout: 1000 } : {})}>
                         <Card className={classes.card} >
-                            <CardContent >
-                                <Typography variant="h4">{item.category}</Typography>
+                            <CardContent className={classes.content} >
+                                <Typography variant="h6" color="inherit">{item.category}</Typography>
                             </CardContent>
                             <CardMedia
                                 className={classes.media}
@@ -74,7 +77,7 @@ const Category = () =>{
     } 
     return(
         <div className={classes.root}>
-            <Typography variant="h1">Category Page</Typography>
+            <Typography variant="h4">Category Page</Typography>
             <div className={classes.cardContainer} >
                 {renderCard()}
             </div>

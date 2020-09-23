@@ -1,8 +1,17 @@
 import React from "react"
 import {useSelector, useDispatch} from "react-redux"
-import {makeStyles, Backdrop, CircularProgress, Button} from "@material-ui/core"
+import {Redirect} from "react-router-dom"
+import {makeStyles, 
+        Backdrop, 
+        CircularProgress, 
+        Button, 
+        Typography, 
+        Paper, 
+        Radio, RadioGroup, FormControl, FormControlLabel, FormLabel, Select, MenuItem} from "@material-ui/core"
 
-import {getWarehouse} from "../action"
+import DialogComp from "../component/dialog"        
+
+import {getAddress, updateWarehouseID, getWarehouse, checkoutAction, getOngkir} from "../action"
 
 const useStyles = makeStyles((theme)=>({
     root:{
@@ -16,88 +25,153 @@ const useStyles = makeStyles((theme)=>({
         zIndex: theme.zIndex.drawer + 1,
         color: '#fff',
       },
+    paper:{
+        width: "70vw",
+        padding: 20,
+        display: "flex",
+        flexDirection: "column"
+    },
+    list:{
+        display: "flex",
+        flexDirection: "column"
+    },
+    listitem:{
+        textAlign: "left"
+    },
+    paperlist:{
+        margin: 10,
+        cursor: "pointer"
+    },
+    button:{
+        margin: 5
+    }
 }))
 
 
 
-const CheckOut = () =>{
+const CheckOut = ({location: {search}}) =>{
     const classes = useStyles()
     const dispatch = useDispatch()
-    const [warehouseID, setWarehouseID] = React.useState(null)
-    const [warehouseName, setWarehouseName] = React.useState("")
-
-    // test lat long
-    const geoloc = {
-        lat: -6.396763,
-        long: 106.781426
-    }
-
-    // import redux
-    const {warehouse, loading} = useSelector((state)=>{
+    const [wareHouseID, setWareHouseID] = React.useState(0)
+    const [whName, setWhName] = React.useState("")
+    const [radio, setRadio] = React.useState(true)
+    const [pay, setPay] = React.useState(true)
+    const [confirm, setConfirm] =React.useState(false)
+    const [toConfirmPage, setToConfirmPage] = React.useState(false)
+    
+    const{id, address, cart, total, warehouse, error} = useSelector((state)=>{
         return{
+            address: state.addressReducer.userAddress,
+            id: state.userReducer.id,
+            cart: state.cartReducer.cart,
+            total: state.cartReducer.total,
             warehouse: state.warehouseReducer.warehouse,
-            loading: state.warehouseReducer.loading
+            error: state.cartReducer.errorOngkir
         }
     })
 
-    // get data on first render
     React.useEffect(()=>{
+        if(id){
+            dispatch(getAddress(id))
+        }
         dispatch(getWarehouse())
     },[])
 
-    let R = 6371e3
-    let φ1 = 0
-    let φ2 = 0
-    let Δφ = 0
-    let Δλ = 0
-    let a = 0
-    let c =0
-    let d = 0
-    let lat1 = geoloc.lat
-    let lat2 = 0
-    let lon1 = geoloc.long
-    let lon2 = 0
-    let jarak = []
-    let id = null
-
-    const getClosestWarehouse = ()=>{
-        
-        warehouse.map((item)=>{
-            return(
-                lat2 = item.latitude,
-                lon2 = item.longitude,
-                φ1 =lat1 * Math.PI/180, // φ, λ in radians
-                φ2 = lat2 * Math.PI/180,
-                Δφ = (lat2-lat1) * Math.PI/180,
-                Δλ = (lon2-lon1) * Math.PI/180,
-                a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-                        Math.cos(φ1) * Math.cos(φ2) *
-                        Math.sin(Δλ/2) * Math.sin(Δλ/2),
-                c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)),
-                d = R * c, // in metres
-                jarak.push(d),
-                d === Math.min(...jarak)? id = item.id : null
+    const renderAddress = ()=>{
+        return <Select
+                value={address[0]? address[0].id : 0}
+                onChange={handleSelect}>
+                {address.map((item)=>{
+                return(          
+                     <MenuItem key={item.id} value={item.id}>
+                         ({item.type}) {item.address} {item.city} {item.province} {item.postcode}
+                        </MenuItem>
                 )
-                
-            })
-       console.log("id : ", id)
-       setWarehouseID(id)
-       console.log(jarak)
-       console.log("Min ", Math.min(...jarak))
+            })}
+        </Select>
+    }
+
+
+    const handleSelect = (event)=>{
+        const body = {
+            order_number: cart[0].order_number,
+            id: event.target.value,
+            user_id: id
+        }
+        console.log(body)
+        dispatch(updateWarehouseID(body))
+        dispatch(getOngkir(body))
+        renderWarehouse()
+        setRadio(false)
+        setWareHouseID(body.id)
+    }
+    // dikasih loading dan fungsi get ongkir dan warehouseID dipanggil di awal
+
+    const renderWarehouse = ()=>{
+        return warehouse.map((item)=>{
+           return item.id === cart[0].warehouse_id? (setWhName(item.name)) : (null)
+        })
+    }
+ 
+    const handleChangeRadio = () =>{
+        setPay(false)
+    }
+
+    const handleCloseConfirm = () =>{
+        setConfirm(false)
+        
+    }
+
+    const handleToConfirm = ()=>{
+        dispatch(checkoutAction(cart[0].order_number))
+        setConfirm(false)
+        setToConfirmPage(true)
+    }
+
+    if(toConfirmPage){
+        return <Redirect to={{pathname:`/Konfirmasi`, search:`${cart[0].order_number}`}}/>
     }
   
-    console.log(warehouse)
-    console.log(warehouseID)
     return(
         <div className={classes.root}>
-            <Button onClick={getClosestWarehouse}>
-                Get Warehouse
-            </Button>
-            {/* {getClosestWarehouse()} */}
-            <Backdrop className={classes.backdrop} open={loading}>
-                <CircularProgress/>
-            </Backdrop>
             <h1>Checkout Page</h1>
+            <Paper className={classes.paper}>
+            <Typography>Alamat Pengiriman</Typography>
+
+                {renderAddress()}
+                
+                {error? <Typography>{error}</Typography> : <>
+                <Typography>Barang dikirim dari gudang {whName}</Typography> 
+                <Typography>Total ongkir adalah Rp. {cart[0]? cart[0].total_ongkir.toLocaleString(): null}</Typography>
+                <Typography>Total biaya yang harus dibayar adalah Rp. {cart[0]?(total + cart[0].total_ongkir).toLocaleString(): null}</Typography>
+                <Typography>Pilih Metode Pembayaran</Typography>
+                </>}
+              
+                <FormControl disabled={radio} component="fieldset" onChange={handleChangeRadio}>
+                    <RadioGroup aria-label="gender" name="gender1" >
+                        <FormControlLabel value="female" control={<Radio />} label="Bank Transfer" />
+                        <FormControlLabel value="male" control={<Radio />} label="Cicilan 0% " />
+                        <FormControlLabel value="other" control={<Radio />} label="Gopay" />
+                    </RadioGroup>
+                </FormControl>
+
+                <Button 
+                    className={classes.button} 
+                    variant="contained" 
+                    disabled={pay}
+                    onClick={()=>setConfirm(true)}>
+                    Lanjut Ke Pembayaran
+                </Button>
+            </Paper>
+            <DialogComp
+                open={confirm}
+                onClose={handleCloseConfirm}
+                text="Pesanan anda berhasil, silakan lakukan konfirmasi pembayaran!"
+                action={<Button
+                            onClick={handleToConfirm}>
+                            Lanjut
+                        </Button>}
+            />
         </div>
     )
 }

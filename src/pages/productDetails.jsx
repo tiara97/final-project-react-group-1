@@ -37,7 +37,8 @@ const useStyles = makeStyles(() => ({
         flexDirection: "row",
         justifyContent: "center",
         alignItems: "center",
-        width: '80%'
+        width: '80%',
+        padding: '2%'
     },
     container_carousel:{
         flex: 2
@@ -81,6 +82,10 @@ const useStyles = makeStyles(() => ({
     },
     button:{
         margin: 10
+    },
+    title:{
+        marginRight: '10%', 
+        fontWeight: "bold"
     }
 }))
 
@@ -167,7 +172,8 @@ export default function ProductDetails ({location: {state: {id}}}) {
             product_id: id, 
             color_id: colorButton.id, 
             qty: quantity, 
-            price_each: productDetails.price
+            price_each: productDetails.price,
+            weight: productDetails.weight
         }
         console.log(body)
         dispatch(addToCart(body))
@@ -188,7 +194,7 @@ export default function ProductDetails ({location: {state: {id}}}) {
     if(toCart){
         return <Redirect to="/Cart"/>
     }
-    // console.log(errorCart)
+    
     return (
         <div className={classes.root}>
             <Paper elevation = {2} className={classes.up_container}>
@@ -211,30 +217,30 @@ export default function ProductDetails ({location: {state: {id}}}) {
                         <Typography style={{marginRight: '10%'}}>{productDetails.category}</Typography>
                     </div>
                     <div className={classes.content}>
-                        <Typography style={{marginRight: '10%'}}>Harga</Typography>
+                        <Typography className={classes.title}>Harga</Typography>
                         <Typography style={{fontSize: 42, fontWeight: 'bold'}}>Rp. {productDetails.price ? productDetails.price.toLocaleString() : null}</Typography>
                     </div>
                     <div className={classes.content}>
-                        <Typography style={{marginRight: '10%'}}>Deskripsi</Typography>
-                        <Typography style={{fontSize: 18}}>{productDetails.desc}</Typography>
+                        <Typography className={classes.title}>Deskripsi</Typography>
+                        <Typography variant="body1">{productDetails.desc}</Typography>
                     </div>
                     <div className={classes.content}>
-                        <Typography style={{marginRight: '10%'}}>Material</Typography>
-                        <Typography style={{fontSize: 18}}>{productDetails.material}</Typography>
+                        <Typography className={classes.title}>Material</Typography>
+                        <Typography variant="body1">{productDetails.material}</Typography>
                     </div>
                     <div className={classes.content}>
-                        <Typography style={{marginRight: '10%'}}>Warna</Typography>
+                        <Typography className={classes.title}>Warna</Typography>
                         <div style={{width: '100%', display: 'flex'}}>
                             {renderColor()}
                         </div>
                     </div>
                     <div className={classes.content}>
-                        <Typography style={{marginRight: '10%'}}>Ukuran</Typography>
-                        <Typography style={{fontSize: 18}}>Panjang: {productDetails.size ? productDetails.size[0] : null}cm, Lebar: {productDetails.size ? productDetails.size[1] : null}cm, Tinggi: {productDetails.size ? productDetails.size[2] : null}cm</Typography>
+                        <Typography className={classes.title}>Ukuran</Typography>
+                        <Typography variant="body1">Panjang: {productDetails.size ? productDetails.size[0] : null}cm, Lebar: {productDetails.size ? productDetails.size[1] : null}cm, Tinggi: {productDetails.size ? productDetails.size[2] : null}cm</Typography>
                     </div>
                     <div className={classes.content}>
-                        <Typography style={{marginRight: '10%'}}>Stok</Typography>
-                        <Typography style={{fontSize: 18}}>Limited Stock! {productDetails.stock_available ? productDetails.stock_available.reduce((a, b) => parseInt(a) + parseInt(b)) : 0} Available</Typography>
+                        <Typography className={classes.title}>Stok</Typography>
+                        <Typography variant="body1">Limited Stock! {productDetails.stock_available ? productDetails.stock_available.reduce((a, b) => parseInt(a) + parseInt(b)) : 0} Available</Typography>
                     </div>
                     <div className={classes.contentQty}>
                         <div>
