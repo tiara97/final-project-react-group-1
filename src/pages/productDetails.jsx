@@ -37,7 +37,8 @@ const useStyles = makeStyles(() => ({
         flexDirection: "row",
         justifyContent: "center",
         alignItems: "center",
-        width: '80%'
+        width: '80%',
+        padding: '2%'
     },
     container_carousel:{
         flex: 2
@@ -188,7 +189,7 @@ export default function ProductDetails ({location: {state: {id}}}) {
     if(toCart){
         return <Redirect to="/Cart"/>
     }
-    // console.log(errorCart)
+    
     return (
         <div className={classes.root}>
             <Paper elevation = {2} className={classes.up_container}>
