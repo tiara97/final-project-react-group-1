@@ -11,9 +11,10 @@ import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import { useSelector, useDispatch } from "react-redux"
 import { Link } from 'react-router-dom'
 
-import { getProfile, getFavoriteByID, userOrder, editProfile, uploadPic, getAddress, editAddress, deleteAddress, addAddress, addMainAddress, deleteFavorite } from '../action'
+import { getProfile, getFavoriteByID, editProfile, uploadPic, getAddress, editAddress, deleteAddress, addAddress, addMainAddress, deleteFavorite, getUserOrder } from '../action'
 import { URL_IMG } from '../action/helper'
 import avatar from '../assets/avatar.jpg'
+import { ImageAspectRatioOutlined } from '@material-ui/icons';
 
 // Kontainer Tab
 function TabPanel(props) {
@@ -81,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
     backdrop: {
         zIndex: theme.zIndex.drawer + 1,
         color: '#fff',
-      },
+    },
     title: {
         display: 'flex',
         padding: 10,
@@ -137,6 +138,49 @@ const useStyles = makeStyles((theme) => ({
         height: '60vh',
         display: 'flex',
         justifyContent: 'space-between'
+    },
+    // history style
+    boxOrder: {
+        backgroundColor: 'pink',
+        height: 'auto',
+        display: 'grid',
+        gridTemplateColumns: '100%',
+        gridTemplateRows: '10% 10% 80%',
+        // padding: 25
+    },
+    orderTitle: {
+        gridColumn: '1 / span 3',
+        backgroundColor: 'lavender',
+        padding: 5,
+        display: 'flex',
+        justifyContent: 'space-between'
+    },
+    orderDet: {
+        // height: 200,
+        gridColumn: '1 / span 3',
+        backgroundColor: '#f2f2f2',
+        padding: 10,
+    },
+    orderImg: {
+        height: 150,
+        width: 150,
+        display: 'flex',
+        alignItems: 'center',
+        backgroundColor: '#f2f2f2',
+    },
+    orderInfo: {
+        backgroundColor: '#f2f2f2',
+        paddingTop: 10,
+        paddingLeft: 30,
+        flexGrow: 1
+    },
+    orderBtn: {
+        backgroundColor: 'blue',
+        width: 200,
+        display: 'flex',
+        flexDirection: 'column',
+        alignContent: 'center',
+        justifyContent: 'center'
     },
     divTab: {
         display: 'flex',
@@ -222,8 +266,8 @@ const Account = () => {
     React.useEffect(() => {
         console.log(loading)
         dispatch(getFavoriteByID())
-        dispatch(userOrder())
         dispatch(getAddress())
+        dispatch(getUserOrder())
         setLoading(false)
     }, [])
 
@@ -431,7 +475,7 @@ const Account = () => {
                                         </TableCell>
                                         <TableCell align="left">
                                             <TextField id="outlined-basic"
-                                                label="Kodepos" variant='outlined' onChange={(event) => setPostcode(event.target.value)} defaultValue={postcode} size='small' />
+                                                label="Kodepos" variant='outlined' onChange={(event) => setPostcode(event.target.value)} value={postcode} size='small' />
                                         </TableCell>
                                         <TableCell>
                                             <IconButton aria-label="done" color='primary' onClick={handleDone}>
@@ -527,7 +571,7 @@ const Account = () => {
                     <div className={classes.favInfo}>
                         <Typography variant='h5' style={{ marginBottom: 10 }}>Rp. {item.price_each}</Typography>
                         <Typography style={{ marginBottom: 10 }}>Color : {item.color}</Typography>
-                        <Typography style={{ marginBottom: 10 }}>Jumlah : {item.qty}</Typography>
+                        <Typography variant='subtitle1' style={{ marginBottom: 10 }}>{item.desc}</Typography>
                     </div>
                     <div className={classes.favBtn}>
                         <Button variant="contained" color="primary" component="span" style={{ marginBottom: 10 }} onClick={() => handleCart(item.id)}
@@ -544,11 +588,108 @@ const Account = () => {
         })
     }
     const TabHistory = (props) => {
-        return order.map((item, index) => {
+        if (order.length === 0) {
             return (
-                <Box p={3} className={classes.box} key={index}>
-                    <SimpleCard index={index} order_number={item.order_number} status={item.status} total={item.price_each * item.qty} />
+                <Box p={3} className={classes.boxFavorite}>
+                    <Typography variant='h5' style={{ textAlign: 'center', marginBottom: 10 }}>Oops! Riwayat belanjamu kosong. Yuk Belanja!</Typography>
+                    <Link to='/Produk'>
+                        <Button onClick={() => console.log('test')} variant='contained'>Lihat Produk</Button>
+                    </Link>
                 </Box>
+            )
+        }
+
+        // komponen
+        const DivImg = (props) => {
+            const { ind, img, name } = props
+            return (
+                <div className={classes.orderImg} key={ind}>
+                    <img src={img} width='100%' alt={name}></img>
+                </div>
+            )
+        }
+        const DivInfo = (props) => {
+            const { ind, name, price, color, qty } = props
+            return (
+                <div className={classes.orderInfo} key={ind}>
+                    <Typography variant='h6' style={{ marginBottom: 10 }}>{name}</Typography>
+                    <Typography style={{ marginBottom: 10 }} variant='subtitle2'>Varian : {color}</Typography>
+                    <Typography variant='h6' style={{ marginBottom: 10 }}>Rp. {price}</Typography>
+                    <Typography style={{ marginBottom: 10 }} variant='subtitle2'>Jumlah : {qty}</Typography>
+                </div>
+            )
+        }
+        const DivButton = (props) => {
+            const { onClick, children, icon } = props
+            return (
+                <div className={classes.orderBtn}>
+                    <Button variant="contained" color="primary" component="span"
+                        startIcon={icon} onClick={onClick}>
+                        {children}
+                    </Button>
+                </div>
+            )
+        }
+
+        // fungsi
+        const handleClick = () => {
+            console.log('tes')
+        }
+        return order.map((item, index) => {
+            if (item.name.length > 1) {
+
+            }
+            return (
+                <Box p={3} className={classes.boxOrder} key={index}>
+                    <div className={classes.orderTitle}>
+                        <Typography variant='subtitle2'>{item.order_date.slice(0, 10)}</Typography>
+                    </div>
+                    <div className={classes.orderTitle}>
+                        <Typography variant='h6'>{item.order_number}</Typography>
+                        <Typography variant='h6'>Status : {item.status}</Typography>
+                        <Typography variant='h6'>Rp. {item.total.toLocaleString()}</Typography>
+                    </div>
+                    <div className={classes.orderDet}>
+                        <div style={{ display: 'flex', marginBottom: 10 }}>
+
+                        </div>
+                        {item.image.length > 1 ? (
+                            item.image.map((value, ind) => {
+                                return (
+                                    <div style={{ display: 'flex', marginBottom: 10 }}>
+                                        <DivImg ind={ind} img={value} name={value} />
+                                        <DivInfo ind={ind} price={item.price_each[ind]} color={item.color[ind]} qty={item.qty[ind]} name={item.name[ind]} />
+                                        {item.status === 'Waiting for payment' ? (
+                                            <DivButton onClick={handleClick} icon={<PhotoCamera />} children='Upload Bukti' />
+                                        ) : (
+                                                <></>
+                                            )}
+                                        {item.status === 'Done' ? (
+                                            <DivButton onClick={handleClick} icon={<AddShoppingCartIcon />} children='Beli lagi' />
+                                        ) : (
+                                                <></>
+                                            )}
+                                    </div>
+                                )
+                            })
+                        ) : (
+                                <div style={{ display: 'flex', marginBottom: 10 }}>
+                                    <DivImg ind={index} img={item.image} name={item.name} />
+                                    <DivInfo ind={index} price={item.price_each} color={item.color} qty={item.qty} name={item.name} />
+                                    {item.status === 'Waiting for payment' ? (
+                                        <DivButton onClick={handleClick} icon={<PhotoCamera />} children='Upload Bukti' />
+                                    ) : (
+                                            <></>
+                                        )}
+                                    {item.status === 'Done' ? (
+                                        <DivButton onClick={handleClick} icon={<AddShoppingCartIcon />} children='Beli lagi' />
+                                    ) : (
+                                            <></>
+                                        )}
+                                </div>
+                            )}
+                    </div>
+                </Box >
             )
         })
     }
@@ -565,7 +706,7 @@ const Account = () => {
     return (
         <div className={classes.root}>
             <Backdrop className={classes.backdrop} open={loading}>
-                <CircularProgress/>
+                <CircularProgress />
             </Backdrop>
             <div className={classes.title}>
                 <Typography variant='h4'>Akun Saya</Typography>

@@ -121,7 +121,7 @@ const Register = () => {
                                             edge="end"
                                             onClick={() => setVisible1(!visible1)}
                                         >
-                                            {visible2 ? <Visibility /> : <VisibilityOff />}
+                                            {visible1 ? <Visibility /> : <VisibilityOff />}
                                         </IconButton>
                                     </InputAdornment>
                                 ),
@@ -158,11 +158,9 @@ const Register = () => {
                 <Button className={classes.button} variant="contained" color="primary" onClick={handleLoc}>
                     Register
                 </Button>
-                <Link to='/Login' style={{ textDecoration: 'none' }}>
-                    <Button className={classes.button} variant="outlined" color="primary" style={{ width: 354 }}>
+                    <Button className={classes.button} component={Link} to='/Login' variant="outlined" color="primary">
                         Login
                 </Button>
-                </Link>
             </Paper>
             <AlertDialog open={open} title={`Welcome! :)`} close={() => setOpen(false)} />
         </div>

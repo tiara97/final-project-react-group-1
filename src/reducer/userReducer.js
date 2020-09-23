@@ -30,9 +30,9 @@ const userReducer = (state = INITIAL_STATE, action) => {
         case LOG_IN_END:
             return { ...state, loadingLogin: false }
         case LOG_IN_ERROR:
-            return { ...state, errorLogin: action.payload }
+            return { ...state, errorLogin: action.payload, loadingLogin: false }
         case REGISTER_START:
-            return { ...state, loadingLogin: true }
+            return { ...state, loadingRegister: true }
         case REGISTER:
             return {
                 ...state,
@@ -44,9 +44,9 @@ const userReducer = (state = INITIAL_STATE, action) => {
                 token: action.payload.token
             }
         case REGISTER_END:
-            return { ...state, loadingLogin: false }
+            return { ...state, loadingRegister: false }
         case REGISTER_ERROR:
-            return { ...state, errorReg: action.payload.errors }
+            return { ...state, errorReg: action.payload.errors, loadingRegister: false }
         case LOG_OUT:
             return INITIAL_STATE
         default:
