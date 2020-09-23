@@ -1,4 +1,4 @@
-import {URL, GET_ORDER_ALL, GET_ORDER_ID } from "./helper"
+import {URL, GET_ORDER_ALL, GET_ORDER_ID, UPLOAD_PAYMENT_ERROR } from "./helper"
 import Axios from "axios"
 
 export const getAllOrder = () =>{
@@ -47,6 +47,22 @@ export const checkoutAction = (order_number) =>{
             dispatch({type: GET_ORDER_ID, payload: res.data})
         } catch (error) {
             console.log(error.response? error.response.data : error)
+        }
+    }
+}
+
+export const uploadPayment = (order_number,data) => {
+    return async (dispatch) => {
+        const option = {
+            header: {
+                'Content-type': 'multipart/form-data'
+            }
+        }
+        try {
+            const upload = await Axios.post(URL + `/transaction/payment/upload/${order_number}`, data, option)
+        } catch (error) {
+            console.log(error.response ? error.response.data : error)
+            dispatch({ type: UPLOAD_PAYMENT_ERROR, payload: error.response.data })
         }
     }
 }

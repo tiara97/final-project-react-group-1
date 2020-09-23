@@ -15,6 +15,8 @@ export const GET_CART = "GET_CART"
 export const GET_CART_START = "GET_CART_START"
 export const GET_CART_END = "GET_CART_END"
 export const CART_ERROR = "GET_CART_ERROR"
+export const ERROR_ONGKIR = "ERROR_ONGKIR"
+export const UPLOAD_PAYMENT_ERROR = "UPLOAD_PAYMENT_ERROR"
 
 // WAREHOUSE
 export const GET_WAREHOUSE = "GET_WAREHOUSE"

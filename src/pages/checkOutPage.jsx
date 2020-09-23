@@ -7,15 +7,11 @@ import {makeStyles,
         Button, 
         Typography, 
         Paper, 
-        Dialog, 
-        List, 
-        ListItem, 
-        ListItemText,
-        Radio, RadioGroup, FormControl, FormControlLabel, FormLabel} from "@material-ui/core"
+        Radio, RadioGroup, FormControl, FormControlLabel, FormLabel, Select, MenuItem} from "@material-ui/core"
 
 import DialogComp from "../component/dialog"        
 
-import {getAddress, updateWarehouseID, getWarehouse, checkoutAction} from "../action"
+import {getAddress, updateWarehouseID, getWarehouse, checkoutAction, getOngkir} from "../action"
 
 const useStyles = makeStyles((theme)=>({
     root:{
@@ -56,22 +52,21 @@ const useStyles = makeStyles((theme)=>({
 const CheckOut = ({location: {search}}) =>{
     const classes = useStyles()
     const dispatch = useDispatch()
-    const [addressID, setAddressID] = React.useState(0)
     const [wareHouseID, setWareHouseID] = React.useState(0)
     const [whName, setWhName] = React.useState("")
-    const [openDialog, setOpenDialog] = React.useState(false)
     const [radio, setRadio] = React.useState(true)
     const [pay, setPay] = React.useState(true)
     const [confirm, setConfirm] =React.useState(false)
     const [toConfirmPage, setToConfirmPage] = React.useState(false)
     
-    const{id, address, cart, total, warehouse} = useSelector((state)=>{
+    const{id, address, cart, total, warehouse, error} = useSelector((state)=>{
         return{
             address: state.addressReducer.userAddress,
             id: state.userReducer.id,
             cart: state.cartReducer.cart,
             total: state.cartReducer.total,
-            warehouse: state.warehouseReducer.warehouse
+            warehouse: state.warehouseReducer.warehouse,
+            error: state.cartReducer.errorOngkir
         }
     })
 
@@ -83,49 +78,42 @@ const CheckOut = ({location: {search}}) =>{
     },[])
 
     const renderAddress = ()=>{
-        return address.map((item,index)=>{
-            return(          
-                <Paper elevation={2} className={classes.paperlist}>
-                    <ListItem key={item.id} className={classes.list} onClick={()=> handleChoose(index)}>
-                        <ListItemText className={classes.listitem}>{item.type}</ListItemText>
-                        <ListItemText className={classes.listitem}>{item.address}</ListItemText>
-                        <ListItemText className={classes.listitem}>{item.city}</ListItemText>
-                        <ListItemText className={classes.listitem}>{item.province}</ListItemText>
-                        <ListItemText className={classes.listitem}>{item.postcode}</ListItemText>
-                    </ListItem>
-                </Paper>
-            )
-            
-        })
-    }
-    const handleChoose = (id)=>{
-        setOpenDialog(false)
-        setAddressID(id)
-    }
-    const handleClose = ()=>{
-        setOpenDialog(false)
+        return <Select
+                value={address[0]? address[0].id : 0}
+                onChange={handleSelect}>
+                {address.map((item)=>{
+                return(          
+                     <MenuItem key={item.id} value={item.id}>
+                         ({item.type}) {item.address} {item.city} {item.province} {item.postcode}
+                        </MenuItem>
+                )
+            })}
+        </Select>
     }
 
-    const proceed = ()=>{
+
+    const handleSelect = (event)=>{
         const body = {
             order_number: cart[0].order_number,
-            id: address[addressID].id
+            id: event.target.value,
+            user_id: id
         }
-        console.log("proceed id",address[addressID].id)
-        console.log("order number : ", cart[0].order_number)
+        console.log(body)
         dispatch(updateWarehouseID(body))
-        setWareHouseID(cart[0].warehouse_id)
-        // renderWarehouse()
+        dispatch(getOngkir(body))
+        renderWarehouse()
         setRadio(false)
+        setWareHouseID(body.id)
     }
+    // dikasih loading dan fungsi get ongkir dan warehouseID dipanggil di awal
 
     const renderWarehouse = ()=>{
         return warehouse.map((item)=>{
-           return item.id === wareHouseID? (setWhName(item.name)) : (null)
+           return item.id === cart[0].warehouse_id? (setWhName(item.name)) : (null)
         })
     }
  
-    const handleChange = () =>{
+    const handleChangeRadio = () =>{
         setPay(false)
     }
 
@@ -148,26 +136,18 @@ const CheckOut = ({location: {search}}) =>{
         <div className={classes.root}>
             <h1>Checkout Page</h1>
             <Paper className={classes.paper}>
-                <Typography>Alamat Pengiriman</Typography>
-                <Typography>{address.length !== 0? address[addressID].type : null}</Typography>
-                <Typography>{address.length !== 0? address[addressID].address : null}</Typography>
-                <Typography>{address.length !== 0? address[addressID].city : null}</Typography>
-                <Typography>{address.length !== 0? address[addressID].province : null}</Typography>
-                <Typography>{address.length !== 0? address[addressID].postcode : null}</Typography>
-                <div>
-                    <Button className={classes.button} variant="contained" onClick={()=> proceed()}>
-                        Lanjut
-                    </Button>
-                    <Button className={classes.button} variant="contained" onClick={()=> setOpenDialog(true)}>
-                        Pilih Alamat Lain
-                    </Button>
-                </div>
-            
-                {/* {whName !== ""?
-                <Typography>Barang dikirim dari gudang {whName}</Typography> : null} */}
+            <Typography>Alamat Pengiriman</Typography>
+
+                {renderAddress()}
+                
+                {error? <Typography>{error}</Typography> : <>
+                <Typography>Barang dikirim dari gudang {whName}</Typography> 
+                <Typography>Total ongkir adalah Rp. {cart[0]? cart[0].total_ongkir.toLocaleString(): null}</Typography>
+                <Typography>Total biaya yang harus dibayar adalah Rp. {cart[0]?(total + cart[0].total_ongkir).toLocaleString(): null}</Typography>
                 <Typography>Pilih Metode Pembayaran</Typography>
-            
-                <FormControl disabled={radio} component="fieldset" onChange={handleChange}>
+                </>}
+              
+                <FormControl disabled={radio} component="fieldset" onChange={handleChangeRadio}>
                     <RadioGroup aria-label="gender" name="gender1" >
                         <FormControlLabel value="female" control={<Radio />} label="Bank Transfer" />
                         <FormControlLabel value="male" control={<Radio />} label="Cicilan 0% " />
@@ -183,13 +163,6 @@ const CheckOut = ({location: {search}}) =>{
                     Lanjut Ke Pembayaran
                 </Button>
             </Paper>
-            <Dialog
-                open={openDialog}
-                onClose={handleClose}>
-                <List>
-                    {renderAddress()}
-                </List>
-            </Dialog>
             <DialogComp
                 open={confirm}
                 onClose={handleCloseConfirm}

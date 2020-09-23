@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux"
 
 // import component
 import Navbar from "./component/navbar"
+import Footer from "./component/footer"
 
 // import page
 import Home from "./pages/homepage"
@@ -40,6 +41,7 @@ const App = () =>{
             <Route path="/Verifikasi" component={Verification} />
             <Route path="/Akun" component={Account} />
             <Route path="/Konfirmasi" component={Confirmation}/>
+            <Footer/>
         </div>
     )
 }
