@@ -16,7 +16,8 @@ import {makeStyles,
         Typography} from "@material-ui/core"
 import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/AddCircleOutline';
-import RemoveCircleOutlineOutlinedIcon from '@material-ui/icons/RemoveCircleOutlineOutlined';import DoneIcon from '@material-ui/icons/Done';
+import RemoveCircleOutlineOutlinedIcon from '@material-ui/icons/RemoveCircleOutlineOutlined';
+import DoneIcon from '@material-ui/icons/Done';
 import ClearIcon from '@material-ui/icons/Clear';
 import DeleteIcon from '@material-ui/icons/Delete';
 
@@ -45,6 +46,7 @@ const useStyles = makeStyles((theme)=>({
 
 const Cart = () =>{
     const [editIndex, setEditIndex] = React.useState(null)
+    const [delIndex, setDelIndex] = React.useState(null)
     const [qtyEdit, setQtyEdit] = React.useState(0)
     const [openDel, setOpenDel] = React.useState(false)
     const classes = useStyles()
@@ -72,8 +74,13 @@ const Cart = () =>{
         setEditIndex(id)
         setQtyEdit(qty)
     }
-    const handleDelete = (id, user_id)=>{
-        dispatch(deleteCart(id, user_id))
+
+    const handleOpenDel = (index)=>{
+        setDelIndex(index)
+        setOpenDel(true)
+    }
+    const handleDelete = ()=>{
+        dispatch(deleteCart(delIndex, id))
         setOpenDel(false)
     }
     
@@ -148,26 +155,26 @@ const Cart = () =>{
                         <IconButton onClick={()=> handleEdit(item.id, item.qty)}>
                             <EditIcon/>
                         </IconButton>
-                        <IconButton onClick={()=> setOpenDel(true)}>
+                        <IconButton onClick={()=> handleOpenDel(item.id)}>
                             <DeleteIcon/>
                         </IconButton>
                     </TableCell>
+                    <DialogComp
+                        open={openDel}
+                        onClose={handleCloseDel}
+                        text={"Anda yakin akan menghapus produk ini?"}
+                        action={
+                            <>
+                            <Button
+                                onClick={handleDelete}>
+                                Ya
+                            </Button>
+                            <Button
+                                onClick={handleCloseDel}>
+                                Tidak
+                            </Button>
+                            </>}/>
                 </TableRow>
-                <DialogComp
-                    open={openDel}
-                    onClose={handleCloseDel}
-                    text={"Anda yakin akan menghapus produk ini?"}
-                    action={
-                        <>
-                        <Button
-                            onClick={()=>handleDelete(item.id, item.user_id)}>
-                            Ya
-                        </Button>
-                        <Button
-                            onClick={handleCloseDel}>
-                            Tidak
-                        </Button>
-                        </>}/>
              </>
             )
         })) : (

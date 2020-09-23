@@ -1,7 +1,9 @@
-import { GET_ORDER_ALL, GET_ORDER_USER } from "../action"
+import { GET_ORDER_ALL, GET_ORDER_ID, UPLOAD_PAYMENT_ERROR, GET_ORDER_USER } from "../action"
 
 const INITIAL_STATE = {
-    order: []
+    order: [],
+    total: 0,
+    errorUpload: null
 }
 
 const orderReducer = (state = INITIAL_STATE, action) => {
@@ -10,6 +12,10 @@ const orderReducer = (state = INITIAL_STATE, action) => {
             return { ...state, order: action.payload }
         case GET_ORDER_USER:
             return { ...state, order: action.payload }
+        case GET_ORDER_ID:
+            return { ...state, order: action.payload}
+        case UPLOAD_PAYMENT_ERROR:
+                return{...state, errorUpload: action.payload}
         default:
             return state
     }

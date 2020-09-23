@@ -1,4 +1,4 @@
-import {URL, GET_CART, GET_CART_END, GET_CART_START, CART_ERROR} from "./helper"
+import {URL, GET_CART, GET_CART_END, GET_CART_START, CART_ERROR, ERROR_ONGKIR, UPLOAD_PAYMENT_ERROR} from "./helper"
 import Axios from "axios"
 
 export const getCart = (id)=>{
@@ -78,3 +78,31 @@ export const addToCart = (body)=>{
         }
     }
 }
+
+export const updateWarehouseID = (body) =>{
+    return async(dispatch)=>{
+        try {
+            const res = await Axios.patch(URL + "/cart/warehouseID/" + body.id, (body))
+            // const res = await Axios.get(URL + "/cart/" + body.user_id)
+            // dispatch({type: GET_CART, payload: res.data})
+        } catch (error) {
+            console.log(error.response? error.response.data : error)
+        }
+    }
+}
+
+export const getOngkir = (body)=>{
+    return async(dispatch)=>{
+        try {
+          
+            const get = await Axios.patch(URL + "/cart/getOngkir", (body))
+            const res = await Axios.get(URL + "/cart/" + body.user_id)
+            console.log(res.data)
+            dispatch({type: GET_CART, payload: res.data})
+        } catch (error) {
+            console.log(error.response? error.response.data : error)
+            dispatch({type: ERROR_ONGKIR, payload: error.response.data})
+        }
+    }
+}
+
