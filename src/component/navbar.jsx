@@ -34,9 +34,6 @@ const Navbar = () =>{
     const classes = useStyles()
     const dispatch = useDispatch()
 
-    React.useEffect(() => {
-        dispatch(getProfile())
-    }, [])
     const { profile, username } = useSelector((state) => {
         return {
             profile: state.profileReducer.profile,
@@ -53,9 +50,6 @@ const Navbar = () =>{
     const handleLogout=()=>{
         dispatch(userLogout())
         setAnchorEl(null)
-    }
-    if(profile[0]) {
-        console.log(profile[0].image)
     }
     
     return(
@@ -74,8 +68,8 @@ const Navbar = () =>{
                         aria-controls="account-menu"
                         onClick={handleOpen}
                         color="inherit">
-                        {profile[0] ? (
-                            <Avatar src={URL_IMG + profile[0].image} />
+                        {profile.image ? (
+                            <Avatar src={URL_IMG + profile.image} />
                         ) : (
                             <Avatar>{username.charAt(0)}</Avatar>
                         )}
