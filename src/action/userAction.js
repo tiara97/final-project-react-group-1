@@ -75,3 +75,5 @@ export const userLogout = () => {
         }
     }
 }
+
+console.log(Boolean(""))

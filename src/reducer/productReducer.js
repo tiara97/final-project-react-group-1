@@ -1,22 +1,26 @@
 import {
   GET_PRODUCT,
-  GET_PRODUCT_ADMIN,
+  GET_PRODUCT_TABLE,
   GET_PRODUCT_CATEGORY,
   GET_PRODUCT_DETAILS,
   GET_PRODUCT_START,
   GET_PRODUCT_END,
   GET_PRODUCT_COLOR,
   GET_PRODUCT_WAREHOUSE,
+  ADD_PRODUCT_ERROR,
+  ADD_PRODUCT_START,
+  ADD_PRODUCT_END
 } from "../action";
 
 const INITIAL_STATE = {
   product: [],
   productDetails: [],
   procat: [],
-  productAdmin: [],
+  productByTable: [],
   productColor: [],
   productWarehouse: [],
   loading: false,
+  errorAdd: ''
 };
 
 const productReducer = (state = INITIAL_STATE, action) => {
@@ -27,8 +31,14 @@ const productReducer = (state = INITIAL_STATE, action) => {
       return { ...state, loading: true };
     case GET_PRODUCT_END:
       return { ...state, loading: false };
-    case GET_PRODUCT_ADMIN:
-      return { ...state, productAdmin: action.payload };
+    case ADD_PRODUCT_START:
+      return { ...state, errorAdd: '' };
+    case ADD_PRODUCT_END:
+      return { ...state, errorAdd: '' };
+    case ADD_PRODUCT_ERROR:
+      return { ...state, errorAdd: action.payload.errors };
+    case GET_PRODUCT_TABLE:
+      return { ...state, productByTable: action.payload };
     case GET_PRODUCT_COLOR:
       return { ...state, productColor: action.payload };
     case GET_PRODUCT_DETAILS:
