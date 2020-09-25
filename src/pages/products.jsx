@@ -1,17 +1,15 @@
 import React from 'react'
-import { makeStyles, createStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import {
     Card,
-    CardActions,
     CardContent,
     CardMedia,
     Button,
     Typography
 } from '@material-ui/core';
 import {useSelector, useDispatch} from 'react-redux'
-import {Link, Redirect} from 'react-router-dom';
-import {getProduct, getCarousel, getProductCategory} from '../action'
-import Carousel from '../component/carousel'
+import {Link} from 'react-router-dom';
+import {getProduct, getCarousel, getFilterProductCategory} from '../action'
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -58,23 +56,23 @@ const useStyles = makeStyles(() => ({
 export default function Products({location: {search}}) {
     const classes = useStyles()
 
-    const { product, carousel, procat } = useSelector((state) => {
+    const { product, carousel, filterProcat } = useSelector((state) => {
         return {
             product: state.productReducer.product,
             carousel: state.carouselReducer.carousel,
-            procat: state.productReducer.procat
+            filterProcat: state.productCategoryReducer.filterProcat
         }
     })
     const dispatch = useDispatch()
 
     React.useEffect(() => {
-        dispatch(getProduct())
+        dispatch(getProduct('product_details'))
         dispatch(getCarousel())
-        dispatch(getProductCategory(search ? search.slice(10) : null))
+        dispatch(getFilterProductCategory(search ? search.slice(10) : null))
     }, [])
 
     const renderCard = () => {
-        return (search ? procat : product).map(item =>{
+        return (search ? filterProcat : product).map(item =>{
             return (
                 <Link to={{pathname:'/Produk-Detail', search: `id=${item.id}`, state: {id:`${item.id}`}}} key={item.id} className={classes.link}>
                     <Button>
