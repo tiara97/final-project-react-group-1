@@ -3,18 +3,21 @@ import {
   GET_PRODUCT,
   GET_PRODUCT_DETAILS,
   GET_PRODUCT_CATEGORY,
-  GET_PRODUCT_ADMIN,
+  GET_PRODUCT_TABLE,
   GET_PRODUCT_START,
   GET_PRODUCT_END,
   GET_PRODUCT_COLOR,
-  GET_PRODUCT_WAREHOUSE
+  GET_PRODUCT_WAREHOUSE, 
+  ADD_PRODUCT_ERROR, 
+  ADD_PRODUCT_START,
+  ADD_PRODUCT_END
 } from "./helper";
 import Axios from "axios";
 
-export const getProduct = () => {
+export const getProduct = (type) => {
   return async (dispatch) => {
     try {
-      const res = await Axios.get(URL + "/products");
+      const res = await Axios.get(URL + `/products/get/${type}`);
       dispatch({ type: GET_PRODUCT, payload: res.data });
     } catch (error) {
       console.log(error.response ? error.response.data : error);
@@ -25,7 +28,7 @@ export const getProduct = () => {
 export const getProductColor = () => {
   return async (dispatch) => {
     try {
-      const res = await Axios.get(URL + `/products/admin/product_color`);
+      const res = await Axios.get(URL + `/products/table/product_color`);
       dispatch({ type: GET_PRODUCT_COLOR, payload: res.data });
     } catch (error) {
       console.log(error.response ? error.response.data : error);
@@ -33,11 +36,11 @@ export const getProductColor = () => {
   };
 };
 
-export const getProductAdmin = (type) => {
+export const getProductByTable = (type) => {
   return async (dispatch) => {
     try {
-      const res = await Axios.get(URL + `/products/admin/${type}`);
-      dispatch({ type: GET_PRODUCT_ADMIN, payload: res.data });
+      const res = await Axios.get(URL + `/products/table/${type}`);
+      dispatch({ type: GET_PRODUCT_TABLE, payload: res.data });
     } catch (error) {
       console.log(error.response ? error.response.data : error);
     }
@@ -49,17 +52,6 @@ export const getProductDetails = (id) => {
     try {
       const res = await Axios.get(URL + `/products/details/${id}`);
       dispatch({ type: GET_PRODUCT_DETAILS, payload: res.data });
-    } catch (error) {
-      console.log(error.response ? error.response.data : error);
-    }
-  };
-};
-
-export const getProductCategory = (category) => {
-  return async (dispatch) => {
-    try {
-      const res = await Axios.get(URL + `/products/category/${category}`);
-      dispatch({ type: GET_PRODUCT_CATEGORY, payload: res.data });
     } catch (error) {
       console.log(error.response ? error.response.data : error);
     }
@@ -82,15 +74,57 @@ export const getProductWarehouse = (warehouse_id, admin_id) => {
 export const addProduct = (body) => {
   return async (dispatch) => {
     try {
+      dispatch({type: ADD_PRODUCT_START})
+
+      await Axios.post(URL + "/products/add", body)
+      const res = await Axios.get(URL + "/products/get/only_product")
+      dispatch({type: GET_PRODUCT, payload: res.data})
+
+      dispatch({type: ADD_PRODUCT_END})
+    } catch (error) {
+      dispatch({type: ADD_PRODUCT_ERROR, payload: error.response.data})
+      console.log(error.response ? error.response.data : error);
+    }
+  };
+};
+
+export const addProductImage = (body) => {
+  return async (dispatch) => {
+    try {
       dispatch({type: GET_PRODUCT_START})
 
-      const add = await Axios.post(URL + "/products/add", (body))
-      const res = await Axios.get(URL + "/products/" + body.user_id)
-      dispatch({type: GET_PRODUCT, payload: res.data})
+      await Axios.post(URL + "/products/add/image", body)
+
+      // get product
+      const res1 = await Axios.get(URL + `/products/get/product_details`);
+      dispatch({ type: GET_PRODUCT, payload: res1.data });
+      const res2 = await Axios.get(URL + `/products/table/product_image`);
+      dispatch({ type: GET_PRODUCT_TABLE, payload: res2.data });
 
       dispatch({type: GET_PRODUCT_END})
     } catch (error) {
       console.log(error.response ? error.response.data : error);
+    }
+  };
+};
+
+export const addProductStock = (body) => {
+  return async (dispatch) => {
+    try {
+      dispatch({type: GET_PRODUCT_START})
+
+      await Axios.post(URL + "/products/add/stock", body)
+
+      // get product
+      const res1 = await Axios.get(URL + `/products/get/product_details`);
+      dispatch({ type: GET_PRODUCT, payload: res1.data });
+      const res2 = await Axios.get(URL + `/products/table/product_stock`);
+      dispatch({ type: GET_PRODUCT_TABLE, payload: res2.data });
+
+      dispatch({type: GET_PRODUCT_END})
+    } catch (error) {
+      console.log(error.response ? error.response.data : error);
+      dispatch({type: ADD_PRODUCT_ERROR, payload: error.response.data})
     }
   };
 };
@@ -103,8 +137,8 @@ export const editProduct = (product_id, body) => {
       await Axios.patch(URL + `/products/edit/${product_id}`, body);
 
       // get product
-      const res = await Axios.get(URL + `/products/admin/products`);
-      dispatch({ type: GET_PRODUCT_ADMIN, payload: res.data });
+      const res = await Axios.get(URL + `/products/only_product`);
+      dispatch({ type: GET_PRODUCT, payload: res.data });
 
       dispatch({ type: GET_PRODUCT_END });
     } catch (error) {
@@ -121,8 +155,8 @@ export const editProductImage = (product_id, body) => {
       await Axios.patch(URL + `/products/edit/image/${product_id}`, body);
 
       // get product
-      const res = await Axios.get(URL + `/products/admin/product_image`);
-      dispatch({ type: GET_PRODUCT_ADMIN, payload: res.data });
+      const res = await Axios.get(URL + `/products/table/product_image`);
+      dispatch({ type: GET_PRODUCT_TABLE, payload: res.data });
 
       dispatch({ type: GET_PRODUCT_END });
     } catch (error) {
@@ -139,8 +173,10 @@ export const editProductStock = (id, body) => {
       await Axios.patch(URL + `/products/edit/stock/${id}`, body);
 
       // get product
-      const res = await Axios.get(URL + `/products/admin/product_stock`);
-      dispatch({ type: GET_PRODUCT_ADMIN, payload: res.data });
+      const res1 = await Axios.get(URL + `/products/get/product_details`);
+      dispatch({ type: GET_PRODUCT, payload: res1.data });
+      const res2 = await Axios.get(URL + `/products/table/product_stock`);
+      dispatch({ type: GET_PRODUCT_TABLE, payload: res2.data });
 
       dispatch({ type: GET_PRODUCT_END });
     } catch (error) {
@@ -158,10 +194,12 @@ export const deleteProduct = (id) => {
             await Axios.delete(URL + `/products/delete/${id}`);
       
             // get product
-            const res1 = await Axios.get(URL + `/products`);
+            const res1 = await Axios.get(URL + `/products/get/product_details`);
             dispatch({ type: GET_PRODUCT, payload: res1.data });
-            const res2 = await Axios.get(URL + `/products/admin/products`);
-            dispatch({ type: GET_PRODUCT_ADMIN, payload: res2.data });
+            const res2 = await Axios.get(URL + `/products/table/product_image`);
+            dispatch({ type: GET_PRODUCT_TABLE, payload: res2.data });
+            const res3 = await Axios.get(URL + `/products/table/product_stock`);
+            dispatch({ type: GET_PRODUCT_TABLE, payload: res3.data });
       
             dispatch({ type: GET_PRODUCT_END });
         } catch (error) {
@@ -179,10 +217,10 @@ export const deleteProductImage = (id) => {
             await Axios.delete(URL + `/products/delete/image/${id}`);
       
             // get product
-            const res1 = await Axios.get(URL + `/products`);
-            dispatch({ type: GET_PRODUCT, payload: res1.data });
-            const res2 = await Axios.get(URL + `/products/admin/product_image`);
-            dispatch({ type: GET_PRODUCT_ADMIN, payload: res2.data });
+            // const res1 = await Axios.get(URL + `/products`);
+            // dispatch({ type: GET_PRODUCT, payload: res1.data });
+            const res2 = await Axios.get(URL + `/products/table/product_image`);
+            dispatch({ type: GET_PRODUCT_TABLE, payload: res2.data });
       
             dispatch({ type: GET_PRODUCT_END });
         } catch (error) {
@@ -200,10 +238,10 @@ export const deleteProductStock = (id) => {
             await Axios.delete(URL + `/products/delete/stock/${id}`);
       
             // get product
-            const res1 = await Axios.get(URL + `/products`);
-            dispatch({ type: GET_PRODUCT, payload: res1.data });
-            const res2 = await Axios.get(URL + `/products/admin/product_stock`);
-            dispatch({ type: GET_PRODUCT_ADMIN, payload: res2.data });
+            // const res1 = await Axios.get(URL + `/products`);
+            // dispatch({ type: GET_PRODUCT, payload: res1.data });
+            const res2 = await Axios.get(URL + `/products/table/product_stock`);
+            dispatch({ type: GET_PRODUCT_TABLE, payload: res2.data });
       
             dispatch({ type: GET_PRODUCT_END });
         } catch (error) {
@@ -221,10 +259,8 @@ export const transferStock = (body) => {
             await Axios.patch(URL + `/products/transfer-stock`, body);
       
             // get product
-            const res1 = await Axios.get(URL + `/products`);
-            dispatch({ type: GET_PRODUCT, payload: res1.data });
-            const res2 = await Axios.get(URL + `/products/admin/product_stock`);
-            dispatch({ type: GET_PRODUCT_ADMIN, payload: res2.data });
+            const res = await Axios.get(URL + `/products/table/product_stock`);
+            dispatch({ type: GET_PRODUCT_TABLE, payload: res.data });
       
             dispatch({ type: GET_PRODUCT_END });
         } catch (error) {
