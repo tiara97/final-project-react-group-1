@@ -1,4 +1,19 @@
-import {URL, LOG_IN, LOG_IN_ERROR, LOG_IN_START, LOG_IN_END, REGISTER_START, REGISTER_END, REGISTER, REGISTER_ERROR, VERIFY, VERIFY_ERROR, LOG_OUT, GET_PROFILE} from "./helper"
+import {URL, 
+        LOG_IN, 
+        LOG_IN_ERROR, 
+        LOG_IN_START, 
+        LOG_IN_END, 
+        REGISTER_START, 
+        REGISTER_END, 
+        REGISTER, 
+        REGISTER_ERROR, 
+        VERIFY, 
+        VERIFY_ERROR, 
+        LOG_OUT, 
+        GET_PROFILE,
+        GET_USER,
+        GET_USER_START,
+        GET_USER_END} from "./helper"
 import Axios from "axios"
 
 export const userLogin = (body) =>{
@@ -76,4 +91,80 @@ export const userLogout = () => {
     }
 }
 
-console.log(Boolean(""))
+export const getUserAdmin = () => {
+    return async(dispatch) =>{
+        try {
+            dispatch({type: GET_USER_START})
+
+            const res = await Axios.get(URL + "/users/getAdmin")
+            console.log(res.data)
+            dispatch({type: GET_USER, payload: res.data})
+
+            dispatch({type: GET_USER_END})
+        } catch (error) {
+            console.log(error.response? error.response.data : error)
+        }
+    }
+}
+export const getUsersByQuery = (body) => {
+    return async(dispatch) =>{
+        try {
+            dispatch({type: GET_USER_START})
+
+            const res = await Axios.get(URL + "/users/getByQuery?" + body)
+            console.log(res.data)
+            dispatch({type: GET_USER, payload: res.data})
+
+            dispatch({type: GET_USER_END})
+        } catch (error) {
+            console.log(error.response? error.response.data : error)
+        }
+    }
+}
+export const getUserByRoleAdmin = (id) => {
+    return async(dispatch) =>{
+        try {
+            dispatch({type: GET_USER_START})
+
+            const res = await Axios.get(URL + "/users/getByRoleAdmin/"+id)
+            console.log(res.data)
+            dispatch({type: GET_USER, payload: res.data})
+
+            dispatch({type: GET_USER_END})
+        } catch (error) {
+            console.log(error.response? error.response.data : error)
+        }
+    }
+}
+export const getUserByStatusAdmin = (id) => {
+    return async(dispatch) =>{
+        try {
+            dispatch({type: GET_USER_START})
+
+            const res = await Axios.get(URL + "/users/getByStatusAdmin/"+id)
+            console.log(res.data)
+            dispatch({type: GET_USER, payload: res.data})
+
+            dispatch({type: GET_USER_END})
+        } catch (error) {
+            console.log(error.response? error.response.data : error)
+        }
+    }
+}
+
+export const editUser = (body,id) =>{
+    return async(dispatch)=>{
+        try {
+            dispatch({type: GET_USER_START})
+
+            await Axios.patch(URL + "/users/edit/" + id, body)
+            const res = await Axios.get(URL + "/users/getAdmin")
+            console.log(res.data)
+            dispatch({type: GET_USER, payload: res.data})
+
+            dispatch({type: GET_USER_END})
+        } catch (error) {
+            console.log(error.response? error.response.data : error)
+        }
+    }
+}

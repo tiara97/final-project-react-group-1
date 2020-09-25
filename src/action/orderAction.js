@@ -1,12 +1,15 @@
-import {URL, GET_ORDER_ALL, GET_ORDER_ID, UPLOAD_PAYMENT_ERROR } from "./helper"
+import {URL, GET_ORDER, GET_ORDER_ID, UPLOAD_PAYMENT_ERROR, GET_ORDER_START, GET_ORDER_END } from "./helper"
 import Axios from "axios"
 
 export const getAllOrder = () =>{
     return async(dispatch)=>{
         try {
+            dispatch({type: GET_ORDER_START})
             const res = await Axios.get(URL + `/orders/get`)
             console.log(res.data)
-            dispatch({type: GET_ORDER_ALL, payload: res.data})
+            dispatch({type: GET_ORDER, payload: res.data})
+
+            dispatch({type: GET_ORDER_END})
         } catch (error) {
             console.log(error.response? error.response.data : error)
         }
@@ -15,10 +18,13 @@ export const getAllOrder = () =>{
 export const getUserOrder = () =>{
     return async(dispatch)=>{
         try {
+            dispatch({type: GET_ORDER_START})
             let id = localStorage.getItem('id')
             const res = await Axios.get(URL + `/orders/getByUserID/${id}`)
             console.log(res.data)
-            dispatch({type: GET_ORDER_ID, payload: res.data})
+            dispatch({type: GET_ORDER, payload: res.data})
+
+            dispatch({type: GET_ORDER_END})
         } catch (error) {
             console.log(error.response? error.response.data : error)
         }
@@ -28,9 +34,12 @@ export const getUserOrder = () =>{
 export const getOrderByNumber = (order_number) =>{
     return async(dispatch)=>{
         try {
+            dispatch({type: GET_ORDER_START})
             const res = await Axios.get(URL + "/orders/getByOrderNumber/" + order_number)
             console.log(res.data)
-            dispatch({type: GET_ORDER_ID, payload: res.data})
+            dispatch({type: GET_ORDER, payload: res.data})
+
+            dispatch({type: GET_ORDER_END})
         } catch (error) {
             console.log(error.response? error.response.data : error)
         }
@@ -40,11 +49,14 @@ export const getOrderByNumber = (order_number) =>{
 export const checkoutAction = (order_number) =>{
     return async(dispatch)=>{
         try {
+            dispatch({type: GET_ORDER_START})
             const checkout = await Axios.patch(URL + "/transaction/checkout/" + order_number)
             let id = localStorage.getItem('id')
             const res = await Axios.get(URL + `/orders/getByUserID/${id}`)
             console.log(res.data)
-            dispatch({type: GET_ORDER_ID, payload: res.data})
+            dispatch({type: GET_ORDER, payload: res.data})
+
+            dispatch({type: GET_ORDER_END})
         } catch (error) {
             console.log(error.response? error.response.data : error)
         }
@@ -63,6 +75,24 @@ export const uploadPayment = (order_number,data) => {
         } catch (error) {
             console.log(error.response ? error.response.data : error)
             dispatch({ type: UPLOAD_PAYMENT_ERROR, payload: error.response.data })
+        }
+    }
+}
+
+export const confirmDone = (order_number) =>{
+    return async(dispatch)=>{
+        try {
+            dispatch({type: GET_ORDER_START})
+            const confirm = await Axios.patch(URL + `/transaction/done/${order_number}`)
+            let id = localStorage.getItem('id')
+            const res = await Axios.get(URL + `/orders/getByUserID/${id}`)
+            console.log(res.data)
+            dispatch({type: GET_ORDER, payload: res.data})
+
+            dispatch({type: GET_ORDER_END})
+        } catch (error) {
+            console.log(error.response ? error.response.data : error)
+                dispatch({ type: UPLOAD_PAYMENT_ERROR, payload: error.response.data })
         }
     }
 }
