@@ -22,7 +22,7 @@ import {
   CircularProgress,
   Select,
   MenuItem,
-  FormControl
+  FormControl,
 } from "@material-ui/core";
 import AddIcon from '@material-ui/icons/AddCircleOutline';
 import RemoveCircleOutlineOutlinedIcon from '@material-ui/icons/RemoveCircleOutlineOutlined';
@@ -170,26 +170,26 @@ const TableProducts = ({ productAdmin }) => {
           </TableCell>
         </TableRow>
       ) : (
-        <TableRow key={item.id}>
-          <TableCell>{item.id}</TableCell>
-          <TableCell>{item.name}</TableCell>
-          <TableCell>{item.price}</TableCell>
-          <TableCell>{item.desc}</TableCell>
-          <TableCell>{item.height}</TableCell>
-          <TableCell>{item.width}</TableCell>
-          <TableCell>{item.length}</TableCell>
-          <TableCell>{item.weight}</TableCell>
-          <TableCell>{item.material}</TableCell>
-          <TableCell>
-            <IconButton onClick={() => handleEdit(item.id)}>
-              <EditIcon />
-            </IconButton>
-            <IconButton onClick={() => handleDelete(item.id)}>
-              <DeleteIcon />
-            </IconButton>
-          </TableCell>
-        </TableRow>
-      );
+          <TableRow key={item.id}>
+            <TableCell>{item.id}</TableCell>
+            <TableCell>{item.name}</TableCell>
+            <TableCell>{item.price}</TableCell>
+            <TableCell>{item.desc}</TableCell>
+            <TableCell>{item.height}</TableCell>
+            <TableCell>{item.width}</TableCell>
+            <TableCell>{item.length}</TableCell>
+            <TableCell>{item.weight}</TableCell>
+            <TableCell>{item.material}</TableCell>
+            <TableCell>
+              <IconButton onClick={() => handleEdit(item.id)}>
+                <EditIcon />
+              </IconButton>
+              <IconButton onClick={() => handleDelete(item.id)}>
+                <DeleteIcon />
+              </IconButton>
+            </TableCell>
+          </TableRow>
+        );
     });
   };
 
@@ -228,9 +228,9 @@ const TableProducts = ({ productAdmin }) => {
         <CircularProgress />
       </Backdrop>
       <Button
-        variant = "contained"
-        startIcon={<AddIcon/>}
-        onClick = {() => setAdd({open: true})}
+        variant="contained"
+        startIcon={<AddIcon />}
+        onClick={() => setAdd({ open: true })}
       >
         Add Products
       </Button>
@@ -325,30 +325,30 @@ const TableProductImage = ({ product, productAdmin }) => {
         <TableBody>
           {edit.id !== null
             ? data.map((item, index) => {
-                return item.id === editDialog ? (
-                  <TableRow key={index}>
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell>
-                      <img src={item.image} width="100px" alt="product-image" />
-                    </TableCell>
-                    <TableCell>{item.name}</TableCell>
-                    <TableCell component="th" scope="row">
-                      <TextField
-                        value={image}
-                        onChange={(event) => setImage(event.target.value)}
-                        variant="outlined"
-                      />
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      <IconButton onClick={() => handleDone(item.id)}>
-                        <DoneIcon />
-                      </IconButton>
-                      <IconButton onClick={() => handleCancel()}>
-                        <ClearIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ) : (
+              return item.id === editDialog ? (
+                <TableRow key={index}>
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>
+                    <img src={item.image} width="100px" alt="product-image" />
+                  </TableCell>
+                  <TableCell>{item.name}</TableCell>
+                  <TableCell component="th" scope="row">
+                    <TextField
+                      value={image}
+                      onChange={(event) => setImage(event.target.value)}
+                      variant="outlined"
+                    />
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    <IconButton onClick={() => handleDone(item.id)}>
+                      <DoneIcon />
+                    </IconButton>
+                    <IconButton onClick={() => handleCancel()}>
+                      <ClearIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ) : (
                   <TableRow key={index}>
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>
@@ -368,7 +368,7 @@ const TableProductImage = ({ product, productAdmin }) => {
                     </TableCell>
                   </TableRow>
                 );
-              })
+            })
             : null}
         </TableBody>
       </Table>
@@ -403,9 +403,9 @@ const TableProductImage = ({ product, productAdmin }) => {
   return (
     <div>
       <Button
-        variant = "contained"
-        startIcon={<AddIcon/>}
-        onClick = {() => setAdd({open: true})}
+        variant="contained"
+        startIcon={<AddIcon />}
+        onClick={() => setAdd({ open: true })}
       >
         Add Product Image
       </Button>
@@ -455,7 +455,7 @@ const TableProductImage = ({ product, productAdmin }) => {
   );
 };
 
-const TableProductStock = ({ productAdmin, productColor, warehouse , classes }) => {
+const TableProductStock = ({ productAdmin, productColor, warehouse, classes }) => {
   const [edit, setEdit] = React.useState({
     id: null,
     open: false,
@@ -518,7 +518,7 @@ const TableProductStock = ({ productAdmin, productColor, warehouse , classes }) 
             <Button
               variant="outlined"
               color="primary"
-              disabled = {filterWarehouse !== 'All'}
+              disabled={filterWarehouse !== 'All'}
               startIcon={<ErrorIcon />}
               onClick={() => setEdit({ id: item.id, open: true })}
             >
@@ -527,7 +527,7 @@ const TableProductStock = ({ productAdmin, productColor, warehouse , classes }) 
             <Button
               variant="outlined"
               color="primary"
-              disabled = {filterWarehouse !== 'All'}
+              disabled={filterWarehouse !== 'All'}
               startIcon={<SendIcon />}
               onClick={() => toTransferStock(item.id)}
             >
@@ -557,100 +557,100 @@ const TableProductStock = ({ productAdmin, productColor, warehouse , classes }) 
         <TableBody>
           {edit.id !== null
             ? data.map((item, index) => {
-                return item.id === editDialog ? (
-                  <TableRow key={index}>
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell component="th" scope="row">
-                        <Select
-                          variant="outlined"
-                          value={name}
-                          onChange={(event) => setName(event.target.value)}
-                        >
-                          {product.map(item => {
-                            return (
-                              <MenuItem key = {item.id} value={item.id}>{item.name}</MenuItem>
-                            )
-                          })}
-                        </Select>
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                        <Select
-                          variant="outlined"
-                          value={color}
-                          onChange={(event) => setColor(event.target.value)}
-                        >
-                          {productColor.map(item => {
-                            return (
-                              <MenuItem key = {item.id} value={item.id}>{item.color}</MenuItem>
-                            )
-                          })}
-                        </Select>
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                        <Select
-                          variant="outlined"
-                          value={warehouseId}
-                          onChange={(event) => setWarehouseId(event.target.value)}
-                        >
-                          {warehouse.map(item => {
-                            return (
-                              <MenuItem key = {item.id} value={item.id}>{item.name}</MenuItem>
-                            )
-                          })}
-                        </Select>
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      <IconButton
-                        disabled = {stockAvailable === 1}
-                        onClick = {() => setStockAvailable((prev) => parseInt(prev - 1))}
-                      >
-                        <RemoveCircleOutlineOutlinedIcon />
-                      </IconButton>
-                      <TextField
-                        value={stockAvailable}
-                        onChange={(event) =>
-                          setStockAvailable(event.target.value)
-                        }
-                        variant="outlined"
-                        className={classes.inputStock}
-                      />
-                      <IconButton
-                        onClick = {() => setStockAvailable((prev) => parseInt(prev + 1))}
-                      >
-                        <AddIcon/>
-                      </IconButton>
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      <IconButton
-                        disabled = {stockOrdered <= 1}
-                        onClick = {() => setStockOrdered((prev) => parseInt(prev - 1))}
-                      >
-                        <RemoveCircleOutlineOutlinedIcon />
-                      </IconButton>
-                      <TextField
-                        value={stockOrdered}
-                        onChange={(event) =>
-                          setStockOrdered(event.target.value)
-                        }
-                        variant="outlined"
-                        className={classes.inputStock}
-                      />
-                      <IconButton
-                        onClick = {() => setStockOrdered((prev) => parseInt(prev + 1))}
-                      >
-                        <AddIcon/>
-                      </IconButton>
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      <IconButton onClick={() => handleDone(item.id)}>
-                        <DoneIcon />
-                      </IconButton>
-                      <IconButton onClick={() => handleCancel()}>
-                        <ClearIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ) : (
+              return item.id === editDialog ? (
+                <TableRow key={index}>
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell component="th" scope="row">
+                    <Select
+                      variant="outlined"
+                      value={name}
+                      onChange={(event) => setName(event.target.value)}
+                    >
+                      {product.map(item => {
+                        return (
+                          <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>
+                        )
+                      })}
+                    </Select>
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    <Select
+                      variant="outlined"
+                      value={color}
+                      onChange={(event) => setColor(event.target.value)}
+                    >
+                      {productColor.map(item => {
+                        return (
+                          <MenuItem key={item.id} value={item.id}>{item.color}</MenuItem>
+                        )
+                      })}
+                    </Select>
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    <Select
+                      variant="outlined"
+                      value={warehouseId}
+                      onChange={(event) => setWarehouseId(event.target.value)}
+                    >
+                      {warehouse.map(item => {
+                        return (
+                          <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>
+                        )
+                      })}
+                    </Select>
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    <IconButton
+                      disabled={stockAvailable === 1}
+                      onClick={() => setStockAvailable((prev) => parseInt(prev - 1))}
+                    >
+                      <RemoveCircleOutlineOutlinedIcon />
+                    </IconButton>
+                    <TextField
+                      value={stockAvailable}
+                      onChange={(event) =>
+                        setStockAvailable(event.target.value)
+                      }
+                      variant="outlined"
+                      className={classes.inputStock}
+                    />
+                    <IconButton
+                      onClick={() => setStockAvailable((prev) => parseInt(prev + 1))}
+                    >
+                      <AddIcon />
+                    </IconButton>
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    <IconButton
+                      disabled={stockOrdered <= 1}
+                      onClick={() => setStockOrdered((prev) => parseInt(prev - 1))}
+                    >
+                      <RemoveCircleOutlineOutlinedIcon />
+                    </IconButton>
+                    <TextField
+                      value={stockOrdered}
+                      onChange={(event) =>
+                        setStockOrdered(event.target.value)
+                      }
+                      variant="outlined"
+                      className={classes.inputStock}
+                    />
+                    <IconButton
+                      onClick={() => setStockOrdered((prev) => parseInt(prev + 1))}
+                    >
+                      <AddIcon />
+                    </IconButton>
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    <IconButton onClick={() => handleDone(item.id)}>
+                      <DoneIcon />
+                    </IconButton>
+                    <IconButton onClick={() => handleCancel()}>
+                      <ClearIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ) : (
                   <TableRow key={index}>
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>{item.name}</TableCell>
@@ -668,7 +668,7 @@ const TableProductStock = ({ productAdmin, productColor, warehouse , classes }) 
                     </TableCell>
                   </TableRow>
                 );
-              })
+            })
             : null}
         </TableBody>
       </Table>
@@ -681,16 +681,16 @@ const TableProductStock = ({ productAdmin, productColor, warehouse , classes }) 
     const uniqueColor = data ? data.map(item => item.color_id).filter((x, i, a) => a.indexOf(x) == i) : null
     console.log('data: ', data)
     console.log('uniqueColor: ', uniqueColor)
-    setNameTf(id ? product[id-1].id : '')
+    setNameTf(id ? product[id - 1].id : '')
     // setColorTf((uniqueColor ? uniqueColor : []).map(item => productColor[item]))
-    
+
   }
   const handleEdit = (id) => {
-    setName(productAdmin[id-1].product_id)
-    setColor(productAdmin[id-1].color_id)
-    setWarehouseId(productAdmin[id-1].warehouse_id)
-    setStockAvailable(productAdmin[id-1].stock_available)
-    setStockOrdered(productAdmin[id-1].stock_ordered)
+    setName(productAdmin[id - 1].product_id)
+    setColor(productAdmin[id - 1].color_id)
+    setWarehouseId(productAdmin[id - 1].warehouse_id)
+    setStockAvailable(productAdmin[id - 1].stock_available)
+    setStockOrdered(productAdmin[id - 1].stock_ordered)
     setEditDialog(id);
   };
 
@@ -710,7 +710,7 @@ const TableProductStock = ({ productAdmin, productColor, warehouse , classes }) 
   const handleCancel = () => {
     setEditDialog(null);
   };
-  
+
   const renderTransfer = () => {
     return (
       <div>
@@ -732,7 +732,7 @@ const TableProductStock = ({ productAdmin, productColor, warehouse , classes }) 
                   value={nameTf}
                   onChange={(event) => setNameTf(event.target.value)}
                 >
-                  <MenuItem value={tfStock.id ? product[tfStock.id-1].id : null}>{tfStock.id ? product[tfStock.id-1].name : null}</MenuItem>
+                  <MenuItem value={tfStock.id ? product[tfStock.id - 1].id : null}>{tfStock.id ? product[tfStock.id - 1].name : null}</MenuItem>
                 </Select>
               </TableCell>
               <TableCell>
@@ -743,20 +743,20 @@ const TableProductStock = ({ productAdmin, productColor, warehouse , classes }) 
                 >
                   {productColor.map(item => {
                     return (
-                      <MenuItem key = {item.id} value={item.id}>{item.color}</MenuItem>
+                      <MenuItem key={item.id} value={item.id}>{item.color}</MenuItem>
                     )
                   })}
                 </Select>
               </TableCell>
               <TableCell>
-              <TextField
-                value={quantityTf}
-                onChange={(event) =>
-                  setQuantityTf(event.target.value)
-                }
-                variant="outlined"
-                className={classes.inputStock}
-              />
+                <TextField
+                  value={quantityTf}
+                  onChange={(event) =>
+                    setQuantityTf(event.target.value)
+                  }
+                  variant="outlined"
+                  className={classes.inputStock}
+                />
               </TableCell>
               <TableCell>
                 <Select
@@ -766,7 +766,7 @@ const TableProductStock = ({ productAdmin, productColor, warehouse , classes }) 
                 >
                   {warehouse.map(item => {
                     return (
-                      <MenuItem key = {item.id} value={item.id}>{item.name}</MenuItem>
+                      <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>
                     )
                   })}
                 </Select>
@@ -779,7 +779,7 @@ const TableProductStock = ({ productAdmin, productColor, warehouse , classes }) 
                 >
                   {warehouse.map(item => {
                     return (
-                      <MenuItem key = {item.id} value={item.id}>{item.name}</MenuItem>
+                      <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>
                     )
                   })}
                 </Select>
@@ -789,7 +789,7 @@ const TableProductStock = ({ productAdmin, productColor, warehouse , classes }) 
         </Table>
         <Button
           variant="outlined"
-          onClick = {() => handleTransfer()}
+          onClick={() => handleTransfer()}
         >
           Submit
         </Button>
@@ -806,12 +806,12 @@ const TableProductStock = ({ productAdmin, productColor, warehouse , classes }) 
 
   return (
     <div>
-      <FormControl style = {{display: 'flex', flexDirection: 'row'}}>
+      <FormControl style={{ display: 'flex', flexDirection: 'row' }}>
         <Select
           variant="outlined"
           value={filterWarehouse}
           onChange={(event) => {
-            if(event.target.value !== 'All') {
+            if (event.target.value !== 'All') {
               dispatch(getProductWarehouse(event.target.value, event.target.value))
               setFilterWarehouse(event.target.value)
             } else {
@@ -823,14 +823,14 @@ const TableProductStock = ({ productAdmin, productColor, warehouse , classes }) 
           <MenuItem value="All">All Warehouse</MenuItem>
           {warehouse.map(item => {
             return (
-              <MenuItem key = {item.id} value={item.id}>{item.name}</MenuItem>
+              <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>
             )
           })}
         </Select>
         <Button
-          variant = "contained"
-          startIcon={<AddIcon/>}
-          onClick = {() => setAdd({open: true})}
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={() => setAdd({ open: true })}
         >
           Add Products
         </Button>
@@ -908,7 +908,7 @@ const useStyles = makeStyles((theme) => ({
   },
   inputStock: {
     width: '20%'
-  }
+  },
 }));
 
 export default function ProductAdmin() {
@@ -932,7 +932,7 @@ export default function ProductAdmin() {
         product: state.productReducer.product,
         productAdmin: state.productReducer.productAdmin,
         productColor: state.productReducer.productColor,
-        warehouse: state.warehouseReducer.warehouse,
+        warehouse: state.warehouseReducer.warehouse
       };
     }
   );

@@ -82,21 +82,21 @@ const Register = () => {
         const body = { username, password, confPassword, email, user_fullname, phone, address, city, province, postcode, latitude: lat, longitude: long }
         console.log(body)
         dispatch(userRegister(body))
+        // setOpen(true)
         // setUsername('')
         // setEmail('')
         // setPassword('')
         // setConfpassword('')
         // ini masih masalah, kapan buka modalnya ???
-        // if (errorReg !== '') {
-        //     setOpen(true)
-        // }
+        if (errorReg !== '') {
+            setOpen(true)
+        }
     }
 
     if (id) {
-        // setOpen(true)
-        // if(open === false) {
+        if(open === false) {
             return <Redirect to='/' />
-        // }
+        }
     }
     return (
         <div className={classes.root}>
@@ -104,12 +104,12 @@ const Register = () => {
                 <CircularProgress/>
             </Backdrop>
             <Paper className={classes.container} elevation={5}>
-                <div className={classes.titleCont}>
+                <Typography variant='h6' className={classes.titleCont}>
                     <h1 className={classes.title}>Register</h1>
-                </div>
+                </Typography>
                 <div className={classes.inputCont}>
                     <div className={classes.divLeft}>
-                        <h3 className={classes.text}>Info Akun</h3>
+                        <Typography variant='h6' className={classes.text}>Info Akun</Typography>
                         <TextField className={classes.input} id="outlined-basic" label="Username" variant="outlined" onChange={(event) => setUsername(event.target.value)} error={errorReg ? true : false} size='small' />
                         <TextField className={classes.input} id="outlined-basic" label="Email" variant="outlined" onChange={(event) => setEmail(event.target.value)} error={errorReg ? true : false} size='small' />
                         <TextField className={classes.input} id="outlined-basic" label="Password" variant="outlined" onChange={(event) => setPassword(event.target.value)} error={errorReg ? true : false} size='small' type={visible1 ? "text" : "password"}
@@ -142,7 +142,7 @@ const Register = () => {
                             }} />
                     </div>
                     <div className={classes.divRight}>
-                        <h3 className={classes.text}>Info Personal</h3>
+                        <Typography variant='h6' className={classes.text}>Info Personal</Typography>
                         <TextField className={classes.input} id="outlined-basic" label="Nama" variant="outlined" onChange={(event) => setFullname(event.target.value)} error={errorReg ? true : false} size='small' />
                         <TextField className={classes.input} id="outlined-basic" label="Nomor Handphone" variant="outlined" onChange={(event) => setPhone(event.target.value)} error={errorReg ? true : false} size='small' />
                         <TextField className={classes.input} id="outlined-basic" label="Alamat" variant="outlined" onChange={(event) => setAddress(event.target.value)} error={errorReg ? true : false} size='small' />
@@ -168,7 +168,7 @@ const Register = () => {
 }
 const useStyles = makeStyles((theme) => ({
     root: {
-        backgroundColor: 'pink',
+        backgroundColor: '#f7f7f7',
         width: '100vw',
         height: '90vh',
         display: 'flex',

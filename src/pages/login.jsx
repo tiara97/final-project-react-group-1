@@ -54,8 +54,11 @@ const Login = () => {
             <Backdrop className={classes.backdrop} open={loading}>
                 <CircularProgress />
             </Backdrop>
+            <div className={classes.img}>
+                <img width="100%" src='https://img2.pngio.com/modern-sofa-images-png-transparent-png-kindpng-modern-furniture-png-860_517.png' />
+            </div>
             <Paper className={classes.container} elevation={5}>
-                <h1 className={classes.text}>Login</h1>
+                <Typography variant='h3' className={classes.text}>Login</Typography>
                 <TextField className={classes.input} id="outlined-basic"
                     value={username}
                     label="Username"
@@ -88,23 +91,41 @@ const Login = () => {
     )
 }
 const useStyles = makeStyles((theme) => ({
+    // * : {
+    //     margin: 0,
+    //     padding: 0,
+    //     box-sizing: 'border-box',
+    // },
     root: {
-        backgroundColor: 'pink',
+        backgroundColor: '#f7f7f7',
         width: '100vw',
-        height: '90vh',
+        height: '80vh',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        paddingTop: '10vh'
+        paddingTop: '10vh',
+        margin : 0,
+        // backgroundImage : 'url(https://img2.pngio.com/modern-sofa-images-png-transparent-png-kindpng-modern-furniture-png-860_517.png)',
+        // backgroundRepeat : 'no-repeat',
+        // backgroundSize : 'cover',
     },
     container: {
-        backgroundColor: '#ffffff',
-        width: '40vw',
-        height: '70vh',
+        backgroundColor: '#f2f2f2',
+        // position: 'absolute',
+        // zIndex: 2,
+        width: '30vw',
+        height: '60vh',
         padding: 10,
         display: 'flex',
         flexDirection: 'column',
-        margin: '0 5%'
+        // margin: '0 2%'
+    },
+    img: {
+        height: 'auto',
+        width: 400,
+        // marginRight: 20
+        // position: 'absolute',
+        // zIndex: 2,
     },
     backdrop: {
         zIndex: theme.zIndex.drawer + 1,

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Tab, Tabs, makeStyles, Box, Button, Typography, Card, CardContent, CardActions, IconButton, TextField, FormControl, FormLabel, FormControlLabel, Radio, RadioGroup, Table, TableHead, TableBody, TableCell, TableRow, TableContainer, Backdrop, CircularProgress } from '@material-ui/core'
+import { Tab, Tabs, makeStyles, Box, Button, Typography, Card, CardContent, CardActions, IconButton, TextField, FormControl, FormLabel, FormControlLabel, Radio, RadioGroup, Table, TableHead, TableBody, TableCell, TableRow, TableContainer, Backdrop, CircularProgress, Chip } from '@material-ui/core'
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import EditIcon from '@material-ui/icons/Edit';
@@ -11,10 +11,9 @@ import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import { useSelector, useDispatch } from "react-redux"
 import { Link } from 'react-router-dom'
 
-import { getProfile, getFavoriteByID, editProfile, uploadPic, getAddress, editAddress, deleteAddress, addAddress, addMainAddress, deleteFavorite, getUserOrder } from '../action'
+import { getProfile, getFavoriteByID, editProfile, uploadPic, getAddress, editAddress, deleteAddress, addAddress, addMainAddress, deleteFavorite, getUserOrder, userOrderConfirm, getUserOrderByStatus } from '../action'
 import { URL_IMG } from '../action/helper'
 import avatar from '../assets/avatar.jpg'
-import { ImageAspectRatioOutlined } from '@material-ui/icons';
 
 // Kontainer Tab
 function TabPanel(props) {
@@ -76,7 +75,7 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.background.paper,
         // display: 'flex',
         // flexDirection: 'column',
-        height: 224,
+        height: 'auto',
         paddingTop: '10vh'
     },
     backdrop: {
@@ -91,6 +90,7 @@ const useStyles = makeStyles((theme) => ({
     box: {
         backgroundColor: 'pink',
         height: 'auto',
+        display: 'flex'
     },
     // favorite style
     boxFavorite: {
@@ -148,6 +148,9 @@ const useStyles = makeStyles((theme) => ({
         gridTemplateRows: '10% 10% 80%',
         // padding: 25
     },
+    orderChip: {
+        marginLeft: 10
+    },
     orderTitle: {
         gridColumn: '1 / span 3',
         backgroundColor: 'lavender',
@@ -191,7 +194,7 @@ const useStyles = makeStyles((theme) => ({
         width: '13vw'
     },
     tabPanel: {
-        flexBasis: '85vw'
+        flexGrow: 1
     },
     input: {
         display: 'none',
@@ -285,14 +288,6 @@ const Account = () => {
         console.log(data)
         dispatch(uploadPic(data))
     };
-
-    // const handleEdit = (props) => {
-    //     console.log(edit)
-    //     setEdit(true)
-    // }
-    // const handleCancelEdit = (props) => {
-    //     setEdit(false)
-    // }
 
     const TabProfile = (props) => {
         // state edit profile
@@ -588,16 +583,15 @@ const Account = () => {
         })
     }
     const TabHistory = (props) => {
-        if (order.length === 0) {
-            return (
-                <Box p={3} className={classes.boxFavorite}>
-                    <Typography variant='h5' style={{ textAlign: 'center', marginBottom: 10 }}>Oops! Riwayat belanjamu kosong. Yuk Belanja!</Typography>
-                    <Link to='/Produk'>
-                        <Button onClick={() => console.log('test')} variant='contained'>Lihat Produk</Button>
-                    </Link>
-                </Box>
-            )
-        }
+        const [chipID, setChipID] = React.useState(0)
+        const chips = [
+            "Semua",
+            "Waiting for payment",
+            "Payment success",
+            "On delivery",
+            "Done",
+            "Cancelled"
+        ];
 
         // komponen
         const DivImg = (props) => {
@@ -630,15 +624,141 @@ const Account = () => {
                 </div>
             )
         }
-
+        const ChipStatus = (props) => {
+            const { label, onClick, color } = props
+            return (
+                <Chip className={classes.orderChip} label={label} onClick={onClick} color={color} />
+            )
+        }
         // fungsi
         const handleClick = () => {
             console.log('tes')
         }
-        return order.map((item, index) => {
-            if (item.name.length > 1) {
-
+        // konfirmasi barang sudah diterima
+        const handleDoneConf = (order) => {
+            console.log(order)
+            dispatch(userOrderConfirm(order))
+        }
+        // chipID nya balik ke 0 sendiri gatau knp
+        const handleChip = (id) => {
+            console.log(id)
+            let status_id = parseInt(id)
+            setChipID(id - 1)
+            if (id === 1) {
+                return dispatch(getUserOrder())
             }
+            const body = { order_status_id: status_id }
+            console.log(body)
+            dispatch(getUserOrderByStatus(body))
+        }
+
+        if (order.length === 0) {
+            return (
+                <Box p={3} className={classes.boxFavorite}>
+                    <div style={{ display: 'flex', marginBottom: 10, marginTop: 10 }}>
+                        {chips.map((item, index) => {
+                            return (
+                                <li key={index} style={{ listStyle: 'none' }}>
+                                    {index == chipID ? (
+                                        <ChipStatus label={item} onClick={() => handleChip(index + 1)} color='primary' />
+                                    ) : (
+                                            <ChipStatus label={item} onClick={() => handleChip(index + 1)} />
+                                        )}
+                                </li>
+                            )
+                        })}
+                    </div>
+                    <Typography variant='h5' style={{ textAlign: 'center', marginBottom: 10 }}>Oops! Riwayat belanjamu kosong. Yuk Belanja!</Typography>
+                    <Link to='/Produk'>
+                        <Button onClick={() => console.log('test')} variant='contained'>Lihat Produk</Button>
+                    </Link>
+                </Box>
+            )
+        }
+        return (
+            <Box p={3} className={classes.boxOrder}>
+                <div style={{ display: 'flex', marginBottom: 10, marginTop: 10 }}>
+                    {chips.map((item, index) => {
+                        return (
+                            <li key={index} style={{ listStyle: 'none' }}>
+                                {index == chipID ? (
+                                    <ChipStatus label={item} onClick={() => handleChip(index + 1)} color='primary' />
+                                ) : (
+                                        <ChipStatus label={item} onClick={() => handleChip(index + 1)} />
+                                    )}
+                            </li>
+                        )
+                    })}
+                </div>
+                {order.map((item, index) => {
+                    return (
+                        <>
+                            <div className={classes.orderTitle}>
+                                <Typography variant='subtitle2'>{item.order_date.slice(0, 10)}</Typography>
+                            </div>
+                            <div className={classes.orderTitle}>
+                                <Typography variant='h6'>{item.order_number}</Typography>
+                                <Typography variant='h6'>Status : {item.status}</Typography>
+                                <Typography variant='h6'>Rp. {item.total.toLocaleString()}</Typography>
+                            </div>
+                            <div className={classes.orderDet}>
+                                {item.image.length > 1 ? (
+                                    item.image.map((value, ind) => {
+                                        return (
+                                            <div style={{ display: 'flex', marginBottom: 10 }} key={ind}>
+                                                <DivImg ind={ind} img={value} name={value} />
+                                                <DivInfo ind={ind} price={item.price_each[ind]} color={item.color[ind]} qty={item.qty[ind]} name={item.name[ind]} />
+                                                {item.status === 'Waiting for payment' ? (
+                                                    <DivButton onClick={handleClick} icon={<PhotoCamera />} children='Upload Bukti' />
+                                                ) : (
+                                                        <>
+                                                            {item.status === 'On delivery' ? (
+                                                                <DivButton onClick={() => handleDoneConf(item.order_number)} children='Barang diterima' />
+                                                            ) : (
+                                                                    <>
+                                                                        {item.status === 'Done' ? (
+                                                                            <DivButton onClick={handleClick} icon={<AddShoppingCartIcon />} children='Beli lagi' />
+                                                                        ) : (
+                                                                                <></>
+                                                                            )}
+                                                                    </>
+                                                                )}
+                                                        </>
+                                                    )}
+                                            </div>
+                                        )
+                                    })
+                                ) : (
+                                        <div style={{ display: 'flex', marginBottom: 10 }}>
+                                            <DivImg ind={index} img={item.image} name={item.name} />
+                                            <DivInfo ind={index} price={item.price_each} color={item.color} qty={item.qty} name={item.name} />
+                                            {item.status === 'Waiting for payment' ? (
+                                                <DivButton onClick={handleClick} icon={<PhotoCamera />} children='Upload Bukti' />
+                                            ) : (
+                                                    <>
+                                                        {item.status === 'On delivery' ? (
+                                                            <DivButton onClick={() => handleDoneConf(item.order_number)} children='Barang diterima' />
+                                                        ) : (
+                                                                <>
+                                                                    {item.status === 'Done' ? (
+                                                                        <DivButton onClick={handleClick} icon={<AddShoppingCartIcon />} children='Beli lagi' />
+                                                                    ) : (
+                                                                            <></>
+                                                                        )}
+                                                                </>
+                                                            )}
+                                                    </>
+                                                )}
+                                        </div>
+                                    )}
+                            </div>
+                        </>
+                    )
+                })}
+            </Box>
+        )
+
+        return order.map((item, index) => {
             return (
                 <Box p={3} className={classes.boxOrder} key={index}>
                     <div className={classes.orderTitle}>
@@ -656,18 +776,25 @@ const Account = () => {
                         {item.image.length > 1 ? (
                             item.image.map((value, ind) => {
                                 return (
-                                    <div style={{ display: 'flex', marginBottom: 10 }}>
+                                    <div style={{ display: 'flex', marginBottom: 10 }} key={ind}>
                                         <DivImg ind={ind} img={value} name={value} />
                                         <DivInfo ind={ind} price={item.price_each[ind]} color={item.color[ind]} qty={item.qty[ind]} name={item.name[ind]} />
                                         {item.status === 'Waiting for payment' ? (
                                             <DivButton onClick={handleClick} icon={<PhotoCamera />} children='Upload Bukti' />
                                         ) : (
-                                                <></>
-                                            )}
-                                        {item.status === 'Done' ? (
-                                            <DivButton onClick={handleClick} icon={<AddShoppingCartIcon />} children='Beli lagi' />
-                                        ) : (
-                                                <></>
+                                                <>
+                                                    {item.status === 'On delivery' ? (
+                                                        <DivButton onClick={() => handleDoneConf(item.order_number)} children='Barang diterima' />
+                                                    ) : (
+                                                            <>
+                                                                {item.status === 'Done' ? (
+                                                                    <DivButton onClick={handleClick} icon={<AddShoppingCartIcon />} children='Beli lagi' />
+                                                                ) : (
+                                                                        <></>
+                                                                    )}
+                                                            </>
+                                                        )}
+                                                </>
                                             )}
                                     </div>
                                 )
@@ -679,12 +806,19 @@ const Account = () => {
                                     {item.status === 'Waiting for payment' ? (
                                         <DivButton onClick={handleClick} icon={<PhotoCamera />} children='Upload Bukti' />
                                     ) : (
-                                            <></>
-                                        )}
-                                    {item.status === 'Done' ? (
-                                        <DivButton onClick={handleClick} icon={<AddShoppingCartIcon />} children='Beli lagi' />
-                                    ) : (
-                                            <></>
+                                            <>
+                                                {item.status === 'On delivery' ? (
+                                                    <DivButton onClick={() => handleDoneConf(item.order_number)} children='Barang diterima' />
+                                                ) : (
+                                                        <>
+                                                            {item.status === 'Done' ? (
+                                                                <DivButton onClick={handleClick} icon={<AddShoppingCartIcon />} children='Beli lagi' />
+                                                            ) : (
+                                                                    <></>
+                                                                )}
+                                                        </>
+                                                    )}
+                                            </>
                                         )}
                                 </div>
                             )}
