@@ -47,6 +47,9 @@ export const REGISTER_END = "REGISTER_END"
 export const REGISTER_ERROR = "REGISTER_ERROR"  
 export const KEEP_LOGIN = "KEEP_LOGIN"
 export const LOG_OUT = "LOG_OUT"
+export const GET_USER = "GET_USER"
+export const GET_USER_START = "GET_USER_START"
+export const GET_USER_END = "GET_USER_END"
 
 // PROFILE
 export const GET_PROFILE = "GET_PROFILE"
@@ -55,8 +58,9 @@ export const EDIT_PROFILE = "EDIT_PROFILE"
 export const UPLOAD_PIC_ERROR = "UPLOAD_PIC_ERROR"
 
 // ORDER
-export const GET_ORDER_ALL = "GET_ORDER_ALL"
-export const GET_ORDER_ID = "GET_ORDER_ID"
+export const GET_ORDER = "GET_ORDER"
+export const GET_ORDER_START = "GET_ORDER_START"
+export const GET_ORDER_END = "GET_ORDER_END"
 
 // ADDRESS
 export const GET_ADDRESS = "GET_ADDRESS"

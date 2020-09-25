@@ -24,16 +24,19 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import DialogComp from "../component/dialog"
 
 // import action
-import {getCart, deleteCart, editCart, deleteError} from "../action"
+import {getCart, deleteCart, editCart, deleteError, URL_IMG} from "../action"
 
 const useStyles = makeStyles((theme)=>({
    
     root:{
         display: "flex",
         flexDirection: "column",
-        justifyContent: "center",
+        // justifyContent: "center",
         alignItems: "center",
-        paddingTop: "10vh"
+        paddingTop: "10vh",
+        minHeight: "90vh",
+        paddingLeft: "10vw",
+        paddingRight: "10vw"
     },
     backdrop: {
         zIndex: theme.zIndex.drawer + 1,
@@ -41,6 +44,15 @@ const useStyles = makeStyles((theme)=>({
       },
     input:{
         width: "20px",
+    },
+    button:{
+        borderRadius: 0,
+    },
+    product:{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-evenly",
+        alignItems: "center"
     }
 }))
 
@@ -113,8 +125,8 @@ const Cart = () =>{
         return cart.length > 0? (cart.map((item)=>{
             return item.id === editIndex? (
                 <TableRow key={item.id}>
-                    <TableCell>
-                        {/* <img src={} alt=""/>                        */}
+                    <TableCell className={classes.product}>
+                        <img src={item.image} width="100px" alt="product-image"/>                       
                         {item.name}</TableCell>
                     <TableCell>Rp. {parseInt(item.price_each).toLocaleString()}</TableCell>
                     <TableCell>
@@ -145,8 +157,8 @@ const Cart = () =>{
                 ):
                 (<>
                 <TableRow key={item.id}>
-                    <TableCell>
-                        {/* <img src={} alt=""/>                        */}
+                    <TableCell className={classes.product}>
+                        <img src={item.image} width="100px" alt="product-image"/>   
                         {item.name}</TableCell>
                     <TableCell>Rp. {parseInt(item.price_each).toLocaleString()}</TableCell>
                     <TableCell>{item.qty}</TableCell>
@@ -213,6 +225,7 @@ const Cart = () =>{
                             <TableCell>
                                 <Link to="/Checkout">
                                     <Button
+                                        className={classes.button}
                                         variant="contained" 
                                         color="primary">
                                         Checkout
@@ -230,6 +243,8 @@ const Cart = () =>{
                  text={errorCart}
                  action={
                     <Button
+                        className={classes.button}
+                        variant="contained"
                         onClick={handleClose}>
                         Tutup
                     </Button>
