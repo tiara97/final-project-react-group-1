@@ -6,7 +6,8 @@ import {
     CardContent,
     CardMedia,
     Button,
-    Typography
+    Typography,
+    Paper
 } from '@material-ui/core';
 import {useSelector, useDispatch} from 'react-redux'
 import {Link, Redirect} from 'react-router-dom';
@@ -16,12 +17,13 @@ import Carousel from '../component/carousel'
 const useStyles = makeStyles(() => ({
     root: {
         margin: 0,
-        paddingTop: "10vh",
-        boxSizing: "border-box",
-        background: "linear-gradient(to bottom right, #0f2027, #203a43, #2c5364)"
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center"
       },
       header: {
-        height: "70vh",
+        height: "80vh",
         width: "100%",
         backgroundSize: "cover", 
         backgroundPosition: "center",
@@ -46,11 +48,17 @@ const useStyles = makeStyles(() => ({
     card : {
         flexBasis : '19%',
         minWidth : '15vw',
-        marginBottom : '1%',
-        marginRight : '1%',
+        marginBottom : '5%',
+        marginRight : '5%',
     },
     link: {
         textDecoration: 'none'
+    },
+    paper:{
+        width: "90vw",
+        marginTop: -30,
+        background: "#EDECE8",
+        boxShadow: "0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)"
     }
 }));
 
@@ -94,10 +102,12 @@ export default function Products({location: {search}}) {
         <div className={classes.root}>
             <div className = {classes.header} style={{backgroundImage: `url(${carousel[2]? carousel[2].image : null})`}}>
             </div>
-            <Typography className={classes.title}>Products</Typography>
-            <div className={classes.productCard}>
-                {renderCard()}
-            </div>
+            <Paper className={classes.paper}>
+                <Typography className={classes.title}>Products</Typography>
+                <div className={classes.productCard}>
+                    {renderCard()}
+                </div>
+            </Paper>
         </div>
     )
 }

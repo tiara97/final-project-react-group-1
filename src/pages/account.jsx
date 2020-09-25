@@ -1,5 +1,5 @@
 import React from 'react'
-import { Tab, Tabs, makeStyles, Box, Button, Typography, Card, CardContent, CardActions, IconButton, TextField, FormControl, FormLabel, FormControlLabel, Radio, RadioGroup, Table, TableHead, TableBody, TableCell, TableRow, TableContainer, Backdrop, CircularProgress } from '@material-ui/core'
+import {Accordion, AccordionSummary, AccordionDetails,List, Tab, Tabs, makeStyles, Box, Button, Typography, Card, CardContent, CardActions, IconButton, TextField, FormControl, FormLabel, FormControlLabel, Radio, RadioGroup, Table, TableHead, TableBody, TableCell, TableRow, TableContainer, Backdrop, CircularProgress } from '@material-ui/core'
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import EditIcon from '@material-ui/icons/Edit';
@@ -8,67 +8,32 @@ import DoneIcon from '@material-ui/icons/Done';
 import ClearIcon from '@material-ui/icons/Clear';
 import AddIcon from '@material-ui/icons/Add';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import { useSelector, useDispatch } from "react-redux"
 import { Link } from 'react-router-dom'
 
-import { getProfile, getFavoriteByID, editProfile, uploadPic, getAddress, editAddress, deleteAddress, addAddress, addMainAddress, deleteFavorite, getUserOrder } from '../action'
+import { getProfile, getFavoriteByID, editProfile, uploadPic, getAddress, editAddress, deleteAddress, addAddress, addMainAddress, deleteFavorite, getUserOrder, confirmDone } from '../action'
 import { URL_IMG } from '../action/helper'
 import avatar from '../assets/avatar.jpg'
 import { ImageAspectRatioOutlined } from '@material-ui/icons';
 
 // Kontainer Tab
 function TabPanel(props) {
-    const classes = useStyles();
-    const { children, value, index } = props;
+    const { children, value, index, ...other } = props;
+  
     return (
-        <div
-            role="tabpanel"
-            hidden={value !== index}
-            id={`vertical-tabpanel-${index}`}
-            className={classes.tabPanel}
-        >
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`nav-tabpanel-${index}`}
+        aria-labelledby={`nav-tab-${index}`}
+        {...other}
+      >
             {children}
-        </div>
+      </div>
     );
-}
-
+  }
 // Kontainer Card
-function SimpleCard(props) {
-    const classes = useStyles();
-    const { index, order_number, status, total } = props;
-    return (
-        <Card className={classes.rootCard} key={index}>
-            <CardContent className={classes.contentCard}>
-                <Typography variant="h5">
-                    {order_number}
-                </Typography>
-                <Typography >
-                    Status : {status}
-                </Typography>
-                <Typography>
-                    Rp. {total}
-                </Typography>
-            </CardContent>
-            <CardActions>
-                <IconButton>
-                    <ExpandMoreIcon />
-                </IconButton>
-            </CardActions>
-        </Card>
-    );
-}
-
-function EditProfile(props) {
-    const classes = useStyles();
-    return (
-        <div className={classes.divInfo}>
-            <TextField id="outlined-basic"
-                label="Username"
-                variant="outlined" />
-            <Button variant='contained' color='primary'>Edit Profile</Button>
-        </div>
-    )
-}
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -76,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.background.paper,
         // display: 'flex',
         // flexDirection: 'column',
-        height: 224,
+        height: "auto",
         paddingTop: '10vh'
     },
     backdrop: {
@@ -91,6 +56,9 @@ const useStyles = makeStyles((theme) => ({
     box: {
         backgroundColor: 'pink',
         height: 'auto',
+        marginLeft: 300,
+        marginRight: 300
+        
     },
     // favorite style
     boxFavorite: {
@@ -103,11 +71,12 @@ const useStyles = makeStyles((theme) => ({
     },
     boxFav: {
         backgroundColor: 'pink',
-        height: 250,
         display: 'grid',
-        gridTemplateColumns: '20% 55% 25%',
-        gridTemplateRows: '20% 80%',
-        padding: 30
+        gridTemplateColumns: '30% 70%',
+        // gridTemplateRows: '20% 80%',
+        padding: 30,
+        marginLeft: 300,
+        marginRight: 300
     },
     favTitle: {
         gridColumn: '1 / span 3',
@@ -124,32 +93,39 @@ const useStyles = makeStyles((theme) => ({
     favInfo: {
         backgroundColor: '#f2f2f2',
         paddingTop: 10,
-        paddingLeft: 30
+        paddingLeft: 30,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-around"
     },
     favBtn: {
-        backgroundColor: 'blue',
         display: 'flex',
-        flexDirection: 'column',
+        flexDirection: 'row',
         alignContent: 'center',
-        justifyContent: 'center'
+        justifyContent: 'flex-end',
+        marginRight: 10
     },
     boxProfile: {
         backgroundColor: 'pink',
         height: '60vh',
         display: 'flex',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        marginLeft: 300,
+        marginRight: 300
     },
     // history style
     boxOrder: {
         backgroundColor: 'pink',
         height: 'auto',
         display: 'grid',
-        gridTemplateColumns: '100%',
-        gridTemplateRows: '10% 10% 80%',
+        marginLeft: 300,
+        marginRight: 300
+        // gridTemplateColumns: '100%',
+        // gridTemplateRows: '10% 10% 80%',
         // padding: 25
     },
     orderTitle: {
-        gridColumn: '1 / span 3',
+        // gridColumn: '1 / span 3',
         backgroundColor: 'lavender',
         padding: 5,
         display: 'flex',
@@ -157,9 +133,9 @@ const useStyles = makeStyles((theme) => ({
     },
     orderDet: {
         // height: 200,
-        gridColumn: '1 / span 3',
+        // gridColumn: '1 / span 3',
         backgroundColor: '#f2f2f2',
-        padding: 10,
+        padding: 10
     },
     orderImg: {
         height: 150,
@@ -177,21 +153,14 @@ const useStyles = makeStyles((theme) => ({
     orderBtn: {
         backgroundColor: 'blue',
         width: 200,
-        display: 'flex',
-        flexDirection: 'column',
-        alignContent: 'center',
-        justifyContent: 'center'
+        // display: 'flex',
+        // flexDirection: 'column',
+        // alignContent: 'center',
+        // justifyContent: 'center'
     },
     divTab: {
-        display: 'flex',
-        flexWrap: 'wrap'
-    },
-    tabs: {
-        borderRight: `px solid ${theme.palette.divider}`,
-        width: '13vw'
-    },
-    tabPanel: {
-        flexBasis: '85vw'
+        flexGrow: 1,
+        backgroundColor: theme.palette.background.paper
     },
     input: {
         display: 'none',
@@ -222,30 +191,15 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         justifyContent: 'center'
     },
-    // card style
-    rootCard: {
-        backgroundColor: 'lavender',
-        display: 'flex',
-        justifyContent: 'space-between'
+    button:{
+        borderRadius: 0,
+        marginTop: 5
     },
-    contentCard: {
-        display: 'flex'
-    },
-    bulletCard: {
-        display: 'inline-block',
-        margin: '0 2px',
-        transform: 'scale(0.8)',
-    },
-    titleCard: {
-        fontSize: 14,
-    },
-    posCard: {
-        marginBottom: 12,
-    },
+ 
 }));
 
 
-const Account = () => {
+const Account = ({location}) => {
     const classes = useStyles();
     const [value, setValue] = React.useState(0);
     const [loading, setLoading] = React.useState(true);
@@ -275,6 +229,13 @@ const Account = () => {
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+
+    const a11yProps = (index)=>{
+        return {
+          id: `simple-tab-${index}`,
+          'aria-controls': `simple-tabpanel-${index}`,
+        };
+      }
 
     // fungsi untuk upload picture
     const handleUpload = (props) => {
@@ -327,12 +288,12 @@ const Account = () => {
                         onChange={handleUpload}
                     />
                     <label htmlFor="contained-button-file">
-                        <Button variant="contained" color="primary" component="span"
+                        <Button className={classes.button} variant="contained" color="primary" component="span"
                             startIcon={<PhotoCamera />}>
                             Upload
                                 </Button>
                     </label>
-                    <Button variant="contained" color="primary" style={{ marginTop: 10 }}>Edit Password</Button>
+                    <Button className={classes.button} variant="contained" color="primary" style={{ marginTop: 10 }}>Edit Password</Button>
                 </div>
                 <div className={classes.divInfo}>
                     <Typography variant='h5'>{username}</Typography>
@@ -357,12 +318,12 @@ const Account = () => {
                     <Typography></Typography>
                     {edit ? (
                         <div className={classes.divInfoButton}>
-                            <Button style={{ marginRight: 10 }} variant='contained' color='primary' onClick={handleSave}>Save</Button>
-                            <Button variant='contained' color='secondary' onClick={() => setEdit(false)}>Cancel</Button>
+                            <Button className={classes.button} style={{ marginRight: 10 }} variant='contained' color='primary' onClick={handleSave}>Save</Button>
+                            <Button className={classes.button} variant='contained' color='secondary' onClick={() => setEdit(false)}>Cancel</Button>
                         </div>
                     ) : (
                             <div className={classes.divInfoButton}>
-                                <Button variant='contained' color='primary' onClick={() => setEdit(true)}>Edit Profil</Button>
+                                <Button className={classes.button} variant='contained' color='primary' onClick={() => setEdit(true)}>Edit Profil</Button>
                             </div>
                         )}
                 </div>
@@ -554,7 +515,7 @@ const Account = () => {
                 <Box p={3} className={classes.boxFavorite}>
                     <Typography variant='h5' style={{ textAlign: 'center', marginBottom: 10 }}>Oops! Produk favoritmu kosong. Yuk Belanja!</Typography>
                     <Link to='/Produk'>
-                        <Button onClick={() => console.log('test')} variant='contained'>Lihat Produk</Button>
+                        <Button className={classes.button} onClick={() => console.log('test')} variant='contained'>Lihat Produk</Button>
                     </Link>
                 </Box>
             )
@@ -570,18 +531,18 @@ const Account = () => {
                     </div>
                     <div className={classes.favInfo}>
                         <Typography variant='h5' style={{ marginBottom: 10 }}>Rp. {item.price_each}</Typography>
-                        <Typography style={{ marginBottom: 10 }}>Color : {item.color}</Typography>
-                        <Typography variant='subtitle1' style={{ marginBottom: 10 }}>{item.desc}</Typography>
-                    </div>
-                    <div className={classes.favBtn}>
-                        <Button variant="contained" color="primary" component="span" style={{ marginBottom: 10 }} onClick={() => handleCart(item.id)}
-                            startIcon={<AddShoppingCartIcon />}>
-                            Add to Cart
-                        </Button>
-                        <Button variant="contained" color="secondary" component="span"
-                            startIcon={<DeleteIcon />} onClick={() => dispatch(deleteFavorite(item.id))}>
-                            Hapus Favorit
-                        </Button>
+                        <Typography variant='body1' style={{ marginBottom: 10 }}>Color : {item.color}</Typography>
+                        <Typography variant='body1' style={{ marginBottom: 10 }}>{item.desc}</Typography>
+                        <div className={classes.favBtn}>
+                            <Button className={classes.button} variant="contained" color="primary" component="span" style={{marginRight: 10}} onClick={() => handleCart(item.id)}
+                                startIcon={<AddShoppingCartIcon />}>
+                                Add to Cart
+                            </Button>
+                            <Button className={classes.button} variant="contained" color="secondary" component="span"
+                                startIcon={<DeleteIcon />} onClick={() => dispatch(deleteFavorite(item.id))}>
+                                Hapus Favorit
+                            </Button>
+                        </div>
                     </div>
                 </Box>
             )
@@ -593,7 +554,7 @@ const Account = () => {
                 <Box p={3} className={classes.boxFavorite}>
                     <Typography variant='h5' style={{ textAlign: 'center', marginBottom: 10 }}>Oops! Riwayat belanjamu kosong. Yuk Belanja!</Typography>
                     <Link to='/Produk'>
-                        <Button onClick={() => console.log('test')} variant='contained'>Lihat Produk</Button>
+                        <Button className={classes.button} onClick={() => console.log('test')} variant='contained'>Lihat Produk</Button>
                     </Link>
                 </Box>
             )
@@ -619,30 +580,15 @@ const Account = () => {
                 </div>
             )
         }
-        const DivButton = (props) => {
-            const { onClick, children, icon } = props
-            return (
-                <div className={classes.orderBtn}>
-                    <Button variant="contained" color="primary" component="span"
-                        startIcon={icon} onClick={onClick}>
-                        {children}
-                    </Button>
-                </div>
-            )
-        }
 
-        // fungsi
-        const handleClick = () => {
-            console.log('tes')
+        const handleDoneConf =(order_number)=>{
+            dispatch(confirmDone(order_number))
         }
         return order.map((item, index) => {
-            if (item.name.length > 1) {
-
-            }
             return (
                 <Box p={3} className={classes.boxOrder} key={index}>
                     <div className={classes.orderTitle}>
-                        <Typography variant='subtitle2'>{item.order_date.slice(0, 10)}</Typography>
+                        {/* <Typography variant='subtitle2'>{item.order_date.slice(0, 10)}</Typography> */}
                     </div>
                     <div className={classes.orderTitle}>
                         <Typography variant='h6'>{item.order_number}</Typography>
@@ -650,56 +596,62 @@ const Account = () => {
                         <Typography variant='h6'>Rp. {item.total.toLocaleString()}</Typography>
                     </div>
                     <div className={classes.orderDet}>
-                        <div style={{ display: 'flex', marginBottom: 10 }}>
-
-                        </div>
-                        {item.image.length > 1 ? (
-                            item.image.map((value, ind) => {
-                                return (
-                                    <div style={{ display: 'flex', marginBottom: 10 }}>
-                                        <DivImg ind={ind} img={value} name={value} />
-                                        <DivInfo ind={ind} price={item.price_each[ind]} color={item.color[ind]} qty={item.qty[ind]} name={item.name[ind]} />
-                                        {item.status === 'Waiting for payment' ? (
-                                            <DivButton onClick={handleClick} icon={<PhotoCamera />} children='Upload Bukti' />
-                                        ) : (
-                                                <></>
-                                            )}
-                                        {item.status === 'Done' ? (
-                                            <DivButton onClick={handleClick} icon={<AddShoppingCartIcon />} children='Beli lagi' />
-                                        ) : (
-                                                <></>
-                                            )}
-                                    </div>
-                                )
-                            })
-                        ) : (
-                                <div style={{ display: 'flex', marginBottom: 10 }}>
-                                    <DivImg ind={index} img={item.image} name={item.name} />
-                                    <DivInfo ind={index} price={item.price_each} color={item.color} qty={item.qty} name={item.name} />
-                                    {item.status === 'Waiting for payment' ? (
-                                        <DivButton onClick={handleClick} icon={<PhotoCamera />} children='Upload Bukti' />
-                                    ) : (
-                                            <></>
-                                        )}
-                                    {item.status === 'Done' ? (
-                                        <DivButton onClick={handleClick} icon={<AddShoppingCartIcon />} children='Beli lagi' />
-                                    ) : (
-                                            <></>
-                                        )}
-                                </div>
-                            )}
+                        <Accordion>
+                            <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
+                                <Typography>Produk</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <List>
+                                    {item.image.map((value, ind) => {
+                                        return (
+                                            <div style={{ display: 'flex', marginBottom: 10 }}>
+                                                <DivImg ind={ind} img={value} name={value} />
+                                                <DivInfo ind={ind} price={item.price_each[ind]} color={item.color[ind]} qty={item.qty[ind]} name={item.name[ind]} />
+                                            </div>
+                                        )})}
+                                </List>
+                            </AccordionDetails>
+                        </Accordion>
+                            {item.status === 'Waiting for payment' ? (
+                                <Link to={{pathname:`/Konfirmasi`, search:`${item.order_number}`}}>
+                                    <Button className={classes.button} variant="contained">
+                                        <PhotoCamera/> Upload Bukti
+                                    </Button>
+                                </Link>
+                               ) : null}
+                            {item.status === "On delivery"?(
+                                <Button className={classes.button} variant="contained" onClick={() => handleDoneConf(item.order_number)}>
+                                    Barang Diterima
+                                </Button>
+                            ): null}
+                            {item.status === 'Done' ? (
+                                <Link to="/Produk">
+                                    <Button className={classes.button} variant="contained">
+                                    <AddShoppingCartIcon/> Beli Lagi
+                                    </Button>
+                                </Link>
+                            ) : null}
+                            {item.status === 'On progress' ? (
+                                <Link to="/Cart">
+                                    <Button className={classes.button} variant="contained">
+                                    <ShoppingCartIcon/> Lihat Keranjang
+                                    </Button>
+                                </Link>
+                            ) : null}
                     </div>
                 </Box >
             )
         })
     }
+
+
     const TabUser = (props) => {
         return (
             <Box p={3} className={classes.box}>
                 <h1>{username}</h1>
                 <h1>{email}</h1>
                 <h1>{status}</h1>
-                <Button onClick={() => console.log('test')}>Test</Button>
+                <Button className={classes.button} onClick={() => console.log('test')}>Test</Button>
             </Box>
         )
     }
@@ -713,18 +665,18 @@ const Account = () => {
             </div>
             <div className={classes.divTab}>
                 <Tabs
-                    orientation="vertical"
-                    variant="scrollable"
+                    variant="fullWidth"
                     value={value}
                     onChange={handleChange}
-                    aria-label="Vertical tabs example"
-                    className={classes.tabs}
+                    aria-label="nav tabs example"
+                    centered
+
                 >
-                    <Tab label="Profil" />
-                    <Tab label="Alamat" />
-                    <Tab label="Favorit" />
-                    <Tab label="Riwayat Belanja" />
-                    <Tab label="Pengaturan" />
+                    <Tab label="Profil" {...a11yProps(0)}/>
+                    <Tab label="Alamat" {...a11yProps(1)}/>
+                    <Tab label="Favorit" {...a11yProps(2)}/>
+                    <Tab label="Riwayat Belanja"{...a11yProps(3)} />
+                    <Tab label="Pengaturan" {...a11yProps(4)}/>
                 </Tabs>
                 <TabPanel value={value} index={0}>
                     <TabProfile />
