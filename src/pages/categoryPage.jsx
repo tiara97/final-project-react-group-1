@@ -67,7 +67,7 @@ const Category = () =>{
                             </CardContent>
                             <CardMedia
                                 className={classes.media}
-                                image={carousel[item.id].image}/>
+                                image={carousel[item.id] ? carousel[item.id].image: null}/>
                         </Card>
                     </Grow>
                 </Link>
