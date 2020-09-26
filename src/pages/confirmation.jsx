@@ -59,7 +59,7 @@ const Confirmation = ({location})=>{
     React.useEffect(()=>{
         console.log(order_number)
         if(order_number){
-            dispatch(getOrderByNumber(order_number))
+            dispatch(getOrderByNumber(110300))
         }
     },[])
 

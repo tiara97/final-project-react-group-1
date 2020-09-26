@@ -19,7 +19,10 @@ import Account from './pages/account'
 import Verification from './pages/verification'
 import Confirmation from "./pages/confirmation"
 import ProductAdmin from './pages/productAdmin'
+import TransactionAdmin from './pages/transactionAdmin'
 import AccountAdmin from "./pages/accountAdmin"
+
+import {userKeepLogin} from './action'
 
 import {userKeepLogin} from './action'
 const App = () =>{
@@ -47,6 +50,8 @@ const App = () =>{
             <Route path="/Verifikasi" component={Verification} />
             <Route path="/Akun" component={Account} />
             <Route path="/Konfirmasi" component={Confirmation}/>
+            <Route path="/Produk-Admin" component={ProductAdmin}/>
+            <Route path="/Transaksi-Admin" component={TransactionAdmin}/>
             {role !== 3? 
                 (<>
                 <Route path="/Produk-Admin" component={ProductAdmin}/>

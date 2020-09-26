@@ -58,6 +58,11 @@ export const EDIT_PROFILE = "EDIT_PROFILE"
 export const UPLOAD_PIC_ERROR = "UPLOAD_PIC_ERROR"
 
 // ORDER
+export const GET_ORDER_ALL = "GET_ORDER_ALL"
+export const GET_ORDER_USER = "GET_ORDER_USER"
+export const GET_ORDER_USER_STATUS = "GET_ORDER_USER_STATUS"
+export const GET_ORDER_ID = "GET_ORDER_ID"
+
 export const GET_ORDER = "GET_ORDER"
 export const GET_ORDER_START = "GET_ORDER_START"
 export const GET_ORDER_END = "GET_ORDER_END"
