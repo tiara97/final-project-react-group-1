@@ -497,7 +497,7 @@ const TableProductImage = ({ product, productByTable, productWarehouse, filterWa
                     </TableCell>
                   </TableRow>
                 );
-              })
+            })
             : null}
         </TableBody>
       </Table>
@@ -676,7 +676,7 @@ const TableProductStock = ({ product, productByTable, productWarehouse, productC
             <Button
               variant="outlined"
               color="primary"
-              disabled = {filterWarehouse !== 'All'}
+              disabled={filterWarehouse !== 'All'}
               startIcon={<SendIcon />}
               onClick={() => toTransferStock(item.id)}
             >
@@ -822,13 +822,12 @@ const TableProductStock = ({ product, productByTable, productWarehouse, productC
                     </TableCell>
                   </TableRow>
                 );
-              })
+            })
             : null}
         </TableBody>
       </Table>
     );
   };
-
   const handleEdit = (id) => {
     setName(productByTable[id-1].product_id)
     setColor(productByTable[id-1].color_id)
@@ -920,6 +919,7 @@ const TableProductStock = ({ product, productByTable, productWarehouse, productC
         <Button
           variant="outlined"
           onClick = {() => dispatch(transferStock({product_id: name, color_id: color, from_warehouse: fromWarehouse, to_warehouse: toWarehouse, quantity: quantityTf}))}
+
         >
           Submit
         </Button>
@@ -1299,7 +1299,7 @@ const useStyles = makeStyles((theme) => ({
   },
   inputStock: {
     width: '20%'
-  }
+  },
 }));
 
 export default function ProductAdmin() {
