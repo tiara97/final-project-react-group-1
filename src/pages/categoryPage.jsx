@@ -31,13 +31,12 @@ const useStyles = makeStyles(()=>({
    media:{
        flexGrow: 1
    },
-   link:{
-    textDecoration: "none",
-    color: "#000"
-  },
   content:{
       position: "absolute",
       color: "inherit"
+  },
+  text:{
+      textShadow: "-2px 2px 3px #FFFFFF"
   }
 }))
 
@@ -60,15 +59,15 @@ const Category = () =>{
     const renderCard = ()=>{
         return category.map((item)=>{
             return(
-                <Link to={{pathname:'/Produk', search: `category=${item.category}`, state: {id:`${item.id}`}}} className={classes.link} key={item.id}>
+                <Link to={{pathname:'/Produk', search: `category=${item.category}`, state: {id:`${item.id}`}}} key={item.id}>
                     <Grow in={checked}  {...(checked ? { timeout: 1000 } : {})}>
                         <Card className={classes.card} >
                             <CardContent className={classes.content} >
-                                <Typography variant="h6" color="inherit">{item.category}</Typography>
+                                <Typography className={classes.text}variant="h3" color="inherit">{item.category}</Typography>
                             </CardContent>
                             <CardMedia
                                 className={classes.media}
-                                image={carousel[item.id].image}/>
+                                image={carousel[item.id] ? carousel[item.id].image: null}/>
                         </Card>
                     </Grow>
                 </Link>

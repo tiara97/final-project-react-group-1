@@ -1,27 +1,27 @@
 import React from 'react'
-import { makeStyles, createStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import {
     Card,
-    CardActions,
     CardContent,
     CardMedia,
     Button,
-    Typography
+    Typography,
+    Paper
 } from '@material-ui/core';
 import {useSelector, useDispatch} from 'react-redux'
-import {Link, Redirect} from 'react-router-dom';
-import {getProduct, getCarousel, getProductCategory} from '../action'
-import Carousel from '../component/carousel'
+import {Link} from 'react-router-dom';
+import {getProduct, getCarousel, getFilterProductCategory} from '../action'
 
 const useStyles = makeStyles(() => ({
     root: {
         margin: 0,
-        paddingTop: "10vh",
-        boxSizing: "border-box",
-        background: "linear-gradient(to bottom right, #0f2027, #203a43, #2c5364)"
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center"
       },
       header: {
-        height: "70vh",
+        height: "80vh",
         width: "100%",
         backgroundSize: "cover", 
         backgroundPosition: "center",
@@ -46,11 +46,17 @@ const useStyles = makeStyles(() => ({
     card : {
         flexBasis : '19%',
         minWidth : '15vw',
-        marginBottom : '1%',
-        marginRight : '1%',
+        marginBottom : '5%',
+        marginRight : '5%',
     },
     link: {
         textDecoration: 'none'
+    },
+    paper:{
+        width: "90vw",
+        marginTop: -30,
+        background: "#EDECE8",
+        boxShadow: "0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)"
     }
 }));
 
@@ -58,23 +64,23 @@ const useStyles = makeStyles(() => ({
 export default function Products({location: {search}}) {
     const classes = useStyles()
 
-    const { product, carousel, procat } = useSelector((state) => {
+    const { product, carousel, filterProcat } = useSelector((state) => {
         return {
             product: state.productReducer.product,
             carousel: state.carouselReducer.carousel,
-            procat: state.productReducer.procat
+            filterProcat: state.productCategoryReducer.filterProcat
         }
     })
     const dispatch = useDispatch()
 
     React.useEffect(() => {
-        dispatch(getProduct())
+        dispatch(getProduct('product_details'))
         dispatch(getCarousel())
-        dispatch(getProductCategory(search ? search.slice(10) : null))
+        dispatch(getFilterProductCategory(search ? search.slice(10) : null))
     }, [])
 
     const renderCard = () => {
-        return (search ? procat : product).map(item =>{
+        return (search ? filterProcat : product).map(item =>{
             return (
                 <Link to={{pathname:'/Produk-Detail', search: `id=${item.id}`, state: {id:`${item.id}`}}} key={item.id} className={classes.link}>
                     <Button>
@@ -94,10 +100,12 @@ export default function Products({location: {search}}) {
         <div className={classes.root}>
             <div className = {classes.header} style={{backgroundImage: `url(${carousel[2]? carousel[2].image : null})`}}>
             </div>
-            <Typography className={classes.title}>Products</Typography>
-            <div className={classes.productCard}>
-                {renderCard()}
-            </div>
+            <Paper className={classes.paper}>
+                <Typography className={classes.title}>Products</Typography>
+                <div className={classes.productCard}>
+                    {renderCard()}
+                </div>
+            </Paper>
         </div>
     )
 }

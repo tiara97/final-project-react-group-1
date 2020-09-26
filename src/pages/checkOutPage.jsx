@@ -1,6 +1,6 @@
 import React from "react"
 import {useSelector, useDispatch} from "react-redux"
-import {Redirect} from "react-router-dom"
+import {Redirect, Link} from "react-router-dom"
 import {makeStyles, 
         Backdrop, 
         CircularProgress, 
@@ -19,7 +19,8 @@ const useStyles = makeStyles((theme)=>({
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        paddingTop: "10vh"
+        paddingTop: "10vh",
+        minHeight: "90vh"
     },
     backdrop: {
         zIndex: theme.zIndex.drawer + 1,
@@ -49,37 +50,45 @@ const useStyles = makeStyles((theme)=>({
 
 
 
-const CheckOut = ({location: {search}}) =>{
+const CheckOut = () =>{
     const classes = useStyles()
     const dispatch = useDispatch()
-    const [wareHouseID, setWareHouseID] = React.useState(0)
     const [whName, setWhName] = React.useState("")
     const [radio, setRadio] = React.useState(true)
     const [pay, setPay] = React.useState(true)
     const [confirm, setConfirm] =React.useState(false)
     const [toConfirmPage, setToConfirmPage] = React.useState(false)
+    const [select, setSelect] = React.useState(null)
     
-    const{id, address, cart, total, warehouse, error} = useSelector((state)=>{
+    const{id, address, cart, total, warehouse, error, loading} = useSelector((state)=>{
         return{
-            address: state.addressReducer.userAddress,
+            address: state.addressReducer.address,
             id: state.userReducer.id,
             cart: state.cartReducer.cart,
             total: state.cartReducer.total,
             warehouse: state.warehouseReducer.warehouse,
-            error: state.cartReducer.errorOngkir
+            error: state.cartReducer.errorOngkir,
+            loading: state.cartReducer.loading
         }
     })
 
     React.useEffect(()=>{
-        if(id){
-            dispatch(getAddress(id))
-        }
+        dispatch(getAddress())
         dispatch(getWarehouse())
+        if(address[0]){
+            setSelect(address[0].id)
+            const body = {
+                order_number: cart[0].order_number,
+                id: address[0].id,
+                user_id: id
+            }
+            dispatch(updateWarehouseID(body))
+        }
     },[])
 
     const renderAddress = ()=>{
         return <Select
-                value={address[0]? address[0].id : 0}
+                value={select}
                 onChange={handleSelect}>
                 {address.map((item)=>{
                 return(          
@@ -100,12 +109,12 @@ const CheckOut = ({location: {search}}) =>{
         }
         console.log(body)
         dispatch(updateWarehouseID(body))
-        dispatch(getOngkir(body))
         renderWarehouse()
-        setRadio(false)
-        setWareHouseID(body.id)
+            setRadio(false)
+        
+        setSelect(body.id)
     }
-    // dikasih loading dan fungsi get ongkir dan warehouseID dipanggil di awal
+   
 
     const renderWarehouse = ()=>{
         return warehouse.map((item)=>{
@@ -114,7 +123,9 @@ const CheckOut = ({location: {search}}) =>{
     }
  
     const handleChangeRadio = () =>{
-        setPay(false)
+        if(!error){
+            setPay(false)
+        }
     }
 
     const handleCloseConfirm = () =>{
@@ -125,15 +136,18 @@ const CheckOut = ({location: {search}}) =>{
     const handleToConfirm = ()=>{
         dispatch(checkoutAction(cart[0].order_number))
         setConfirm(false)
-        setToConfirmPage(true)
+        // setToConfirmPage(true)
     }
 
-    if(toConfirmPage){
-        return <Redirect to={{pathname:`/Konfirmasi`, search:`${cart[0].order_number}`}}/>
-    }
+    // if(toConfirmPage){
+    //     return <Redirect to={{pathname:`/Konfirmasi`, search:`${cart[0].order_number}`}}/>
+    // }
   
     return(
         <div className={classes.root}>
+            <Backdrop className={classes.backdrop} open={loading}>
+                <CircularProgress/>
+            </Backdrop>
             <h1>Checkout Page</h1>
             <Paper className={classes.paper}>
             <Typography>Alamat Pengiriman</Typography>
@@ -158,7 +172,7 @@ const CheckOut = ({location: {search}}) =>{
                 <Button 
                     className={classes.button} 
                     variant="contained" 
-                    disabled={pay}
+                    disabled={error}
                     onClick={()=>setConfirm(true)}>
                     Lanjut Ke Pembayaran
                 </Button>
@@ -167,10 +181,13 @@ const CheckOut = ({location: {search}}) =>{
                 open={confirm}
                 onClose={handleCloseConfirm}
                 text="Pesanan anda berhasil, silakan lakukan konfirmasi pembayaran!"
-                action={<Button
-                            onClick={handleToConfirm}>
-                            Lanjut
-                        </Button>}
+                action={<Link to={{pathname:`/Konfirmasi`, search:`${cart[0].order_number}`}}>
+                        <Button
+                                onClick={handleToConfirm}>
+                                Lanjut
+                        </Button>
+                     </Link>
+                        }
             />
         </div>
     )

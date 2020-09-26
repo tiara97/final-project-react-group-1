@@ -95,8 +95,8 @@ const Color = ({code, onPress, border = 0}) => {
             onClick={onPress} 
             style={
                 {backgroundColor: code, 
-                    width: 50, 
-                    height: 50, 
+                    width: 40, 
+                    height: 40, 
                     borderRadius: '50%', 
                     marginRight: '2%', 
                     border: `black solid ${border}px`}}>
@@ -113,12 +113,16 @@ export default function ProductDetails ({location: {state: {id}}}) {
     })
     const [toCart, setToCart] = React.useState(false)
     const [openDialog, setOpenDialog] = React.useState(false)
+    const [openLogin, setOpenLogin] = React.useState(false)
+    const [toLogin, setToLogin] = React.useState(false)
+    const [nonActive, setNonActive] = React.useState(false)
     // import reducer
-    const { productDetails, user_id, errorCart } = useSelector((state) => {
+    const { productDetails, user_id, errorCart, status_id } = useSelector((state) => {
         return {
             productDetails: state.productReducer.productDetails,
             user_id: state.userReducer.id,
-            errorCart: state.cartReducer.error
+            errorCart: state.cartReducer.error,
+            status_id: state.userReducer.status
         }
     })
     const dispatch = useDispatch()
@@ -175,6 +179,12 @@ export default function ProductDetails ({location: {state: {id}}}) {
             price_each: productDetails.price,
             weight: productDetails.weight
         }
+        if(!user_id){
+            return setOpenLogin(true)
+        }
+        if(status_id === 2){
+            return setNonActive(true)
+        }
         console.log(body)
         dispatch(addToCart(body))
 
@@ -190,7 +200,21 @@ export default function ProductDetails ({location: {state: {id}}}) {
         setOpenDialog(false)
         setToCart(true)
     }
- 
+
+    const handleCloseLogin=()=>{
+        setOpenLogin(false)
+    }
+    
+    const handleToLogin = () =>{
+        setToLogin(true)
+    }
+
+    const handleCloseNonActive=()=>{
+        setNonActive(false)
+    }
+    if(toLogin){
+        return <Redirect to="/Login"/>
+    }
     if(toCart){
         return <Redirect to="/Cart"/>
     }
@@ -293,6 +317,34 @@ export default function ProductDetails ({location: {state: {id}}}) {
                         onClick={handleProceed}>
                         Lanjut
                     </Button>)}/>
+            <DialogComp
+                 open={openLogin}
+                 onClose={handleCloseLogin}
+                 text="Anda belum login!"
+                 action={
+                    <>
+                    <Button
+                        onClick={handleToLogin}>
+                        Login
+                    </Button>
+                    <Button
+                        onClick={handleCloseLogin}>
+                        Tutup
+                    </Button>
+                    </>}
+                />
+            <DialogComp
+                 open={nonActive}
+                 onClose={handleCloseNonActive}
+                 text="Anda belum melakukan aktivasi akun!"
+                 action={
+                    <>
+                    <Button
+                        onClick={handleCloseNonActive}>
+                        Tutup
+                    </Button>
+                    </>}
+                />
         </div>
     )
 }
