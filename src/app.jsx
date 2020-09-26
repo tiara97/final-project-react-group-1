@@ -23,8 +23,6 @@ import TransactionAdmin from './pages/transactionAdmin'
 import AccountAdmin from "./pages/accountAdmin"
 
 import {userKeepLogin} from './action'
-
-import {userKeepLogin} from './action'
 const App = () =>{
     const dispatch = useDispatch()
     React.useEffect(()=> {

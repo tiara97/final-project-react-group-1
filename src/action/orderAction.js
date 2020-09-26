@@ -193,6 +193,9 @@ export const sendOrder = (order_number) =>{
             dispatch({type: GET_ORDER_END})
         } catch (error) {
             console.log(error.response? error.response.data : error)
+        }
+    }
+}
   
 export const confirmDone = (order_number) =>{
     return async(dispatch)=>{
