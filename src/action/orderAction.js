@@ -40,7 +40,7 @@ export const getUserOrderByStatus = (body) =>{
             let id = localStorage.getItem('id')
             const res = await Axios.post(URL + `/orders/getByOrderUserIDStatus/${id}`, body)
             console.log(res.data)
-            dispatch({type: GET_ORDER_USER, payload: res.data})
+            dispatch({type: GET_ORDER, payload: res.data})
         } catch (error) {
             console.log(error.response? error.response.data : error)
         }
@@ -50,9 +50,12 @@ export const getUserOrderByStatus = (body) =>{
 export const getOrderByStatus = (status_id) =>{
     return async(dispatch)=>{
         try {
+            dispatch({type: GET_ORDER_START})
             const res = await Axios.get(URL + `/orders/getByOrderStatus/${status_id}`)
             console.log(res.data)
-            dispatch({type: GET_ORDER_ALL, payload: res.data})
+            dispatch({type: GET_ORDER, payload: res.data})
+
+            dispatch({type: GET_ORDER_END})
         } catch (error) {
             console.log(error.response? error.response.data : error)
         }
@@ -62,9 +65,12 @@ export const getOrderByStatus = (status_id) =>{
 export const getOrderByWarehosue = (wh_id) =>{
     return async(dispatch)=>{
         try {
+            dispatch({type: GET_ORDER_START})
             const res = await Axios.get(URL + `/orders/getByWarehouseID/${wh_id}`)
             console.log(res.data)
-            dispatch({type: GET_ORDER_ALL, payload: res.data})
+            dispatch({type: GET_ORDER, payload: res.data})
+
+            dispatch({type: GET_ORDER_END})
         } catch (error) {
             console.log(error.response? error.response.data : error)
         }
@@ -75,10 +81,13 @@ export const userOrderConfirm = (order) =>{
     return async(dispatch)=>{
         try {
             let id = localStorage.getItem('id')
+            dispatch({type: GET_ORDER_START})
             const confirm = await Axios.patch(URL + `/transaction/done/${order}`)
             const res = await Axios.get(URL + `/orders/getByUserID/${id}`)
             console.log(res.data)
             dispatch({type: GET_ORDER, payload: res.data})
+
+            dispatch({type: GET_ORDER_END})
         } catch (error) {
             console.log(error.response? error.response.data : error)
         }

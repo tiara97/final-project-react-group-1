@@ -123,11 +123,12 @@ const Navbar = () =>{
                                         Akun
                                     </MenuItem>
                                 </Link>
+                                <Link to="/">
                                 <MenuItem onClick={handleLogout}>
                                     <ExitToAppIcon className={classes.icon}/>
                                     Logout
                                 </MenuItem>
-                                
+                                </Link>
                             </div>):(
                             <div>
                                 <Link to="/Produk-Admin">
