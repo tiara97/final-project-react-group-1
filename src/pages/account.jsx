@@ -717,8 +717,6 @@ const Account = ({location}) => {
                 })}
             </Box>
         )
-    })
-        
     }
 
 
