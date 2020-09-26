@@ -16,7 +16,7 @@ const cartReducer = (state = INITIAL_STATE, action) =>{
             return{...state, 
                 cart: action.payload.cart? action.payload.cart : [], 
                 total: action.payload.total? action.payload.total.total_price : 0, 
-                error: null}
+                errorOngkir: null}
         case GET_CART_END:
             return{...state, loading: false}
         case CART_ERROR:

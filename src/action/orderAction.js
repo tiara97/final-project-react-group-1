@@ -1,13 +1,16 @@
 
-import {URL, GET_ORDER_ALL, GET_ORDER_ID, GET_ORDER_USER_STATUS, UPLOAD_PAYMENT_ERROR, GET_ORDER_USER  } from "./helper"
+import {URL, GET_ORDER_ALL, GET_ORDER_ID, UPLOAD_PAYMENT_ERROR, GET_ORDER_USER, GET_ORDER_START, GET_ORDER_END, GET_ORDER,  } from "./helper"
 import Axios from "axios"
 
 export const getAllOrder = () =>{
     return async(dispatch)=>{
         try {
+            dispatch({type: GET_ORDER_START})
             const res = await Axios.get(URL + `/orders/get`)
             console.log(res.data)
-            dispatch({type: GET_ORDER_ALL, payload: res.data})
+            dispatch({type: GET_ORDER, payload: res.data})
+
+            dispatch({type: GET_ORDER_END})
         } catch (error) {
             console.log(error.response? error.response.data : error)
         }
@@ -17,10 +20,14 @@ export const getAllOrder = () =>{
 export const getUserOrder = () =>{
     return async(dispatch)=>{
         try {
+            dispatch({type: GET_ORDER_START})
             let id = localStorage.getItem('id')
             const res = await Axios.get(URL + `/orders/getByUserID/${id}`)
             console.log(res.data)
-            dispatch({type: GET_ORDER_USER, payload: res.data})
+            
+            dispatch({type: GET_ORDER, payload: res.data})
+
+            dispatch({type: GET_ORDER_END})
         } catch (error) {
             console.log(error.response? error.response.data : error)
         }
@@ -71,7 +78,7 @@ export const userOrderConfirm = (order) =>{
             const confirm = await Axios.patch(URL + `/transaction/done/${order}`)
             const res = await Axios.get(URL + `/orders/getByUserID/${id}`)
             console.log(res.data)
-            dispatch({type: GET_ORDER_USER, payload: res.data})
+            dispatch({type: GET_ORDER, payload: res.data})
         } catch (error) {
             console.log(error.response? error.response.data : error)
         }
@@ -81,9 +88,12 @@ export const userOrderConfirm = (order) =>{
 export const getOrderByNumber = (order_number) =>{
     return async(dispatch)=>{
         try {
+            dispatch({type: GET_ORDER_START})
             const res = await Axios.get(URL + "/orders/getByOrderNumber/" + order_number)
             console.log(res.data)
-            dispatch({type: GET_ORDER_ID, payload: res.data})
+            dispatch({type: GET_ORDER, payload: res.data})
+
+            dispatch({type: GET_ORDER_END})
         } catch (error) {
             console.log(error.response? error.response.data : error)
         }
@@ -93,11 +103,14 @@ export const getOrderByNumber = (order_number) =>{
 export const checkoutAction = (order_number) =>{
     return async(dispatch)=>{
         try {
+            dispatch({type: GET_ORDER_START})
             const checkout = await Axios.patch(URL + "/transaction/checkout/" + order_number)
             let id = localStorage.getItem('id')
             const res = await Axios.get(URL + `/orders/getByUserID/${id}`)
             console.log(res.data)
-            dispatch({type: GET_ORDER_ID, payload: res.data})
+            dispatch({type: GET_ORDER, payload: res.data})
+
+            dispatch({type: GET_ORDER_END})
         } catch (error) {
             console.log(error.response? error.response.data : error)
         }
@@ -123,10 +136,13 @@ export const uploadPayment = (order_number,data) => {
 export const confirmPayment = (order_number) =>{
     return async(dispatch)=>{
         try {
+          dispatch({type: GET_ORDER_START})
             const checkout = await Axios.patch(URL + `/transaction/payment/${order_number}`)
             const res = await Axios.get(URL + `/orders/get`)
             console.log(res.data)
-            dispatch({type: GET_ORDER_ALL, payload: res.data})
+            dispatch({type: GET_ORDER, payload: res.data})
+          
+          dispatch({type: GET_ORDER_END})
         } catch (error) {
             console.log(error.response? error.response.data : error)
         }
@@ -136,10 +152,13 @@ export const confirmPayment = (order_number) =>{
 export const rejectPayment = (order_number) =>{
     return async(dispatch)=>{
         try {
+          dispatch({type: GET_ORDER_START})
             const checkout = await Axios.patch(URL + `/transaction/reject/${order_number}`)
             const res = await Axios.get(URL + `/orders/get`)
             console.log(res.data)
-            dispatch({type: GET_ORDER_ALL, payload: res.data})
+            dispatch({type: GET_ORDER, payload: res.data})
+          
+          dispatch({type: GET_ORDER_END})
         } catch (error) {
             console.log(error.response? error.response.data : error)
         }
@@ -149,10 +168,13 @@ export const rejectPayment = (order_number) =>{
 export const cancelOrder = (order_number) =>{
     return async(dispatch)=>{
         try {
+          dispatch({type: GET_ORDER_START})
             const checkout = await Axios.patch(URL + `/transaction/cancel/${order_number}`)
             const res = await Axios.get(URL + `/orders/get`)
             console.log(res.data)
-            dispatch({type: GET_ORDER_ALL, payload: res.data})
+            dispatch({type: GET_ORDER, payload: res.data})
+          
+            dispatch({type: GET_ORDER_END})
         } catch (error) {
             console.log(error.response? error.response.data : error)
         }
@@ -162,12 +184,30 @@ export const cancelOrder = (order_number) =>{
 export const sendOrder = (order_number) =>{
     return async(dispatch)=>{
         try {
+          dispatch({type: GET_ORDER_START})
             const checkout = await Axios.patch(URL + `/transaction/send/${order_number}`)
             const res = await Axios.get(URL + `/orders/get`)
             console.log(res.data)
-            dispatch({type: GET_ORDER_ALL, payload: res.data})
+            dispatch({type: GET_ORDER, payload: res.data})
+          
+            dispatch({type: GET_ORDER_END})
         } catch (error) {
             console.log(error.response? error.response.data : error)
+  
+export const confirmDone = (order_number) =>{
+    return async(dispatch)=>{
+        try {
+            dispatch({type: GET_ORDER_START})
+            const confirm = await Axios.patch(URL + `/transaction/done/${order_number}`)
+            let id = localStorage.getItem('id')
+            const res = await Axios.get(URL + `/orders/getByUserID/${id}`)
+            console.log(res.data)
+            dispatch({type: GET_ORDER, payload: res.data})
+
+            dispatch({type: GET_ORDER_END})
+        } catch (error) {
+            console.log(error.response ? error.response.data : error)
+                dispatch({ type: UPLOAD_PAYMENT_ERROR, payload: error.response.data })
         }
     }
 }

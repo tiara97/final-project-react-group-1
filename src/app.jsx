@@ -20,15 +20,22 @@ import Verification from './pages/verification'
 import Confirmation from "./pages/confirmation"
 import ProductAdmin from './pages/productAdmin'
 import TransactionAdmin from './pages/transactionAdmin'
+import AccountAdmin from "./pages/accountAdmin"
 
 import {userKeepLogin} from './action'
 
-
+import {userKeepLogin} from './action'
 const App = () =>{
     const dispatch = useDispatch()
     React.useEffect(()=> {
         dispatch(userKeepLogin())
     }, [])
+
+    const {role} = useSelector((state)=>{
+        return{
+            role: state.userReducer.role
+        }
+    })
     return(
         <div>
             <Navbar/>
@@ -45,6 +52,11 @@ const App = () =>{
             <Route path="/Konfirmasi" component={Confirmation}/>
             <Route path="/Produk-Admin" component={ProductAdmin}/>
             <Route path="/Transaksi-Admin" component={TransactionAdmin}/>
+            {role !== 3? 
+                (<>
+                <Route path="/Produk-Admin" component={ProductAdmin}/>
+                <Route path="/Akun-Admin" component={AccountAdmin}/>
+                </>): null}
             <Footer/>
         </div>
     )

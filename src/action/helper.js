@@ -1,19 +1,25 @@
 export const URL = "http://localhost:2000/api"
 export const URL_IMG = 'http://localhost:2000/'
 export const GET_CAROUSEL = "GET_CAROUSEL"
-export const GET_CATEGORY = "GET_CATEGORY"
 
+// CATEGORY
+export const GET_CATEGORY = "GET_CATEGORY"
+export const GET_CATEGORY_WAREHOUSE = "GET_CATEGORY_WAREHOUSE"
+export const FILTER_CATEGORY = "FILTER_CATEGORY"
 
 // PRODUCT
 export const GET_PRODUCT = "GET_PRODUCT"
 export const GET_PRODUCT_START = "GET_PRODUCT_START"
 export const GET_PRODUCT_END = "GET_PRODUCT_END"
-export const GET_PRODUCT_ADMIN = "GET_PRODUCT_ADMIN"
+export const GET_PRODUCT_TABLE = "GET_PRODUCT_TABLE"
 export const GET_PRODUCT_COLOR = "GET_PRODUCT_COLOR"
 export const GET_PRODUCT_DETAILS = "GET_PRODUCT_DETAILS"
 export const GET_PRODUCT_CATEGORY = "GET_PRODUCT_CATEGORY"
 export const GET_PRODUCT_WAREHOUSE = "GET_PRODUCT_WAREHOUSE"
 export const ADD_PRODUCT = "ADD_PRODUCT"
+export const ADD_PRODUCT_START = "ADD_PRODUCT_START"
+export const ADD_PRODUCT_END = "ADD_PRODUCT_END"
+export const ADD_PRODUCT_ERROR = "ADD_PRODUCT_ERROR"
 
 // CART
 export const GET_CART = "GET_CART"
@@ -27,6 +33,7 @@ export const UPLOAD_PAYMENT_ERROR = "UPLOAD_PAYMENT_ERROR"
 export const GET_WAREHOUSE = "GET_WAREHOUSE"
 export const GET_WAREHOUSE_START = "GET_WAREHOUSE_START"
 export const GET_WAREHOUSE_END = "GET_WAREHOUSE_END"
+
 // USER
 export const VERIFY = "VERIFY"
 export const VERIFY_ERROR = "VERIFY_ERROR"
@@ -40,6 +47,9 @@ export const REGISTER_END = "REGISTER_END"
 export const REGISTER_ERROR = "REGISTER_ERROR"  
 export const KEEP_LOGIN = "KEEP_LOGIN"
 export const LOG_OUT = "LOG_OUT"
+export const GET_USER = "GET_USER"
+export const GET_USER_START = "GET_USER_START"
+export const GET_USER_END = "GET_USER_END"
 
 // PROFILE
 export const GET_PROFILE = "GET_PROFILE"
@@ -53,6 +63,9 @@ export const GET_ORDER_USER = "GET_ORDER_USER"
 export const GET_ORDER_USER_STATUS = "GET_ORDER_USER_STATUS"
 export const GET_ORDER_ID = "GET_ORDER_ID"
 
+export const GET_ORDER = "GET_ORDER"
+export const GET_ORDER_START = "GET_ORDER_START"
+export const GET_ORDER_END = "GET_ORDER_END"
 
 // ADDRESS
 export const GET_ADDRESS = "GET_ADDRESS"

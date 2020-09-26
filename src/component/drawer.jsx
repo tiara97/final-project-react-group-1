@@ -2,8 +2,10 @@ import React from 'react';
 import clsx from 'clsx';
 import {Link} from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles';
-import {Drawer, IconButton, List, ListItem, ListItemText} from "@material-ui/core"
+import {Drawer, IconButton, List, ListItem, ListItemText, ListItemIcon} from "@material-ui/core"
 import MenuIcon from "@material-ui/icons/Menu"
+import CategoryIcon from '@material-ui/icons/Category';
+import KitchenIcon from '@material-ui/icons/Kitchen';
 
 
 const useStyles = makeStyles((theme)=>({
@@ -23,6 +25,9 @@ const useStyles = makeStyles((theme)=>({
   link:{
     textDecoration: "none",
     color: "#000"
+  },
+  drawer:{
+    backgroundColor: "rgba(149, 165, 166,0.1)"
   }
 }));
 
@@ -58,7 +63,7 @@ export default function TemporaryDrawer() {
         {categories.map((text, index) => (
           <Link to={`/${text}`} className={classes.link} key={index}>
             <ListItem button>
-              {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
+              <ListItemIcon>{index === 1 ? <CategoryIcon/> : <KitchenIcon/>}</ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>
           </Link>
@@ -72,7 +77,12 @@ export default function TemporaryDrawer() {
         <IconButton edge="start" className={classes.menuButton} onClick={toggleDrawer("left", true)} color="inherit" aria-label="menu">
             <MenuIcon />
         </IconButton>
-          <Drawer anchor={"left"} open={state["left"]} onClose={toggleDrawer("left", false)}>
+          <Drawer 
+            anchor={"left"} 
+            open={state["left"]} 
+            onClose={toggleDrawer("left", false)}
+            className={classes.drawer}
+            >
             {list("left")}
           </Drawer>
     </div>
