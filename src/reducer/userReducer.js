@@ -1,4 +1,4 @@
-import { LOG_IN, LOG_IN_START, LOG_IN_END, REGISTER_START, REGISTER_END, REGISTER, LOG_IN_ERROR, REGISTER_ERROR, LOG_OUT } from "../action"
+import { LOG_IN, LOG_IN_START, LOG_IN_END, REGISTER_START, REGISTER_END, REGISTER, LOG_IN_ERROR, REGISTER_ERROR, LOG_OUT,GET_USER, GET_USER_START, GET_USER_END } from "../action"
 
 const INITIAL_STATE = {
     id: null,
@@ -10,7 +10,9 @@ const INITIAL_STATE = {
     errorReg: '',
     loadingLogin: false,
     loadingReg: false,
-    token: ''
+    token: '',
+    user:[],
+    loadingGet: false
 }
 
 const userReducer = (state = INITIAL_STATE, action) => {
@@ -49,6 +51,12 @@ const userReducer = (state = INITIAL_STATE, action) => {
             return { ...state, errorReg: action.payload.errors, loadingRegister: false }
         case LOG_OUT:
             return INITIAL_STATE
+        case GET_USER:
+            return {...state, user: action.payload}
+        case GET_USER_START:
+            return {...state, loadingGet: true}
+        case GET_USER_END:
+            return {...state, loadingGet: false}
         default:
             return state
     }
