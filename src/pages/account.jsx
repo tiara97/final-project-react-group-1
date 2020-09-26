@@ -12,10 +12,9 @@ import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import { useSelector, useDispatch } from "react-redux"
 import { Link } from 'react-router-dom'
 
-import { getProfile, getFavoriteByID, editProfile, uploadPic, getAddress, editAddress, deleteAddress, addAddress, addMainAddress, deleteFavorite, getUserOrder, confirmDone } from '../action'
+import { getProfile, getFavoriteByID, editProfile, uploadPic, getAddress, editAddress, deleteAddress, addAddress, addMainAddress, deleteFavorite, getUserOrder, confirmDone, getUserOrderByStatus } from '../action'
 import { URL_IMG } from '../action/helper'
 import avatar from '../assets/avatar.jpg'
-import { ImageAspectRatioOutlined } from '@material-ui/icons';
 
 // Kontainer Tab
 function TabPanel(props) {
@@ -58,7 +57,6 @@ const useStyles = makeStyles((theme) => ({
         height: 'auto',
         marginLeft: 300,
         marginRight: 300
-        
     },
     // favorite style
     boxFavorite: {
@@ -123,6 +121,9 @@ const useStyles = makeStyles((theme) => ({
         // gridTemplateColumns: '100%',
         // gridTemplateRows: '10% 10% 80%',
         // padding: 25
+    },
+    orderChip: {
+        marginLeft: 10
     },
     orderTitle: {
         // gridColumn: '1 / span 3',
@@ -246,14 +247,6 @@ const Account = ({location}) => {
         console.log(data)
         dispatch(uploadPic(data))
     };
-
-    // const handleEdit = (props) => {
-    //     console.log(edit)
-    //     setEdit(true)
-    // }
-    // const handleCancelEdit = (props) => {
-    //     setEdit(false)
-    // }
 
     const TabProfile = (props) => {
         // state edit profile
@@ -549,6 +542,15 @@ const Account = ({location}) => {
         })
     }
     const TabHistory = (props) => {
+        const [chipID, setChipID] = React.useState(0)
+        const chips = [
+            "Semua",
+            "Waiting for payment",
+            "Payment success",
+            "On delivery",
+            "Done",
+            "Cancelled"
+        ];
         if (order.length === 0) {
             return (
                 <Box p={3} className={classes.boxFavorite}>
@@ -580,23 +582,94 @@ const Account = ({location}) => {
                 </div>
             )
         }
-
+        const DivButton = (props) => {
+            const { onClick, children, icon } = props
+            return (
+                <div className={classes.orderBtn}>
+                    <Button variant="contained" color="primary" component="span"
+                        startIcon={icon} onClick={onClick}>
+                        {children}
+                    </Button>
+                </div>
+            )
+        }
+        const ChipStatus = (props) => {
+            const { label, onClick, color } = props
+            return (
+                <Chip className={classes.orderChip} label={label} onClick={onClick} color={color} />
+            )
+        }
+        // fungsi
+        const handleClick = () => {
+            console.log('tes')
+        }
         const handleDoneConf =(order_number)=>{
             dispatch(confirmDone(order_number))
         }
-        return order.map((item, index) => {
+        // chipID nya balik ke 0 sendiri gatau knp
+        const handleChip = (id) => {
+            console.log(id)
+            let status_id = parseInt(id)
+            setChipID(id - 1)
+            if (id === 1) {
+                return dispatch(getUserOrder())
+            }
+            const body = { order_status_id: status_id }
+            console.log(body)
+            dispatch(getUserOrderByStatus(body))
+        }
+
+        if (order.length === 0) {
             return (
-                <Box p={3} className={classes.boxOrder} key={index}>
-                    <div className={classes.orderTitle}>
-                        {/* <Typography variant='subtitle2'>{item.order_date.slice(0, 10)}</Typography> */}
+                <Box p={3} className={classes.boxFavorite}>
+                    <div style={{ display: 'flex', marginBottom: 10, marginTop: 10 }}>
+                        {chips.map((item, index) => {
+                            return (
+                                <li key={index} style={{ listStyle: 'none' }}>
+                                    {index == chipID ? (
+                                        <ChipStatus label={item} onClick={() => handleChip(index + 1)} color='primary' />
+                                    ) : (
+                                            <ChipStatus label={item} onClick={() => handleChip(index + 1)} />
+                                        )}
+                                </li>
+                            )
+                        })}
                     </div>
-                    <div className={classes.orderTitle}>
-                        <Typography variant='h6'>{item.order_number}</Typography>
-                        <Typography variant='h6'>Status : {item.status}</Typography>
-                        <Typography variant='h6'>Rp. {item.total.toLocaleString()}</Typography>
-                    </div>
-                    <div className={classes.orderDet}>
-                        <Accordion>
+                    <Typography variant='h5' style={{ textAlign: 'center', marginBottom: 10 }}>Oops! Riwayat belanjamu kosong. Yuk Belanja!</Typography>
+                    <Link to='/Produk'>
+                        <Button onClick={() => console.log('test')} variant='contained'>Lihat Produk</Button>
+                    </Link>
+                </Box>
+            )
+        }
+        return (
+            <Box p={3} className={classes.boxOrder}>
+                <div style={{ display: 'flex', marginBottom: 10, marginTop: 10 }}>
+                    {chips.map((item, index) => {
+                        return (
+                            <li key={index} style={{ listStyle: 'none' }}>
+                                {index == chipID ? (
+                                    <ChipStatus label={item} onClick={() => handleChip(index + 1)} color='primary' />
+                                ) : (
+                                        <ChipStatus label={item} onClick={() => handleChip(index + 1)} />
+                                    )}
+                            </li>
+                        )
+                    })}
+                </div>
+                {order.map((item, index) => {
+                    return (
+                        <>
+                            <div className={classes.orderTitle}>
+                                <Typography variant='subtitle2'>{item.order_date.slice(0, 10)}</Typography>
+                            </div>
+                            <div className={classes.orderTitle}>
+                                <Typography variant='h6'>{item.order_number}</Typography>
+                                <Typography variant='h6'>Status : {item.status}</Typography>
+                                <Typography variant='h6'>Rp. {item.total.toLocaleString()}</Typography>
+                            </div>
+                            <div className={classes.orderDet}>
+                              <Accordion>
                             <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
                                 <Typography>Produk</Typography>
                             </AccordionSummary>
@@ -638,10 +711,14 @@ const Account = ({location}) => {
                                     </Button>
                                 </Link>
                             ) : null}
-                    </div>
-                </Box >
-            )
-        })
+                            </div>
+                        </>
+                    )
+                })}
+            </Box>
+        )
+    })
+        
     }
 
 
