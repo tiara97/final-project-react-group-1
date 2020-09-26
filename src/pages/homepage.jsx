@@ -1,19 +1,10 @@
 import React from "react"
-import {Typography, Button} from "@material-ui/core"
+import { Typography, Button, makeStyles} from "@material-ui/core"
 
 // import component
 import CarouselComp from "../component/carousel"
 
-const Home = () =>{
-    return(
-        <div style={styles.root}>
-            <Typography variant="h2">Home Page</Typography>
-            <CarouselComp/>
-        </div>
-    )
-}
-
-const styles = {
+const useStyles = makeStyles(() => ({
     root:{
         display: "flex",
         flexDirection: "column",
@@ -21,5 +12,14 @@ const styles = {
         alignItems: "center",
         paddingTop: "10vh"
     }
+}))
+
+export default function Home (){
+    const classes = useStyles()
+    return(
+        <div className={classes.root}>
+            <Typography variant="h2">Home Page</Typography>
+            <CarouselComp/>
+        </div>
+    )
 }
-export default Home
