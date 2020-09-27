@@ -88,13 +88,6 @@ const Register = () => {
         const body = { username, password, confPassword, email, user_fullname, phone, address, city, province, postcode, latitude: lat, longitude: long }
         console.log(body)
         dispatch(userRegister(body))
-        // setOpen(true)
-        // setUsername('')
-        // setEmail('')
-        // setPassword('')
-        // setConfpassword('')
-        // ini masih masalah, kapan buka modalnya ???
-       
     }
     console.log("error reg :", errorReg)
 
