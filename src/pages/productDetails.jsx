@@ -104,7 +104,7 @@ const Color = ({code, onPress, border = 0}) => {
     )
 }
 
-export default function ProductDetails ({location: {state: {id}}}) {
+export default function ProductDetails ({location}) {
     const classes = useStyles()
     const [quantity, setQuantity] = React.useState(0)
     const [colorButton, setColorButton] = React.useState({
@@ -135,7 +135,7 @@ export default function ProductDetails ({location: {state: {id}}}) {
     const uniqueColor = colorArr.filter((x, i, a) => a.indexOf(x) == i)
 
     React.useEffect(() => {
-        dispatch(getProductDetails(id? id: 0))
+        dispatch(getProductDetails(location.state ? location.state.id: 0))
     }, [])
 
     const renderCarousel = () => {
@@ -173,7 +173,7 @@ export default function ProductDetails ({location: {state: {id}}}) {
     const handleCart = () => {
         const body ={
             user_id: user_id,
-            product_id: id, 
+            product_id: location.state.id, 
             color_id: colorButton.id, 
             qty: quantity, 
             price_each: productDetails.price,

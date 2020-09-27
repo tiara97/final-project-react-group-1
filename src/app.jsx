@@ -67,6 +67,7 @@ const App = () =>{
                         <Route path="/Register" component={Register} />
                         <Route path="/Login" component={Login} />
                         <Route path="/Produk-Admin" component={ProductAdmin}/>
+                        <Route path="/Transaksi-Admin" component={TransactionAdmin}/>
                         <Route path="/Akun-Admin" component={AccountAdmin}/>
                         <Route path='*' component={NotFound}/>
                     </Switch>
