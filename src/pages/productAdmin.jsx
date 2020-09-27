@@ -73,7 +73,6 @@ const TableProducts = ({ product, productWarehouse, filterWarehouse, loading, er
   const [add, setAdd] = React.useState({
     open: false
   })
-  const [errors, setErrors] = React.useState(false)
 
   const renderAddProducts = () => {
     return (
@@ -81,7 +80,7 @@ const TableProducts = ({ product, productWarehouse, filterWarehouse, loading, er
         <div style={{margin: '0 2% 2% 0', width: "80%"}}>
           <InputLabel htmlFor="Name" shrink>Name</InputLabel>
           <TextField
-            error = {errors ? true : false}
+            error = {errorAdd ? true : false}
             id = "Name"
             fullWidth
             variant = "outlined"
@@ -92,17 +91,17 @@ const TableProducts = ({ product, productWarehouse, filterWarehouse, loading, er
           <div style={{marginRight: '3%', flexGrow: 1}}>
             <InputLabel htmlFor="Height" shrink>Height</InputLabel>
             <TextField
-              error = {errors ? true : false}
+              error = {errorAdd ? true : false}
               id ="Height"
               fullWidth
               variant = "outlined"
               onChange={(event) => setHeight(event.target.value)}
               />
           </div>
-          <div style={{marginLeft: '3%', flexGrow: 1}}>
+          <div style={{marginRight: '3%', flexGrow: 1}}>
             <InputLabel htmlFor="Length" shrink>Length</InputLabel>
             <TextField
-              error = {errors ? true : false}
+              error = {errorAdd ? true : false}
               id ="Length"
               fullWidth
               variant = "outlined"
@@ -114,17 +113,17 @@ const TableProducts = ({ product, productWarehouse, filterWarehouse, loading, er
           <div style={{marginRight: '3%', flexGrow: 1}}>
             <InputLabel htmlFor="Width" shrink>Width</InputLabel>
             <TextField
-              error = {errors ? true : false}
+              error = {errorAdd ? true : false}
               id ="Width"
               fullWidth
               variant = "outlined"
               onChange={(event) => setWidth(event.target.value)}
               />
           </div>
-          <div style={{marginLeft: '3%', flexGrow: 1}}>
+          <div style={{marginRight: '3%', flexGrow: 1}}>
             <InputLabel htmlFor="Weight" shrink>Weight</InputLabel>
             <TextField
-              error = {errors ? true : false}
+              error = {errorAdd ? true : false}
               id ="Weight"
               fullWidth
               variant = "outlined"
@@ -136,17 +135,17 @@ const TableProducts = ({ product, productWarehouse, filterWarehouse, loading, er
           <div style={{marginRight: '3%', flexGrow: 1}}>
             <InputLabel htmlFor="Price" shrink>Price</InputLabel>
             <TextField
-              error = {errors ? true : false}
+              error = {errorAdd ? true : false}
               id ="Price"
               fullWidth
               variant = "outlined"
               onChange={(event) => setPrice(event.target.value)}
               />
           </div>  
-          <div style={{marginLeft: '3%', flexGrow: 1}}>
+          <div style={{marginRight: '3%', flexGrow: 1}}>
             <InputLabel htmlFor="Material" shrink>Material</InputLabel>
             <TextField
-              error = {errors ? true : false}
+              error = {errorAdd ? true : false}
               id ="Material"
               fullWidth
               variant = "outlined"
@@ -158,7 +157,7 @@ const TableProducts = ({ product, productWarehouse, filterWarehouse, loading, er
           <InputLabel htmlFor="Desc" shrink>Desc</InputLabel>
           <TextField
             id ="Desc"
-            error = {errors ? true : false}
+            error = {errorAdd ? true : false}
             multiline
             rows={4}
             fullWidth
@@ -166,10 +165,10 @@ const TableProducts = ({ product, productWarehouse, filterWarehouse, loading, er
             onChange={(event) => setDesc(event.target.value)}
           />
         </div>
-        <Typography style={{color: 'red', fontSize: 12, margin: '0 10px'}}>{errors ? errors : ''}</Typography>
+        <Typography style={{color: 'red', fontSize: 12, margin: '0 10px'}}>{errorAdd ? errorAdd : ''}</Typography>
         <Button
           variant="contained"
-          onClick={() => { dispatch(addProduct({ name, height, length, width, weight, price, material, desc })) }}
+          onClick={() => dispatch(addProduct({ name, height, length, width, weight, price, material, desc }))}
         >
           Submit
         </Button>
@@ -301,17 +300,16 @@ const TableProducts = ({ product, productWarehouse, filterWarehouse, loading, er
         variant = "contained"
         disabled = {filterWarehouse !== 'All'}
         startIcon={<AddIcon/>}
-        onClick = {() => setAdd({open: true})}
+        onClick = {() => {
+              setAdd({open: true})
+              dispatch(getProduct('only_product'))}}
       >
         Add Products
       </Button>
       <Dialog
         open={add.open}
         maxWidth="xl"
-        onClose={() => {
-          setAdd({ open: false })
-          setErrors(false)
-        }}
+        onClose={() => setAdd({ open: false })}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -319,10 +317,7 @@ const TableProducts = ({ product, productWarehouse, filterWarehouse, loading, er
         <DialogContent>{renderAddProducts()}</DialogContent>
         <DialogActions>
           <Button
-            onClick={() => {
-              setAdd({ open: false })
-              setErrors(false)
-            }}
+            onClick={() => setAdd({ open: false })}
             color="primary"
             autoFocus
           >
@@ -354,7 +349,7 @@ const TableProductImage = ({ product, productByTable, productWarehouse, filterWa
 
   const renderAddProductImage = () => {
     return (
-      <div>
+      <div style={{display: 'flex', width: '30vw', justifyContent: 'space-evenly', alignItems: 'center'}}>
         <div>
           <InputLabel htmlFor="product-name">Product Name</InputLabel>
           <Select
@@ -378,15 +373,17 @@ const TableProductImage = ({ product, productByTable, productWarehouse, filterWa
             onChange={(event) => setImgAdd(event.target.value)}
           />
         </div>
-        <Button
-          variant = "contained"
-          onClick = {() => {
-            dispatch(addProductImage({product_id: name, image: imgAdd }))
-            setAdd({open: false})
-          }}
-        >
-          Submit
-        </Button>
+        <div>
+          <Button
+            variant = "contained"
+            onClick = {() => {
+              dispatch(addProductImage({product_id: name, image: imgAdd }))
+              setAdd({open: false})
+            }}
+          >
+            Submit
+          </Button>
+        </div>
       </div>
     )
   }
@@ -403,13 +400,6 @@ const TableProductImage = ({ product, productByTable, productWarehouse, filterWa
   };
 
   const tableBodyProductImage = () => {
-    let group = productByTable.reduce((r, a) => {
-      console.log("a", a);
-      console.log('r', r);
-      r[a.make] = [...r[a.make] || [], a];
-      return r;
-     }, {});
-     console.log("group", group);
     return (productWarehouse.length !== 0 ? productWarehouse.product : product).map((item) => {
       return (
         <TableRow key={item.id}>
@@ -491,7 +481,10 @@ const TableProductImage = ({ product, productByTable, productWarehouse, filterWa
                       <IconButton onClick={() => setEditDialog(item.id)}>
                         <EditIcon />
                       </IconButton>
-                      <IconButton onClick={() => dispatch(deleteProductImage(item.id))}>
+                      <IconButton onClick={() => {
+                        dispatch(deleteProductImage(item.id))
+                        if(item.id === null) setDialog({ id: null, open: false, type: '' })}}
+                      >
                         <DeleteIcon />
                       </IconButton>
                     </TableCell>
@@ -510,9 +503,7 @@ const TableProductImage = ({ product, productByTable, productWarehouse, filterWa
         variant = "contained"
         disabled = {filterWarehouse !== 'All'}
         startIcon={<AddIcon/>}
-        onClick = {() => {
-          setDialog({id: null, open: true, type: 'add' })
-          dispatch(getProduct('only_product'))}}
+        onClick = {() => setDialog({id: null, open: true, type: 'add' })}
       >
         Add Product Image
       </Button>
@@ -525,7 +516,7 @@ const TableProductImage = ({ product, productByTable, productWarehouse, filterWa
         maxWidth="xl"
         onClose={() => {
           setDialog({ id: null, open: false, type: '' })
-          dispatch(getProduct('product_details')) }}
+          setEditDialog(null)}}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -535,7 +526,7 @@ const TableProductImage = ({ product, productByTable, productWarehouse, filterWa
           <Button
             onClick={() => {
               setDialog({ id: null, open: false, type: ''  })
-              dispatch(getProduct('product_details'))}}
+              setEditDialog(null)}}
             color="primary"
             autoFocus
           >
@@ -565,7 +556,7 @@ const TableProductStock = ({ product, productByTable, productWarehouse, productC
 
   const renderAdd = () => {
     return (
-      <div style={{display: 'flex', width: '50vw'}}>
+      <div style={{display: 'flex', width: '50vw', alignItems: 'center'}}>
         <div style={{width: '25%', marginRight: '1%'}}>
           <InputLabel shrink>Name</InputLabel>
           <Select
@@ -574,7 +565,7 @@ const TableProductStock = ({ product, productByTable, productWarehouse, productC
             value={name}
             onChange={(event) => setName(event.target.value)}
             >
-            {product.map(item => {
+            {productByTable.map(item => {
               return (
                 <MenuItem key = {item.id} value={item.id}>{item.name}</MenuItem>
                 )
@@ -633,11 +624,14 @@ const TableProductStock = ({ product, productByTable, productWarehouse, productC
             variant="outlined"
           />
         </div>
-        <Button
-          onClick = {() => dispatch(addProductStock({product_id: name, color_id: color, warehouse_id: warehouseId, stock_available: stockAvailable, stock_ordered: stockOrdered}))}
-        >
-          Submit
-        </Button>
+        <div>
+          <Button
+            variant = "contained"
+            onClick = {() => dispatch(addProductStock({product_id: name, color_id: color, warehouse_id: warehouseId, stock_available: stockAvailable, stock_ordered: stockOrdered}))}
+          >
+            Submit
+          </Button>
+        </div>
       </div>
     )
   }
@@ -843,9 +837,14 @@ const TableProductStock = ({ product, productByTable, productWarehouse, productC
 
     // filter product, color, and fromWarehouse in transferStock
     const data = id ? productByTable.filter((item) => item.product_id === id) : null;
-    const uniqueColor = data ? data.map(item => item.color_id).filter((x, i, a) => a.indexOf(x) == i).map(item => productColor[item]) : null
+    // const uniqueColor = data ? data.map(item => item.color_id).filter((x, i, a) => a.indexOf(x) == i) : null
+    // const filterColor = uniqueColor ? uniqueColor.map(item => productColor.filter(value => value.id === item)) : null
+    // console.log('data: ', data)
+    // console.log('uniqueColor: ', uniqueColor)
+    // console.log('filterColor: ', filterColor)
+    // console.log(filterColor.map((item, index) => item[index]))
+    // setColor(filterColor)
     setName(id ? product[id-1].id : '')
-    setColor(uniqueColor)
     setFromWarehouse(data)
   }
   
@@ -866,17 +865,17 @@ const TableProductStock = ({ product, productByTable, productWarehouse, productC
           <InputLabel htmlFor="Name" shrink>Color</InputLabel>
             <Select
               variant="outlined"
-              value={color[0].id}
+              value={color}
               onChange={(event) => setColor(event.target.value)}
             >
-              {color.map(item => {
+              {productColor.map(item => {
                 return (
                   <MenuItem key = {item.id} value={item.id}>{item.color}</MenuItem>
                 )
               })}
             </Select>
         </div>
-        <div style={{margin: '0 2% 2% 0', width: "80%"}}>
+        <div>
           <InputLabel htmlFor="Name" shrink>Quantity</InputLabel>
             <TextField
               value={quantityTf}
@@ -936,7 +935,8 @@ const TableProductStock = ({ product, productByTable, productWarehouse, productC
           startIcon={<AddIcon/>}
           onClick = {() => {
             setDialog({id: null, open: true, type: 'Add'})
-            setColor(1) }}
+            setColor(1)
+            dispatch(getProductByTable('only_product'))}}
         >
           Add Product Stock
         </Button>
@@ -948,7 +948,9 @@ const TableProductStock = ({ product, productByTable, productWarehouse, productC
       <Dialog
         open={dialog.open}
         maxWidth="xl"
-        onClose={() => setDialog({ id: null, open: false, type: '' })}
+        onClose={() => {
+          setDialog({ id: null, open: false, type: '' })
+          dispatch(getProductByTable('product_stock'))}}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -960,7 +962,9 @@ const TableProductStock = ({ product, productByTable, productWarehouse, productC
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={() => setDialog({ id: null, open: false, type: '' })}
+            onClick={() => {
+              setDialog({ id: null, open: false, type: '' })
+              dispatch(getProductByTable('product_stock'))}}
             color="primary"
             autoFocus
           >
@@ -994,7 +998,7 @@ const TableCategory = ({ categoryWarehouse, filterWarehouse, category, dispatch,
             onChange={(event) => setCategoryName(event.target.value)}
             />
         </div>
-        <div style={{display: 'flex', width: "80%", justifyContent: 'center', alignItems: 'space-between', marginBottom: '2%'}}>
+        <div style={{margin: '0 2% 2% 0', width: "80%"}}>
             <InputLabel htmlFor="Length" shrink>Parent</InputLabel>
             <TextField
               error = {errors ? true : false}
@@ -1033,8 +1037,8 @@ const TableCategory = ({ categoryWarehouse, filterWarehouse, category, dispatch,
   const tableBodyCategory = () => {
     return (categoryWarehouse.length !== 0 ? categoryWarehouse : category).map((item) => {
       return item.id === editId ? (
-        <TableRow key={categoryWarehouse.length !== 0 ? item.id : item.category_id}>
-          <TableCell>{categoryWarehouse.length !== 0 ? item.id : item.category_id}</TableCell>
+        <TableRow key={item.id}>
+          <TableCell>{item.id}</TableCell>
           <TableCell>
             <TextField
               value={categoryName}
@@ -1066,7 +1070,7 @@ const TableCategory = ({ categoryWarehouse, filterWarehouse, category, dispatch,
           </TableCell>
         </TableRow>
       ) : (
-        <TableRow key={categoryWarehouse.length !== 0 ? item.id : item.category_id}>
+        <TableRow key={item.id}>
           <TableCell>{item.id}</TableCell>
           <TableCell>{item.category}</TableCell>
           <TableCell>{item.parent}</TableCell>
@@ -1092,7 +1096,7 @@ const TableCategory = ({ categoryWarehouse, filterWarehouse, category, dispatch,
         variant = "contained"
         disabled = {filterWarehouse !== 'All'}
         startIcon={<AddIcon/>}
-        onClick = {() => setAdd({open: true})}
+        onClick = {() => {setAdd({open: true})}}
       >
         Add Category
       </Button>
@@ -1129,41 +1133,51 @@ const TableCategory = ({ categoryWarehouse, filterWarehouse, category, dispatch,
   );
 };
 
-const TableProductCategory = ({ productWarehouse, filterWarehouse, procat, dispatch, loading, errorAdd }) => {
+const TableProductCategory = ({ productByTable, category, productWarehouse, filterWarehouse, procat, dispatch, loading, errorAdd }) => {
   const [editId, setEditId] = React.useState(null);
-  const [name, setName] = React.useState("");
-  const [category, setCategory] = React.useState(0);
+  const [name, setName] = React.useState(1);
+  const [categoryName, setCategoryName] = React.useState(1);
   const [add, setAdd] = React.useState({ open: false })
   const [errors, setErrors] = React.useState(false)
 
   const renderAddProductCategory = () => {
     return (
-      <div style={{display: 'flex', flexDirection: 'column', width: '40vw', justifyContent: 'center', alignItems: 'center'}}>
-          <div style={{marginRight: '3%', flexGrow: 1}}>
-            <InputLabel htmlFor="Price" shrink>Product Name</InputLabel>
-            <TextField
-              error = {errors ? true : false}
-              id ="Price"
-              fullWidth
-              variant = "outlined"
-              onChange={(event) => setName(event.target.value)}
-              />
-          </div>  
-          <div style={{marginLeft: '3%', flexGrow: 1}}>
-            <InputLabel htmlFor="Material" shrink>Category</InputLabel>
-            <TextField
-              error = {errors ? true : false}
-              id ="Material"
-              fullWidth
-              variant = "outlined"
-              onChange={(event) => setCategory(event.target.value)}
-              />
-          </div>
+      <div style={{display: 'flex', width: '40vw', justifyContent: 'center', alignItems: 'center'}}>
+        <div style={{width: '25%', marginRight: '2%'}}>
+          <InputLabel shrink>Name</InputLabel>
+          <Select
+            fullWidth
+            variant="outlined"
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            >
+            {productByTable.map(item => {
+              return (
+                <MenuItem key = {item.id} value={item.id}>{item.name}</MenuItem>
+                )
+              })}
+          </Select>
+        </div>
+        <div style={{width: '25%', marginRight: '2%'}}>
+          <InputLabel shrink>Category</InputLabel>
+          <Select
+            fullWidth
+            variant="outlined"
+            value={categoryName}
+            onChange={(event) => setCategoryName(event.target.value)}
+            >
+            {category.map(item => {
+              return (
+                <MenuItem key = {item.id} value={item.id}>{item.category}</MenuItem>
+                )
+              })}
+          </Select>
+        </div>
         <Typography style={{color: 'red', fontSize: 12, margin: '0 10px'}}>{errors ? errors : ''}</Typography>
         <Button
           variant="contained"
           onClick={() => {
-            dispatch(addProductCategory({product_id: name, category_id: category}))
+            dispatch(addProductCategory({product_id: name, category_id: categoryName}))
             if(!errorAdd) setAdd({open: false}) }}
         >
           Submit
@@ -1189,23 +1203,37 @@ const TableProductCategory = ({ productWarehouse, filterWarehouse, procat, dispa
         <TableRow key={item.id}>
           <TableCell>{item.id}</TableCell>
           <TableCell>
-            <TextField
+            <Select
+              fullWidth
+              variant="outlined"
               value={name}
               onChange={(event) => setName(event.target.value)}
-              variant="outlined"
-            />
+              >
+              {productByTable.map(item => {
+                return (
+                  <MenuItem key = {item.id} value={item.id}>{item.name}</MenuItem>
+                  )
+                })}
+            </Select>
           </TableCell>
           <TableCell>
-            <TextField
-              value={category}
-              onChange={(event) => setCategory(event.target.value)}
+            <Select
+              fullWidth
               variant="outlined"
-            />
+              value={categoryName}
+              onChange={(event) => setCategoryName(event.target.value)}
+              >
+              {category.map(item => {
+                return (
+                  <MenuItem key = {item.id} value={item.id}>{item.category}</MenuItem>
+                  )
+                })}
+            </Select>
           </TableCell>
           <TableCell>
             <IconButton 
               onClick={() => {
-                dispatch(editProductCategory(item.product_id, { category_id: category }));
+                dispatch(editProductCategory(item.product_id, { category_id: categoryName }));
                 setEditId(null) }}
             >
               <DoneIcon />
@@ -1221,7 +1249,13 @@ const TableProductCategory = ({ productWarehouse, filterWarehouse, procat, dispa
           <TableCell>{item.name}</TableCell>
           <TableCell>{item.category}</TableCell>
           <TableCell>
-            <IconButton disabled = {filterWarehouse !== 'All'} onClick={() => setEditId(item.id)}>
+            <IconButton 
+              disabled = {filterWarehouse !== 'All'} 
+              onClick={() => {
+                    setEditId(item.id)
+                    setName(item.product_id)
+                    setCategoryName(item.category_id)}}
+              >
               <EditIcon />
             </IconButton>
             <IconButton disabled = {filterWarehouse !== 'All'} onClick={() => dispatch(deleteProductCategory(item.product_id))}>
@@ -1311,16 +1345,18 @@ export default function ProductAdmin() {
     if (newValue == 0) {
       dispatch(getProduct('only_product'));
     } else if (newValue == 1) {
-      dispatch(getProduct('product_details'));
+      dispatch(getProduct('product_img_group'));
       dispatch(getProductByTable("product_image"));
     } else if (newValue == 2) {
       dispatch(getProduct('product_details'));
       dispatch(getProductByTable("product_stock"));
+    } else if (newValue == 4) {
+      dispatch(getProductByTable("only_product"));
     }
     setValue(newValue);
   };
 
-  const { product, productByTable, productColor, productWarehouse, warehouse, category, categoryWarehouse, loading, errorAdd, procat } = useSelector(
+  const { product, productByTable, productColor, productWarehouse, warehouse, category, categoryWarehouse, loading, errorAdd, procat, role, id } = useSelector(
     (state) => {
       return {
         product: state.productReducer.product,
@@ -1332,7 +1368,9 @@ export default function ProductAdmin() {
         loading: state.productReducer.loading,
         errorAdd: state.productReducer.errorAdd,
         productWarehouse: state.productReducer.productWarehouse,
-        procat: state.productCategoryReducer.procat
+        procat: state.productCategoryReducer.procat,
+        role: state.userReducer.role,
+        id: state.userReducer.id
       };
     }
   );
@@ -1345,6 +1383,12 @@ export default function ProductAdmin() {
     dispatch(getWarehouse());
     dispatch(getCategory())
     dispatch(getProductCategory())
+    console.log(`role: ${role}, id: ${id}`)
+    if(role === 2){
+      dispatch(getProductWarehouse(id-1, id-1))
+      dispatch(getCategoryByWarehouse(id-1, id-1))
+      setFilterWarehouse(id-1)
+    }
   }, []);
 
   return (
@@ -1364,6 +1408,7 @@ export default function ProductAdmin() {
         </Tabs>
         <Select
           variant="outlined"
+          disabled = {role === 2 ? true : false}
           value={filterWarehouse}
           onChange={(event) => {
             dispatch(getProductWarehouse(event.target.value, event.target.value))
@@ -1389,10 +1434,10 @@ export default function ProductAdmin() {
         <TableProductStock product={product} productByTable={productByTable} filterWarehouse={filterWarehouse} warehouse={warehouse} productColor={productColor} dispatch={dispatch} classes={classes} productWarehouse={productWarehouse}/>
       </TabPanel>
       <TabPanel value={value} index={3}>
-        <TableCategory product={product} productByTable={productByTable} category={category} filterWarehouse={filterWarehouse} categoryWarehouse={categoryWarehouse} loading={loading} dispatch={dispatch}/>
+        <TableCategory category={category} filterWarehouse={filterWarehouse} categoryWarehouse={categoryWarehouse} loading={loading} dispatch={dispatch}/>
       </TabPanel>
       <TabPanel value={value} index={4}>
-        <TableProductCategory procat={procat} productWarehouse={productWarehouse} filterWarehouse={filterWarehouse} dispatch={dispatch} loading={loading} errorAdd={errorAdd}/>
+        <TableProductCategory category={category} procat={procat} productByTable={productByTable} productWarehouse={productWarehouse} filterWarehouse={filterWarehouse} dispatch={dispatch} loading={loading} errorAdd={errorAdd}/>
       </TabPanel>
     </div>
   );

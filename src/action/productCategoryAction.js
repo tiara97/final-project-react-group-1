@@ -5,10 +5,16 @@ import {
 } from './helper'
 import Axios from 'axios'
 
-export const getProductCategory = () => {
+export const getProductCategory = (query = '', sort = '') => {
     return async (dispatch) => {
       try {
-        const res = await Axios.get(URL + `/product-category`);
+        let router = ''
+        if(query.length !== 0){
+            router = `/product-category?${query}${sort}`
+        } else {
+            router = `/product-category`
+        }
+        const res = await Axios.get(URL + `${router}`);
         dispatch({ type: GET_PRODUCT_CATEGORY, payload: res.data });
       } catch (error) {
         console.log(error.response ? error.response.data : error);
@@ -16,10 +22,17 @@ export const getProductCategory = () => {
     };
 };
 
-export const getFilterProductCategory = (category) => {
+export const getFilterProductCategory = (category, sort = '') => {
     return async (dispatch) => {
       try {
-        const res = await Axios.get(URL + `/product-category/filter/${category}`);
+        // check sort
+        let router = ''
+        if(sort){
+          router = `/product-category/filter/${category}?${sort}`
+        } else {
+          router = `/product-category/filter/${category}`
+        }
+        const res = await Axios.get(URL + router);
         dispatch({ type: FILTER_CATEGORY, payload: res.data });
       } catch (error) {
         console.log(error.response ? error.response.data : error);
