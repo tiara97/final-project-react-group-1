@@ -121,6 +121,7 @@ export default function ProductDetails({ location: { state: { id } } }) {
     const [openDialog, setOpenDialog] = React.useState(false)
     const [openLogin, setOpenLogin] = React.useState(false)
     const [openFav, setOpenFav] = React.useState(false)
+    const [openCol, setOpenCol] = React.useState(false)
     const [toLogin, setToLogin] = React.useState(false)
     const [nonActive, setNonActive] = React.useState(false)
     // import reducer
@@ -204,6 +205,9 @@ export default function ProductDetails({ location: { state: { id } } }) {
     }
 
     const handleFav = (product_id, color_id, price_each) => {
+        if(!color_id) {
+            return setOpenCol(true)
+        }
         const body = {
             product_id: product_id,
             color_id: color_id,
@@ -376,6 +380,17 @@ export default function ProductDetails({ location: { state: { id } } }) {
                 action={
                     <Button
                         onClick={() => setOpenFav(false)}>
+                        Tutup
+                    </Button>
+                }
+            />
+            <DialogComp
+                open={openCol}
+                onClose={() => setOpenCol(false)}
+                text={'Harap pilih warna dulu.'}
+                action={
+                    <Button
+                        onClick={() => setOpenCol(false)}>
                         Tutup
                     </Button>
                 }
