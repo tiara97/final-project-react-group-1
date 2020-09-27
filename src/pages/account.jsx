@@ -733,17 +733,6 @@ const Account = ({location}) => {
         
     }
 
-
-    const TabUser = (props) => {
-        return (
-            <Box p={3} className={classes.box}>
-                <h1>{username}</h1>
-                <h1>{email}</h1>
-                <h1>{status}</h1>
-                <Button className={classes.button} onClick={() => console.log('test')}>Test</Button>
-            </Box>
-        )
-    }
     return (
         <div className={classes.root}>
             <Backdrop className={classes.backdrop} open={loading}>

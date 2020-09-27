@@ -326,15 +326,6 @@ const TableHistory = ({ order, warehouse, role, id, wh_id }) => {
         {tableHead()}
         {tableBody()}
       </Table>
-      {/* <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
-        component="div"
-        count={order.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onChangePage={handleChangePage}
-        onChangeRowsPerPage={handleChangeRowsPerPage}
-      /> */}
       <DialogComp open={openDialog.open} onClose={() => setOpenDialog({ open: false, payment_note: null, order_number: null, warehouse_id:null })}
         text={
           <>
