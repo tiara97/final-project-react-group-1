@@ -66,6 +66,9 @@ const Register = () => {
     })
     const dispatch = useDispatch()
     
+    React.useEffect(()=> {
+        if(errorReg) return setOpen(true)
+    }, [!errorReg])
     const handleLoc = () => {
         const successCB = (position) => {
             console.log(position)
@@ -88,9 +91,9 @@ const Register = () => {
         // setPassword('')
         // setConfpassword('')
         // ini masih masalah, kapan buka modalnya ???
-        if (errorReg !== '') {
-            setOpen(true)
-        }
+        // if (errorReg !== '') {
+        //     setOpen(true)
+        // }
     }
 
     if (id) {
