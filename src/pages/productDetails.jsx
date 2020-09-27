@@ -143,26 +143,12 @@ export default function ProductDetails({ location: { state: { id } } }) {
     const colorArr = productDetails.color ? productDetails.color : []
     const uniqueColor = colorArr.filter((x, i, a) => a.indexOf(x) == i)
     let fav_id = favorite.filter((item) => item.name === productDetails.name)
-    // {
-    //     console.log(item.name)
-    //     if (item.name === productDetails.name) {
-    //         // setFav(true)
-    //         console.log('tes')
-    //     }
-    // })
     console.log(fav_id)
+    
     React.useEffect(() => {
         dispatch(getFavoriteByID())
         dispatch(getProductDetails(id ? id : 0))
     }, [])
-
-    // favorite.forEach((item)=> {
-    //     console.log(item.name)
-    //     if (item.name === productDetails.name) {
-    //         // return setFav(true)
-    //         console.log('fav')
-    //     }
-    // })
 
     const renderCarousel = () => {
         return (productDetails.image ? productDetails.image : []).map((item, index) => {
@@ -195,30 +181,6 @@ export default function ProductDetails({ location: { state: { id } } }) {
             }
         })
     }
-
-    // const renderFav = () => {
-    //     return (favorite? favorite : []).filter((item) => {
-    //         if (item.name == productDetails.name) {
-    //             return (
-    //                 <IconButton
-    //                     style={{ width: '50px', color: 'red' }}
-    //                     onClick={handleDelFav(productDetails.id)}
-    //                 >
-    //                         <FavoriteIcon />
-    //                 </IconButton>
-    //             )
-    //         } else {
-    //             return (
-    //                 <IconButton
-    //                     style={{ width: '50px', color: 'red' }}
-    //                     onClick={handleFav(productDetails.id, colorButton.id, productDetails.price)}
-    //                 >
-    //                         <FavoriteBorderIcon />
-    //                 </IconButton>
-    //             )
-    //         }
-    //     })
-    // }
 
     const handleCart = () => {
         const body = {
