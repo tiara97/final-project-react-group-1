@@ -1,5 +1,5 @@
 import React from 'react'
-import {Route} from "react-router-dom"
+import { Route } from "react-router-dom"
 import { useSelector, useDispatch } from "react-redux"
 
 // import component
@@ -22,42 +22,39 @@ import ProductAdmin from './pages/productAdmin'
 import TransactionAdmin from './pages/transactionAdmin'
 import AccountAdmin from "./pages/accountAdmin"
 
-import {userKeepLogin} from './action'
-
-import {userKeepLogin} from './action'
-const App = () =>{
+import { userKeepLogin } from './action'
+const App = () => {
     const dispatch = useDispatch()
-    React.useEffect(()=> {
+    React.useEffect(() => {
         dispatch(userKeepLogin())
     }, [])
 
-    const {role} = useSelector((state)=>{
-        return{
+    const { role } = useSelector((state) => {
+        return {
             role: state.userReducer.role
         }
     })
-    return(
+    return (
         <div>
-            <Navbar/>
-            <Route path="/" component={Home} exact/>
+            <Navbar />
+            <Route path="/" component={Home} exact />
             <Route path="/Produk" component={Products} />
             <Route path="/Produk-Detail" component={ProductDetails} />
-            <Route path="/Kategori" component={Category}/>
-            <Route path="/Cart" component={Cart}/>
-            <Route path="/Checkout" component={CheckOut}/>
+            <Route path="/Kategori" component={Category} />
+            <Route path="/Cart" component={Cart} />
+            <Route path="/Checkout" component={CheckOut} />
             <Route path="/Register" component={Register} />
             <Route path="/Login" component={Login} />
             <Route path="/Verifikasi" component={Verification} />
             <Route path="/Akun" component={Account} />
-            <Route path="/Konfirmasi" component={Confirmation}/>
-            <Route path="/Produk-Admin" component={ProductAdmin}/>
-            <Route path="/Transaksi-Admin" component={TransactionAdmin}/>
-            {role !== 3? 
+            <Route path="/Konfirmasi" component={Confirmation} />
+            {role !== 3 ?
                 (<>
-                <Route path="/Produk-Admin" component={ProductAdmin}/>
-                <Route path="/Akun-Admin" component={AccountAdmin}/>
-                </>): null}
-            <Footer/>
+                    <Route path="/Produk-Admin" component={ProductAdmin} />
+                    <Route path="/Akun-Admin" component={AccountAdmin} />
+                    <Route path="/Transaksi-Admin" component={TransactionAdmin} />
+                </>) : null}
+            <Footer />
         </div>
     )
 }
