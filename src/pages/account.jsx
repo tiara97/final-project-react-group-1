@@ -679,7 +679,7 @@ const Account = ({location}) => {
                         )
                     })}
                 </div>
-                {order.map((item, index) => {
+                {order.length !== 0? (order.map((item, index) => {
                     return (
                         <>
                             <div className={classes.orderTitle}>
@@ -733,7 +733,7 @@ const Account = ({location}) => {
                                     </Button>
                                 </Link>
                             ) : null}
-                            {item.status !== "On progress" && item.status !== "Waiting for payment"?
+                            {item.status === "Payment success" || item.status === "On delivery" || item.status === "Done"?
                                 (<Button
                                     style={{marginLeft: 5}} 
                                     className={classes.button} 
@@ -745,7 +745,7 @@ const Account = ({location}) => {
                             </div>
                         </>
                     )
-                })}
+                })): null}
             </Box>
         )
     }

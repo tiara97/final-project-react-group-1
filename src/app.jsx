@@ -53,6 +53,7 @@ const App = () =>{
                         <Route path="/Login" component={Login} />
                         <Route path="/Akun" component={Account} />
                         <Route path="/Konfirmasi" component={Confirmation}/>
+                        <Route path="/Verifikasi" component={Verification} />
                         <Route path="/Receipt" component={Receipt}/>
                         <Route path='*' component={NotFound}/>
                     </Switch>
