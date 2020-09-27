@@ -37,6 +37,11 @@ const useStyles = makeStyles(()=>({
   },
   text:{
       textShadow: "-2px 2px 3px #FFFFFF"
+  },
+  title:{
+      fontSize: 42,
+      fontWeight: 'bold',
+      fontFamily: 'Roboto sans'
   }
 }))
 
@@ -76,7 +81,7 @@ const Category = () =>{
     } 
     return(
         <div className={classes.root}>
-            <Typography variant="h4">Category Page</Typography>
+            <Typography className={classes.title}>Kategori</Typography>
             <div className={classes.cardContainer} >
                 {renderCard()}
             </div>
