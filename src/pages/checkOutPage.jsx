@@ -136,12 +136,12 @@ const CheckOut = () =>{
     const handleToConfirm = ()=>{
         dispatch(checkoutAction(cart[0].order_number))
         setConfirm(false)
-        // setToConfirmPage(true)
+        setToConfirmPage(true)
     }
 
-    // if(toConfirmPage){
-    //     return <Redirect to={{pathname:`/Konfirmasi`, search:`${cart[0].order_number}`}}/>
-    // }
+    if(toConfirmPage && !loading){
+        return <Redirect to={{pathname:`/Konfirmasi`, search:`${cart[0].order_number}`}}/>
+    }
   
     return(
         <div className={classes.root}>
@@ -181,12 +181,11 @@ const CheckOut = () =>{
                 open={confirm}
                 onClose={handleCloseConfirm}
                 text="Pesanan anda berhasil, silakan lakukan konfirmasi pembayaran!"
-                action={<Link to={{pathname:`/Konfirmasi`, search:`${cart[0].order_number}`}}>
+                action={
                         <Button
                                 onClick={handleToConfirm}>
                                 Lanjut
                         </Button>
-                     </Link>
                         }
             />
         </div>

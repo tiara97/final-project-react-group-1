@@ -729,8 +729,6 @@ const Account = ({location}) => {
                 })}
             </Box>
         )
-    
-        
     }
 
     return (

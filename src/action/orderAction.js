@@ -117,6 +117,7 @@ export const getOrderByNumber = (order_number) =>{
             dispatch({type: GET_ORDER_START})
             const res = await Axios.get(URL + "/orders/getByOrderNumber/" + order_number)
             console.log(res.data)
+            console.log( `${URL}/orders/getByOrderNumber/${order_number}`)
             dispatch({type: GET_ORDER, payload: res.data})
 
             dispatch({type: GET_ORDER_END})
@@ -129,14 +130,7 @@ export const getOrderByNumber = (order_number) =>{
 export const checkoutAction = (order_number) =>{
     return async(dispatch)=>{
         try {
-            dispatch({type: GET_ORDER_START})
             const checkout = await Axios.patch(URL + "/transaction/checkout/" + order_number)
-            let id = localStorage.getItem('id')
-            const res = await Axios.get(URL + `/orders/getByUserID/${id}`)
-            console.log(res.data)
-            dispatch({type: GET_ORDER, payload: res.data})
-
-            dispatch({type: GET_ORDER_END})
         } catch (error) {
             console.log(error.response? error.response.data : error)
         }
