@@ -43,12 +43,12 @@ const CarouselComp = ()=>{
 
 const styles ={
     container:{
-        height: "70vh",
-        width: "80vw",
+        height: "auto",
+        width: "100vw",
     },
     carousel:{
         height: "70vh",
-        width: "80vw",
+        width: "100%",
         backgroundSize: "cover",
         backgroundPosition: "center"
         }
