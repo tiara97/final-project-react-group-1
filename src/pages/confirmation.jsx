@@ -43,11 +43,11 @@ const useStyles = makeStyles((theme)=>({
       },
 }))
 
-const Confirmation = ({location: {search}})=>{
+const Confirmation = ({location})=>{
     const [openDialog, setOpenDialog] = React.useState(false)
     const classes = useStyles()
     const dispatch = useDispatch()
-    const order_number = search.slice(1)
+    const order_number = location.search.slice(1)
 
     const {order, error, loading} = useSelector((state)=>{
         return{
