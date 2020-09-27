@@ -14,11 +14,23 @@ import {
 } from "./helper";
 import Axios from "axios";
 
-export const getProduct = (type) => {
+export const getProduct = (type, sort = '') => {
   return async (dispatch) => {
     try {
-      const res = await Axios.get(URL + `/products/get/${type}`);
+      dispatch({type: GET_PRODUCT_START})
+
+      let router = ''
+      if(sort){
+        router = `/products/get/${type}?${sort}`
+      } else {
+        router = `/products/get/${type}`
+      }
+
+      // get product
+      const res = await Axios.get(URL + router);
       dispatch({ type: GET_PRODUCT, payload: res.data });
+
+      dispatch({type: GET_PRODUCT_END})
     } catch (error) {
       console.log(error.response ? error.response.data : error);
     }
@@ -96,7 +108,7 @@ export const addProductImage = (body) => {
       await Axios.post(URL + "/products/add/image", body)
 
       // get product
-      const res1 = await Axios.get(URL + `/products/get/product_details`);
+      const res1 = await Axios.get(URL + `/products/get/product_img_group`);
       dispatch({ type: GET_PRODUCT, payload: res1.data });
       const res2 = await Axios.get(URL + `/products/table/product_image`);
       dispatch({ type: GET_PRODUCT_TABLE, payload: res2.data });
@@ -155,8 +167,10 @@ export const editProductImage = (product_id, body) => {
       await Axios.patch(URL + `/products/edit/image/${product_id}`, body);
 
       // get product
-      const res = await Axios.get(URL + `/products/table/product_image`);
-      dispatch({ type: GET_PRODUCT_TABLE, payload: res.data });
+      const res1 = await Axios.get(URL + `/products/get/product_img_group`);
+      dispatch({ type: GET_PRODUCT, payload: res1.data });
+      const res2 = await Axios.get(URL + `/products/table/product_image`);
+      dispatch({ type: GET_PRODUCT_TABLE, payload: res2.data });
 
       dispatch({ type: GET_PRODUCT_END });
     } catch (error) {
@@ -194,12 +208,8 @@ export const deleteProduct = (id) => {
             await Axios.delete(URL + `/products/delete/${id}`);
       
             // get product
-            const res1 = await Axios.get(URL + `/products/get/product_details`);
-            dispatch({ type: GET_PRODUCT, payload: res1.data });
-            const res2 = await Axios.get(URL + `/products/table/product_image`);
-            dispatch({ type: GET_PRODUCT_TABLE, payload: res2.data });
-            const res3 = await Axios.get(URL + `/products/table/product_stock`);
-            dispatch({ type: GET_PRODUCT_TABLE, payload: res3.data });
+            const res = await Axios.get(URL + "/products/get/only_product")
+            dispatch({type: GET_PRODUCT, payload: res.data})
       
             dispatch({ type: GET_PRODUCT_END });
         } catch (error) {
@@ -217,8 +227,8 @@ export const deleteProductImage = (id) => {
             await Axios.delete(URL + `/products/delete/image/${id}`);
       
             // get product
-            // const res1 = await Axios.get(URL + `/products`);
-            // dispatch({ type: GET_PRODUCT, payload: res1.data });
+            const res1 = await Axios.get(URL + `/products/get/product_img_group`);
+            dispatch({ type: GET_PRODUCT, payload: res1.data });
             const res2 = await Axios.get(URL + `/products/table/product_image`);
             dispatch({ type: GET_PRODUCT_TABLE, payload: res2.data });
       
@@ -238,8 +248,8 @@ export const deleteProductStock = (id) => {
             await Axios.delete(URL + `/products/delete/stock/${id}`);
       
             // get product
-            // const res1 = await Axios.get(URL + `/products`);
-            // dispatch({ type: GET_PRODUCT, payload: res1.data });
+            const res1 = await Axios.get(URL + `/products/get/product_details`);
+            dispatch({ type: GET_PRODUCT, payload: res1.data });
             const res2 = await Axios.get(URL + `/products/table/product_stock`);
             dispatch({ type: GET_PRODUCT_TABLE, payload: res2.data });
       

@@ -11,6 +11,7 @@ import orderReducer from "./orderReducer";
 import addressReducer from "./addressReducer";
 import favoriteReducer from "./favoriteReducer";
 import productCategoryReducer from "./productCategoryReducer"
+import reportReducer from './reportReducer'
 
 const allReducers = combineReducers({
   carouselReducer,
@@ -23,7 +24,8 @@ const allReducers = combineReducers({
   orderReducer,
   addressReducer,
   favoriteReducer,
-  productCategoryReducer
+  productCategoryReducer,
+  reportReducer
 });
 
 export default allReducers;

@@ -216,7 +216,7 @@ export const sendOrder = (order_number, body) =>{
         }
     }
 }
-  
+
 export const confirmDone = (order_number) =>{
     return async(dispatch)=>{
         try {

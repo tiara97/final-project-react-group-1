@@ -1,6 +1,6 @@
 import React from "react"
 import {useDispatch, useSelector} from "react-redux"
-import {Link} from "react-router-dom"
+import {Link, Redirect} from "react-router-dom"
 import { makeStyles } from '@material-ui/core/styles';
 import {AppBar, Toolbar, Typography, Button, IconButton, Menu, MenuItem, Avatar}  from "@material-ui/core"
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
@@ -124,10 +124,10 @@ const Navbar = () =>{
                                     </MenuItem>
                                 </Link>
                                 <Link to="/">
-                                <MenuItem onClick={handleLogout}>
-                                    <ExitToAppIcon className={classes.icon}/>
-                                    Logout
-                                </MenuItem>
+                                    <MenuItem onClick={handleLogout}>
+                                        <ExitToAppIcon className={classes.icon}/>
+                                        Logout
+                                    </MenuItem>
                                 </Link>
                             </div>):(
                             <div>
@@ -150,10 +150,10 @@ const Navbar = () =>{
                                     </MenuItem>
                                 </Link>
                                 <Link to="/">
-                                <MenuItem onClick={handleLogout}>
-                                    <ExitToAppIcon className={classes.icon}/>
-                                    Logout
-                                </MenuItem>
+                                    <MenuItem onClick={handleLogout}>
+                                        <ExitToAppIcon className={classes.icon}/>
+                                        Logout
+                                    </MenuItem>
                                 </Link>
                             </div>
                             )):( 
