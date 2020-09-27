@@ -19,8 +19,11 @@ import Account from './pages/account'
 import Verification from './pages/verification'
 import Confirmation from "./pages/confirmation"
 import ProductAdmin from './pages/productAdmin'
+import TransactionAdmin from './pages/transactionAdmin'
 import AccountAdmin from "./pages/accountAdmin"
 import NotFound from './pages/404'
+
+import {userKeepLogin} from './action'
 
 import {userKeepLogin} from './action'
 const App = () =>{
@@ -34,7 +37,7 @@ const App = () =>{
             role: state.userReducer.role
         }
     })
-
+    
     if(role === 3){
         return (
             <div>
