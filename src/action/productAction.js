@@ -150,7 +150,7 @@ export const editProduct = (product_id, body) => {
       await Axios.patch(URL + `/products/edit/${product_id}`, body);
 
       // get product
-      const res = await Axios.get(URL + `/products/only_product`);
+      const res = await Axios.get(URL + `/products/get/only_product`);
       dispatch({ type: GET_PRODUCT, payload: res.data });
 
       dispatch({ type: GET_PRODUCT_END });

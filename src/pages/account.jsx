@@ -652,11 +652,7 @@ const Account = ({location}) => {
                         {chips.map((item, index) => {
                             return (
                                 <li key={index} style={{ listStyle: 'none' }}>
-                                    {index == chipID ? (
-                                        <ChipStatus label={item} onClick={() => handleChip(index + 1)} color='primary' />
-                                    ) : (
-                                            <ChipStatus label={item} onClick={() => handleChip(index + 1)} />
-                                        )}
+                                        <ChipStatus label={item} onClick={() => handleChip(index + 1)} color={index == chipID ? 'primary' : ''} />
                                 </li>
                             )
                         })}
