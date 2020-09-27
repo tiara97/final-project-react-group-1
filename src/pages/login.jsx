@@ -55,7 +55,7 @@ const Login = () => {
                 <CircularProgress />
             </Backdrop>
             <div className={classes.img}>
-                <img width="100%" src='https://img2.pngio.com/modern-sofa-images-png-transparent-png-kindpng-modern-furniture-png-860_517.png' />
+                <img width="100%" alt='backgound' src='https://img2.pngio.com/modern-sofa-images-png-transparent-png-kindpng-modern-furniture-png-860_517.png' />
             </div>
             <Paper className={classes.container} elevation={5}>
                 <Typography variant='h3' className={classes.text}>Login</Typography>

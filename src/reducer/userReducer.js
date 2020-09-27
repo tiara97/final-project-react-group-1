@@ -6,6 +6,7 @@ const INITIAL_STATE = {
     email: '',
     role: null,
     status: null,
+    wh_id: null,
     errorLogin: '',
     errorReg: '',
     loadingLogin: false,
@@ -27,7 +28,8 @@ const userReducer = (state = INITIAL_STATE, action) => {
                 email: action.payload.email,
                 role: action.payload.role_id,
                 status: action.payload.status_id,
-                token: action.payload.token
+                token: action.payload.token,
+                wh_id: action.payload.wh_id,
             }
         case LOG_IN_END:
             return { ...state, loadingLogin: false }
