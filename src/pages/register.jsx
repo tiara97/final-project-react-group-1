@@ -40,6 +40,7 @@ const Register = () => {
 
     // dialog state
     const [open, setOpen] = React.useState(false);
+    const [toHome, setToHome] = React.useState(false)
 
     // register state
     const [username, setUsername] = React.useState('');
@@ -66,9 +67,11 @@ const Register = () => {
     })
     const dispatch = useDispatch()
     
-    React.useEffect(()=> {
-        if(errorReg) return setOpen(true)
-    }, [!errorReg])
+    React.useEffect(()=>{
+        if (id) {
+            setOpen(true)
+        }
+    },[id])
     const handleLoc = () => {
         const successCB = (position) => {
             console.log(position)
@@ -85,22 +88,14 @@ const Register = () => {
         const body = { username, password, confPassword, email, user_fullname, phone, address, city, province, postcode, latitude: lat, longitude: long }
         console.log(body)
         dispatch(userRegister(body))
-        // setOpen(true)
-        // setUsername('')
-        // setEmail('')
-        // setPassword('')
-        // setConfpassword('')
-        // ini masih masalah, kapan buka modalnya ???
-        // if (errorReg !== '') {
-        //     setOpen(true)
-        // }
     }
+    console.log("error reg :", errorReg)
 
-    if (id) {
-        if(open === false) {
+  
+        if(!open && toHome ) {
             return <Redirect to='/' />
         }
-    }
+    
     return (
         <div className={classes.root}>
             <Backdrop className={classes.backdrop} open={loading}>
@@ -165,7 +160,7 @@ const Register = () => {
                         Login
                 </Button>
             </Paper>
-            <AlertDialog open={open} title={`Welcome! :)`} close={() => setOpen(false)} />
+            <AlertDialog open={open} title={`Welcome! :)`} close={() => {setOpen(false);setToHome(true)}} />
         </div>
     )
 }
