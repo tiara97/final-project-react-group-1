@@ -18,12 +18,14 @@ import ClearIcon from '@material-ui/icons/Clear';
 import AddIcon from '@material-ui/icons/Add';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import ListIcon from '@material-ui/icons/List';
 import { useSelector, useDispatch } from "react-redux"
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 
 import { getProfile, getFavoriteByID, editProfile, uploadPic, getAddress, editAddress, deleteAddress, addAddress, addMainAddress, deleteFavorite, getUserOrder, confirmDone, getUserOrderByStatus } from '../action'
 import { URL_IMG } from '../action/helper'
 import avatar from '../assets/avatar.jpg'
+import DialogComp from '../component/dialog';
 
 // Kontainer Tab
 function TabPanel(props) {
@@ -52,7 +54,8 @@ const useStyles = makeStyles((theme) => ({
         height: "auto",
         paddingTop: '10vh',
         marginLeft: '10vw',
-        marginRight: '10vw'
+        marginRight: '10vw',
+        minHeight: "90vh"
     },
     backdrop: {
         zIndex: theme.zIndex.drawer + 1,
@@ -217,7 +220,6 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: 0,
         marginTop: 5
     },
- 
 }));
 
 
@@ -244,6 +246,7 @@ const Account = ({location}) => {
         dispatch(getFavoriteByID())
         dispatch(getAddress())
         dispatch(getUserOrder())
+        dispatch(getProfile())
         setLoading(false)
     }, [])
 
@@ -548,10 +551,12 @@ const Account = ({location}) => {
                         <Typography variant='body1' style={{ marginBottom: 10 }}>Color : {item.color}</Typography>
                         <Typography variant='body1' style={{ marginBottom: 10 }}>{item.desc}</Typography>
                         <div className={classes.favBtn}>
-                            <Button className={classes.button} variant="contained" color="primary" component="span" style={{marginRight: 10}} onClick={() => handleCart(item.id)}
-                                startIcon={<AddShoppingCartIcon />}>
-                                Add to Cart
-                            </Button>
+                            <Link to={{pathname:'/Produk-Detail', search: `id=${item.product_id}`, state: {id:`${item.product_id}`}}}>
+                                <Button className={classes.button} variant="contained" color="primary" component="span" style={{marginRight: 10}} onClick={() => handleCart(item.id)}
+                                    startIcon={<AddShoppingCartIcon />}>
+                                    Add to Cart
+                                </Button>
+                            </Link>
                             <Button className={classes.button} variant="contained" color="secondary" component="span"
                                 startIcon={<DeleteIcon />} onClick={() => dispatch(deleteFavorite(item.id))}>
                                 Hapus Favorit
@@ -563,6 +568,8 @@ const Account = ({location}) => {
         })
     }
     const TabHistory = (props) => {
+        const [toReceipt, setToReceipt] = React.useState(false)
+        const [orderNum, setOrderNum] = React.useState(null)
         const [chipID, setChipID] = React.useState(0)
         const chips = [
             "Semua",
@@ -572,16 +579,6 @@ const Account = ({location}) => {
             "Done",
             "Cancelled"
         ];
-        if (order.length === 0) {
-            return (
-                <Box p={3} className={classes.boxFavorite}>
-                    <Typography variant='h5' style={{ textAlign: 'center', marginBottom: 10 }}>Oops! Riwayat belanjamu kosong. Yuk Belanja!</Typography>
-                    <Link to='/Produk'>
-                        <Button className={classes.button} onClick={() => console.log('test')} variant='contained'>Lihat Produk</Button>
-                    </Link>
-                </Box>
-            )
-        }
 
         // komponen
         const DivImg = (props) => {
@@ -640,6 +637,14 @@ const Account = ({location}) => {
             dispatch(getUserOrderByStatus(body))
         }
 
+        const handletoReceipt = (order)=>{
+            setToReceipt(true)
+            setOrderNum(order)
+        }
+      
+        if(orderNum && toReceipt){
+            return <Redirect to={{pathname:`/Receipt`, search:`${orderNum}`}}/>
+        }
         if (order.length === 0) {
             return (
                 <Box p={3} className={classes.boxFavorite}>
@@ -674,7 +679,7 @@ const Account = ({location}) => {
                         )
                     })}
                 </div>
-                {order.map((item, index) => {
+                {order.length !== 0? (order.map((item, index) => {
                     return (
                         <>
                             <div className={classes.orderTitle}>
@@ -711,7 +716,7 @@ const Account = ({location}) => {
                                ) : null}
                             {item.status === "On delivery"?(
                                 <Button className={classes.button} variant="contained" onClick={() => handleDoneConf(item.order_number)}>
-                                    Barang Diterima
+                                    Terima Barang
                                 </Button>
                             ): null}
                             {item.status === 'Done' ? (
@@ -728,10 +733,19 @@ const Account = ({location}) => {
                                     </Button>
                                 </Link>
                             ) : null}
+                            {item.status === "Payment success" || item.status === "On delivery" || item.status === "Done"?
+                                (<Button
+                                    style={{marginLeft: 5}} 
+                                    className={classes.button} 
+                                    variant="contained" 
+                                    onClick={()=>handletoReceipt(item.order_number)}>
+                                    <ListIcon/> Lihat Receipt
+                                    </Button>):null}
+                           
                             </div>
                         </>
                     )
-                })}
+                })): null}
             </Box>
         )
     }
