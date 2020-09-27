@@ -140,7 +140,7 @@ const Navbar = () =>{
                                 <Link to="/Transaksi-Admin">
                                     <MenuItem>
                                         <ListIcon className={classes.icon}/>
-                                        Order
+                                        Transaksi
                                     </MenuItem>
                                 </Link>
                                 <Link to="/Akun-Admin">

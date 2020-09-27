@@ -60,7 +60,7 @@ import {
   deleteProductCategory
 } from "../action";
 
-const TableProducts = ({ product, productWarehouse, filterWarehouse, loading, errorAdd , dispatch}) => {
+const TableProducts = ({ product, productWarehouse, filterWarehouse, loading, errorAdd , dispatch, role}) => {
   const [editId, setEditId] = React.useState(null);
   const [name, setName] = React.useState("");
   const [price, setPrice] = React.useState(0);
@@ -188,7 +188,8 @@ const TableProducts = ({ product, productWarehouse, filterWarehouse, loading, er
         <TableCell>Length</TableCell>
         <TableCell>Weight</TableCell>
         <TableCell>Material</TableCell>
-        <TableCell>Action</TableCell>
+        { role === 1 ? <TableCell>Action</TableCell> : null}
+        
       </TableRow>
     );
   };
@@ -215,6 +216,7 @@ const TableProducts = ({ product, productWarehouse, filterWarehouse, loading, er
           <TableCell>
             <TextField
               value={desc}
+              fullWidth
               onChange={(event) => setDesc(event.target.value)}
               variant="outlined"
             />
@@ -273,19 +275,34 @@ const TableProducts = ({ product, productWarehouse, filterWarehouse, loading, er
           <TableCell>{item.name}</TableCell>
           <TableCell>{item.price}</TableCell>
           <TableCell>{item.desc}</TableCell>
-          <TableCell>{item.height}</TableCell>
-          <TableCell>{item.width}</TableCell>
-          <TableCell>{item.length}</TableCell>
+          <TableCell>{productWarehouse.length !== 0 ? item.size[0] : item.height}</TableCell>
+          <TableCell>{productWarehouse.length !== 0 ? item.size[1] : item.width}</TableCell>
+          <TableCell>{productWarehouse.length !== 0 ? item.size[2] : item.length}</TableCell>
           <TableCell>{item.weight}</TableCell>
           <TableCell>{item.material}</TableCell>
-          <TableCell>
-            <IconButton disabled = {filterWarehouse !== 'All'} onClick={() => setEditId(item.id)}>
-              <EditIcon />
-            </IconButton>
-            <IconButton disabled = {filterWarehouse !== 'All'} onClick={() => dispatch(deleteProduct(item.id))}>
-              <DeleteIcon />
-            </IconButton>
-          </TableCell>
+          {
+            role === 1 ?
+              <TableCell>
+                <IconButton disabled = {filterWarehouse !== 'All'} onClick={() => {
+                  setEditId(item.id)
+                  setName(item.name)
+                  setPrice(item.price)
+                  setDesc(item.desc)
+                  setHeight(item.height)
+                  setWidth(item.width)
+                  setLength(item.length)
+                  setWeight(item.weight)
+                  setMaterial(item.material)
+                }}>
+                  <EditIcon />
+                </IconButton>
+                <IconButton disabled = {filterWarehouse !== 'All'} onClick={() => dispatch(deleteProduct(item.id))}>
+                  <DeleteIcon />
+                </IconButton>
+              </TableCell>
+            :
+              null
+          }
         </TableRow>
       );
     });
@@ -296,16 +313,21 @@ const TableProducts = ({ product, productWarehouse, filterWarehouse, loading, er
       <Backdrop open={loading}>
         <CircularProgress />
       </Backdrop>
-      <Button
-        variant = "contained"
-        disabled = {filterWarehouse !== 'All'}
-        startIcon={<AddIcon/>}
-        onClick = {() => {
-              setAdd({open: true})
-              dispatch(getProduct('only_product'))}}
-      >
-        Add Products
-      </Button>
+      {
+        role === 1 ?
+          <Button
+            variant = "contained"
+            disabled = {filterWarehouse !== 'All'}
+            startIcon={<AddIcon/>}
+            onClick = {() => {
+                  setAdd({open: true})
+                  dispatch(getProduct('only_product'))}}
+          >
+            Add Products
+          </Button>
+        :
+        null
+      }
       <Dialog
         open={add.open}
         maxWidth="xl"
@@ -333,17 +355,14 @@ const TableProducts = ({ product, productWarehouse, filterWarehouse, loading, er
   );
 };
 
-const TableProductImage = ({ product, productByTable, productWarehouse, filterWarehouse, dispatch }) => {
+const TableProductImage = ({ product, productByTable, productWarehouse, filterWarehouse, dispatch, role }) => {
   const [dialog, setDialog] = React.useState({
-    id: null,
-    open: false,
-    type: ''
-  });
+      id: null,
+      open: false,
+      type: ''
+    });
   const [editDialog, setEditDialog] = React.useState(null);
   const [image, setImage] = React.useState("");
-  const [add, setAdd] = React.useState({
-    open: false,
-  });
   const [name, setName] = React.useState(1)
   const [imgAdd, setImgAdd] = React.useState("")
 
@@ -378,7 +397,7 @@ const TableProductImage = ({ product, productByTable, productWarehouse, filterWa
             variant = "contained"
             onClick = {() => {
               dispatch(addProductImage({product_id: name, image: imgAdd }))
-              setAdd({open: false})
+              setDialog({ id: null, open: false, type: '' })
             }}
           >
             Submit
@@ -411,7 +430,6 @@ const TableProductImage = ({ product, productByTable, productWarehouse, filterWa
           <TableCell>
             <Button
               variant="outlined"
-              disabled = {filterWarehouse !== 'All'}
               color="primary"
               startIcon={<ErrorIcon />}
               onClick={() => setDialog({ id: item.id, open: true, type: 'edit' })}
@@ -434,7 +452,7 @@ const TableProductImage = ({ product, productByTable, productWarehouse, filterWa
             <TableCell>Image</TableCell>
             <TableCell>Name</TableCell>
             <TableCell>URL Image</TableCell>
-            <TableCell>Action</TableCell>
+            { role === 1 ? <TableCell>Action</TableCell> : null }
           </TableRow>
         </TableHead>
         <TableBody>
@@ -450,6 +468,7 @@ const TableProductImage = ({ product, productByTable, productWarehouse, filterWa
                     <TableCell component="th" scope="row">
                       <TextField
                         value={image}
+                        fullWidth
                         onChange={(event) => setImage(event.target.value)}
                         variant="outlined"
                       />
@@ -477,17 +496,25 @@ const TableProductImage = ({ product, productByTable, productWarehouse, filterWa
                     <TableCell component="th" scope="row">
                       {item.image}
                     </TableCell>
-                    <TableCell component="th" scope="row">
-                      <IconButton onClick={() => setEditDialog(item.id)}>
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton onClick={() => {
-                        dispatch(deleteProductImage(item.id))
-                        if(item.id === null) setDialog({ id: null, open: false, type: '' })}}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
+                    {
+                      role === 1 ? 
+                        <TableCell component="th" scope="row">
+                          <IconButton onClick={() => {
+                            setEditDialog(item.id)
+                            setImage(item.image)}
+                          }>
+                            <EditIcon />
+                          </IconButton>
+                          <IconButton onClick={() => {
+                            dispatch(deleteProductImage(item.id))
+                            if(item.id === null) setDialog({ id: null, open: false, type: '' })}}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </TableCell>
+                        :
+                        null
+                    }
                   </TableRow>
                 );
             })
@@ -499,14 +526,19 @@ const TableProductImage = ({ product, productByTable, productWarehouse, filterWa
 
   return (
     <div>
-      <Button
-        variant = "contained"
-        disabled = {filterWarehouse !== 'All'}
-        startIcon={<AddIcon/>}
-        onClick = {() => setDialog({id: null, open: true, type: 'add' })}
-      >
-        Add Product Image
-      </Button>
+      {
+        role === 1 ?
+        <Button
+          variant = "contained"
+          disabled = {filterWarehouse !== 'All'}
+          startIcon={<AddIcon/>}
+          onClick = {() => setDialog({id: null, open: true, type: 'add' })}
+        >
+          Add Product Image
+        </Button>
+        :
+        null
+      }
       <Table>
         <TableHead>{tableHeadProductImage()}</TableHead>
         <TableBody>{tableBodyProductImage()}</TableBody>
@@ -538,7 +570,7 @@ const TableProductImage = ({ product, productByTable, productWarehouse, filterWa
   );
 };
 
-const TableProductStock = ({ product, productByTable, productWarehouse, productColor, filterWarehouse, warehouse , classes, dispatch }) => {
+const TableProductStock = ({ product, productByTable, productWarehouse, productColor, filterWarehouse, warehouse , classes, dispatch, role }) => {
   const [dialog, setDialog] = React.useState({
     id: null,
     open: false,
@@ -627,7 +659,9 @@ const TableProductStock = ({ product, productByTable, productWarehouse, productC
         <div>
           <Button
             variant = "contained"
-            onClick = {() => dispatch(addProductStock({product_id: name, color_id: color, warehouse_id: warehouseId, stock_available: stockAvailable, stock_ordered: stockOrdered}))}
+            onClick = {() => {
+              dispatch(addProductStock({product_id: name, color_id: color, warehouse_id: warehouseId, stock_available: stockAvailable, stock_ordered: stockOrdered}))
+              setDialog({id: null, open: false, type: ''})}}
           >
             Submit
           </Button>
@@ -667,15 +701,20 @@ const TableProductStock = ({ product, productByTable, productWarehouse, productC
             >
               Details
             </Button>
-            <Button
-              variant="outlined"
-              color="primary"
-              disabled={filterWarehouse !== 'All'}
-              startIcon={<SendIcon />}
-              onClick={() => toTransferStock(item.id)}
-            >
-              Transfer
-            </Button>
+            {
+              role === 1 ?
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  disabled={filterWarehouse !== 'All'}
+                  startIcon={<SendIcon />}
+                  onClick={() => toTransferStock(item.id)}
+                >
+                  Transfer
+                </Button>
+                :
+                null
+            }
           </TableCell>
         </TableRow>
       );
@@ -695,7 +734,7 @@ const TableProductStock = ({ product, productByTable, productWarehouse, productC
             <TableCell>Warehouse</TableCell>
             <TableCell>Stock Available</TableCell>
             <TableCell>Stock Ordered</TableCell>
-            <TableCell>Action</TableCell>
+            { role === 1 ? <TableCell>Action</TableCell> : null }
           </TableRow>
         </TableHead>
         <TableBody>
@@ -806,14 +845,19 @@ const TableProductStock = ({ product, productByTable, productWarehouse, productC
                     <TableCell>{item.warehouse_name}</TableCell>
                     <TableCell>{item.stock_available}</TableCell>
                     <TableCell>{item.stock_ordered}</TableCell>
-                    <TableCell component="th" scope="row">
-                      <IconButton disabled = {filterWarehouse !== 'All'} onClick={() => handleEdit(item.id)}>
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton disabled = {filterWarehouse !== 'All'} onClick={() => dispatch(deleteProductStock(item.id))}>
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
+                    {
+                      role === 1 ?
+                        <TableCell component="th" scope="row">
+                          <IconButton disabled = {filterWarehouse !== 'All'} onClick={() => handleEdit(item.id)}>
+                            <EditIcon />
+                          </IconButton>
+                          <IconButton disabled = {filterWarehouse !== 'All'} onClick={() => dispatch(deleteProductStock(item.id))}>
+                            <DeleteIcon />
+                          </IconButton>
+                        </TableCell>
+                        :
+                        null
+                    }
                   </TableRow>
                 );
             })
@@ -835,8 +879,9 @@ const TableProductStock = ({ product, productByTable, productWarehouse, productC
     // open dialog transfer
     setDialog({ id: id, open: true, type: 'Transfer' })
 
+    setName(id ? product[id-1].id : '')
     // filter product, color, and fromWarehouse in transferStock
-    const data = id ? productByTable.filter((item) => item.product_id === id) : null;
+    // const data = id ? productByTable.filter((item) => item.product_id === id) : null;
     // const uniqueColor = data ? data.map(item => item.color_id).filter((x, i, a) => a.indexOf(x) == i) : null
     // const filterColor = uniqueColor ? uniqueColor.map(item => productColor.filter(value => value.id === item)) : null
     // console.log('data: ', data)
@@ -844,14 +889,13 @@ const TableProductStock = ({ product, productByTable, productWarehouse, productC
     // console.log('filterColor: ', filterColor)
     // console.log(filterColor.map((item, index) => item[index]))
     // setColor(filterColor)
-    setName(id ? product[id-1].id : '')
-    setFromWarehouse(data)
+    // setFromWarehouse(data)
   }
   
   const renderTransfer = () => {
     return (
       <div style={{display: 'flex', flexDirection: 'row', width: '40vw', justifyContent: 'center', alignItems: 'center'}}>
-        <div style={{margin: '0 2% 2% 0', width: "80%"}}>
+        <div style={{width: '20%', margin: '0 1%'}}>
           <InputLabel htmlFor="Name" shrink>Product Name</InputLabel>
             <Select
               variant="outlined"
@@ -861,7 +905,7 @@ const TableProductStock = ({ product, productByTable, productWarehouse, productC
               <MenuItem value={dialog.id ? product[dialog.id-1].id : null}>{dialog.id ? product[dialog.id-1].name : null}</MenuItem>
             </Select>
         </div>
-        <div style={{margin: '0 2% 2% 0', width: "80%"}}>
+        <div style={{width: '20%', margin: '0 1%'}}>
           <InputLabel htmlFor="Name" shrink>Color</InputLabel>
             <Select
               variant="outlined"
@@ -875,34 +919,32 @@ const TableProductStock = ({ product, productByTable, productWarehouse, productC
               })}
             </Select>
         </div>
-        <div>
+        <div style={{width: '20%', margin: '0 1%'}}>
           <InputLabel htmlFor="Name" shrink>Quantity</InputLabel>
             <TextField
               value={quantityTf}
-              fullWidth
               onChange={(event) =>
                 setQuantityTf(event.target.value)
               }
               variant="outlined"
-              className={classes.inputStock}
             />
         </div>
-        <div style={{margin: '0 2% 2% 0', width: "80%"}}>
-          <InputLabel htmlFor="Name" shrink>From Warehouse</InputLabel>
+        <div style={{width: '20%', margin: '0 1%'}}>
+          <InputLabel htmlFor="Name" shrink>From</InputLabel>
             <Select
               variant="outlined"
-              value={fromWarehouse[0].warehouse_id}
+              value={fromWarehouse}
               onChange={(event) => setFromWarehouse(event.target.value)}
             >
-              {fromWarehouse.map(item => {
+              {warehouse.map(item => {
                 return (
-                  <MenuItem key = {item.warehouse_id} value={item.warehouse_id}>{item.warehouse_name}</MenuItem>
+                  <MenuItem key = {item.id} value={item.id}>{item.name}</MenuItem>
                 )
               })}
             </Select>
         </div>
-        <div style={{margin: '0 2% 2% 0', width: "80%"}}>
-          <InputLabel htmlFor="Name" shrink>To Warehouse</InputLabel>
+        <div style={{width: '20%', margin: '0 1%'}}>
+          <InputLabel htmlFor="Name" shrink>To</InputLabel>
             <Select
               variant="outlined"
               value={toWarehouse}
@@ -916,8 +958,11 @@ const TableProductStock = ({ product, productByTable, productWarehouse, productC
             </Select>
         </div>
         <Button
-          variant="outlined"
-          onClick = {() => dispatch(transferStock({product_id: name, color_id: color, from_warehouse: fromWarehouse, to_warehouse: toWarehouse, quantity: quantityTf}))}
+          variant="contained"
+          onClick = {() => {
+            dispatch(transferStock({product_id: name, color_id: color, from_warehouse: fromWarehouse, to_warehouse: toWarehouse, quantity: quantityTf}))
+            setDialog({ id: null, open: false, type: '' })
+          }}
 
         >
           Submit
@@ -928,19 +973,24 @@ const TableProductStock = ({ product, productByTable, productWarehouse, productC
 
   return (
     <div>
-      <FormControl style = {{display: 'flex', flexDirection: 'row'}}>
-        <Button
-          variant = "contained"
-          disabled = {filterWarehouse !== 'All'}
-          startIcon={<AddIcon/>}
-          onClick = {() => {
-            setDialog({id: null, open: true, type: 'Add'})
-            setColor(1)
-            dispatch(getProductByTable('only_product'))}}
-        >
-          Add Product Stock
-        </Button>
-      </FormControl>
+      {
+        role === 1 ?
+          <FormControl style = {{display: 'flex', flexDirection: 'row'}}>
+            <Button
+              variant = "contained"
+              disabled = {filterWarehouse !== 'All'}
+              startIcon={<AddIcon/>}
+              onClick = {() => {
+                setDialog({id: null, open: true, type: 'Add'})
+                setColor(1)
+                dispatch(getProductByTable('only_product'))}}
+            >
+              Add Product Stock
+            </Button>
+          </FormControl>
+        :
+          null
+      }
       <Table>
         <TableHead>{tableHeadProductStock()}</TableHead>
         <TableBody>{tableBodyProductStock()}</TableBody>
@@ -955,7 +1005,7 @@ const TableProductStock = ({ product, productByTable, productWarehouse, productC
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          { dialog.type == 'Details' ? 'Details Product Stock' : dialog.type == 'Transfer' ? 'Transfer Stock' : 'Add Product Stock' }
+          { dialog.type == 'Details' ? 'Details Product Stock' : dialog.type == 'Transfer' ? 'Transfer Stock Warehouse' : 'Add Product Stock' }
         </DialogTitle>
         <DialogContent>
         { dialog.type == 'Details' ? renderDetails() : dialog.type == 'Transfer' ? renderTransfer() : renderAdd()}
@@ -976,7 +1026,7 @@ const TableProductStock = ({ product, productByTable, productWarehouse, productC
   );
 };
 
-const TableCategory = ({ categoryWarehouse, filterWarehouse, category, dispatch, loading }) => {
+const TableCategory = ({ categoryWarehouse, filterWarehouse, category, dispatch, loading, role }) => {
   const [editId, setEditId] = React.useState(null);
   const [add, setAdd] = React.useState({
     open: false
@@ -1029,7 +1079,7 @@ const TableCategory = ({ categoryWarehouse, filterWarehouse, category, dispatch,
         <TableCell>ID</TableCell>
         <TableCell>Category</TableCell>
         <TableCell>Parent</TableCell>
-        <TableCell>Action</TableCell>
+        { role === 1 ? <TableCell>Action</TableCell> : null }
       </TableRow>
     );
   };
@@ -1074,14 +1124,19 @@ const TableCategory = ({ categoryWarehouse, filterWarehouse, category, dispatch,
           <TableCell>{item.id}</TableCell>
           <TableCell>{item.category}</TableCell>
           <TableCell>{item.parent}</TableCell>
-          <TableCell>
-            <IconButton disabled = {filterWarehouse !== 'All'} onClick={() => setEditId(item.id)}>
-              <EditIcon />
-            </IconButton>
-            <IconButton disabled = {filterWarehouse !== 'All'} onClick={() => dispatch(deleteCategory(item.id))}>
-              <DeleteIcon />
-            </IconButton>
-          </TableCell>
+          {
+            role === 1 ?
+              <TableCell>
+                <IconButton disabled = {filterWarehouse !== 'All'} onClick={() => setEditId(item.id)}>
+                  <EditIcon />
+                </IconButton>
+                <IconButton disabled = {filterWarehouse !== 'All'} onClick={() => dispatch(deleteCategory(item.id))}>
+                  <DeleteIcon />
+                </IconButton>
+              </TableCell>
+            :
+            null
+          }
         </TableRow>
       );
     });
@@ -1092,14 +1147,19 @@ const TableCategory = ({ categoryWarehouse, filterWarehouse, category, dispatch,
       <Backdrop open={loading}>
         <CircularProgress />
       </Backdrop>
-      <Button
-        variant = "contained"
-        disabled = {filterWarehouse !== 'All'}
-        startIcon={<AddIcon/>}
-        onClick = {() => {setAdd({open: true})}}
-      >
-        Add Category
-      </Button>
+      {
+        role === 1 ?
+          <Button
+            variant = "contained"
+            disabled = {filterWarehouse !== 'All'}
+            startIcon={<AddIcon/>}
+            onClick = {() => {setAdd({open: true})}}
+          >
+            Add Category
+          </Button>
+          :
+          null
+      }
       <Dialog
         open={add.open}
         maxWidth="xl"
@@ -1133,7 +1193,7 @@ const TableCategory = ({ categoryWarehouse, filterWarehouse, category, dispatch,
   );
 };
 
-const TableProductCategory = ({ productByTable, category, productWarehouse, filterWarehouse, procat, dispatch, loading, errorAdd }) => {
+const TableProductCategory = ({ productByTable, category, productWarehouse, filterWarehouse, procat, dispatch, loading, errorAdd, role }) => {
   const [editId, setEditId] = React.useState(null);
   const [name, setName] = React.useState(1);
   const [categoryName, setCategoryName] = React.useState(1);
@@ -1192,7 +1252,7 @@ const TableProductCategory = ({ productByTable, category, productWarehouse, filt
         <TableCell>ID</TableCell>
         <TableCell>Name</TableCell>
         <TableCell>Category</TableCell>
-        <TableCell>Action</TableCell>
+        { role === 1 ?<TableCell>Action</TableCell> : null }
       </TableRow>
     );
   };
@@ -1248,20 +1308,25 @@ const TableProductCategory = ({ productByTable, category, productWarehouse, filt
           <TableCell>{item.id}</TableCell>
           <TableCell>{item.name}</TableCell>
           <TableCell>{item.category}</TableCell>
-          <TableCell>
-            <IconButton 
-              disabled = {filterWarehouse !== 'All'} 
-              onClick={() => {
-                    setEditId(item.id)
-                    setName(item.product_id)
-                    setCategoryName(item.category_id)}}
-              >
-              <EditIcon />
-            </IconButton>
-            <IconButton disabled = {filterWarehouse !== 'All'} onClick={() => dispatch(deleteProductCategory(item.product_id))}>
-              <DeleteIcon />
-            </IconButton>
-          </TableCell>
+          {
+            role === 1 ?
+            <TableCell>
+              <IconButton 
+                disabled = {filterWarehouse !== 'All'} 
+                onClick={() => {
+                      setEditId(item.id)
+                      setName(item.product_id)
+                      setCategoryName(item.category_id)}}
+                >
+                <EditIcon />
+              </IconButton>
+              <IconButton disabled = {filterWarehouse !== 'All'} onClick={() => dispatch(deleteProductCategory(item.product_id))}>
+                <DeleteIcon />
+              </IconButton>
+            </TableCell>
+            :
+            null
+          }
         </TableRow>
       );
     });
@@ -1272,14 +1337,20 @@ const TableProductCategory = ({ productByTable, category, productWarehouse, filt
       <Backdrop open={loading}>
         <CircularProgress />
       </Backdrop>
-      <Button
-        variant = "contained"
-        disabled = {filterWarehouse !== 'All'}
-        startIcon={<AddIcon/>}
-        onClick = {() => setAdd({open: true})}
-      >
-        Add Product Category
-      </Button>
+      {
+        role === 1 ?
+          <Button
+            variant = "contained"
+            disabled = {filterWarehouse !== 'All'}
+            startIcon={<AddIcon/>}
+            onClick = {() => setAdd({open: true})}
+          >
+            Add Product Category
+          </Button>
+
+        :
+        null
+      }
       <Dialog
         open={add.open}
         maxWidth="xl"
@@ -1394,7 +1465,7 @@ export default function ProductAdmin() {
   return (
     <div className={classes.root}>
       <Typography>Product Admin Page</Typography>
-      <div style={{display: 'flex'}}>
+      <div style={{display: 'flex', justifyContent: 'space-between'}}>
         <Tabs
           value={value}
           onChange={handleChange}
@@ -1425,19 +1496,19 @@ export default function ProductAdmin() {
         </Select>
       </div>
       <TabPanel value={value} index={0}>
-        <TableProducts product={product} productWarehouse={productWarehouse} filterWarehouse={filterWarehouse} loading={loading} errorAdd={errorAdd} dispatch={dispatch}/>
+        <TableProducts role={role} product={product} productWarehouse={productWarehouse} filterWarehouse={filterWarehouse} loading={loading} errorAdd={errorAdd} dispatch={dispatch}/>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <TableProductImage product={product} productByTable={productByTable} productWarehouse={productWarehouse} filterWarehouse={filterWarehouse} dispatch={dispatch}/>
+        <TableProductImage role={role} product={product} productByTable={productByTable} productWarehouse={productWarehouse} filterWarehouse={filterWarehouse} dispatch={dispatch}/>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <TableProductStock product={product} productByTable={productByTable} filterWarehouse={filterWarehouse} warehouse={warehouse} productColor={productColor} dispatch={dispatch} classes={classes} productWarehouse={productWarehouse}/>
+        <TableProductStock role={role} product={product} productByTable={productByTable} filterWarehouse={filterWarehouse} warehouse={warehouse} productColor={productColor} dispatch={dispatch} classes={classes} productWarehouse={productWarehouse}/>
       </TabPanel>
       <TabPanel value={value} index={3}>
-        <TableCategory category={category} filterWarehouse={filterWarehouse} categoryWarehouse={categoryWarehouse} loading={loading} dispatch={dispatch}/>
+        <TableCategory role={role} category={category} filterWarehouse={filterWarehouse} categoryWarehouse={categoryWarehouse} loading={loading} dispatch={dispatch}/>
       </TabPanel>
       <TabPanel value={value} index={4}>
-        <TableProductCategory category={category} procat={procat} productByTable={productByTable} productWarehouse={productWarehouse} filterWarehouse={filterWarehouse} dispatch={dispatch} loading={loading} errorAdd={errorAdd}/>
+        <TableProductCategory role={role} category={category} procat={procat} productByTable={productByTable} productWarehouse={productWarehouse} filterWarehouse={filterWarehouse} dispatch={dispatch} loading={loading} errorAdd={errorAdd}/>
       </TabPanel>
     </div>
   );

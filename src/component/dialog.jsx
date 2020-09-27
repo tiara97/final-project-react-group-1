@@ -10,9 +10,7 @@ const DialogComp = ({open, onClose, text, action }) =>{
         open={open}
         onClose={onClose}>
         <DialogContent>
-            <DialogContentText>
                 {text}
-            </DialogContentText>
         </DialogContent>
         <DialogActions>
             {action}
