@@ -23,8 +23,11 @@ export const userLogin = (body) =>{
 
             const res = await Axios.post(URL + `/users/login`, body)
             console.log(res.data)
+            
             localStorage.setItem('token', res.data.token)
             localStorage.setItem('id', res.data.id)
+            localStorage.setItem('role', res.data.role_id)
+            localStorage.setItem('wh_id', res.data.wh_id)
             dispatch({type: LOG_IN, payload: res.data})
 
             dispatch({type: LOG_IN_END})
@@ -67,6 +70,8 @@ export const userKeepLogin = () =>{
         try {
             const token = localStorage.getItem('token')
             const id = localStorage.getItem('id')
+            const role = localStorage.getItem('role')
+            const wh_id = localStorage.getItem('wh_id')
             const resUser = await Axios.post(URL + '/users/keepLogin', {token})
             const resProfile = await Axios.get(URL + `/profiles/get/${id}`)
             dispatch({ type : LOG_IN, payload : resUser.data })

@@ -28,9 +28,9 @@ const productReducer = (state = INITIAL_STATE, action) => {
     case GET_PRODUCT:
       return { ...state, product: action.payload };
     case GET_PRODUCT_START:
-      return { ...state, loading: true };
+      return { ...state, loading: true, errorAdd: '' };
     case GET_PRODUCT_END:
-      return { ...state, loading: false };
+      return { ...state, loading: false, errorAdd: '' };
     case ADD_PRODUCT_START:
       return { ...state, errorAdd: '' };
     case ADD_PRODUCT_END:

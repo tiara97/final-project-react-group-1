@@ -1,6 +1,6 @@
 import React from "react"
 import {useDispatch, useSelector} from "react-redux"
-import {Link} from "react-router-dom"
+import {Link, Redirect} from "react-router-dom"
 import { makeStyles } from '@material-ui/core/styles';
 import {AppBar, Toolbar, Typography, Button, IconButton, Menu, MenuItem, Avatar}  from "@material-ui/core"
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
@@ -123,11 +123,12 @@ const Navbar = () =>{
                                         Akun
                                     </MenuItem>
                                 </Link>
-                                <MenuItem onClick={handleLogout}>
-                                    <ExitToAppIcon className={classes.icon}/>
-                                    Logout
-                                </MenuItem>
-                                
+                                <Link to="/">
+                                    <MenuItem onClick={handleLogout}>
+                                        <ExitToAppIcon className={classes.icon}/>
+                                        Logout
+                                    </MenuItem>
+                                </Link>
                             </div>):(
                             <div>
                                 <Link to="/Produk-Admin">
@@ -136,7 +137,7 @@ const Navbar = () =>{
                                         Produk
                                     </MenuItem>
                                 </Link>
-                                <Link to="/Order-Admin">
+                                <Link to="/Transaksi-Admin">
                                     <MenuItem>
                                         <ListIcon className={classes.icon}/>
                                         Order
@@ -148,11 +149,12 @@ const Navbar = () =>{
                                         Akun
                                     </MenuItem>
                                 </Link>
-                                <MenuItem onClick={handleLogout}>
-                                    <ExitToAppIcon className={classes.icon}/>
-                                    Logout
-                                </MenuItem>
-                                
+                                <Link to="/">
+                                    <MenuItem onClick={handleLogout}>
+                                        <ExitToAppIcon className={classes.icon}/>
+                                        Logout
+                                    </MenuItem>
+                                </Link>
                             </div>
                             )):( 
                             <div>

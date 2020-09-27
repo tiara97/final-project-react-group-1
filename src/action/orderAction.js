@@ -5,8 +5,10 @@ import Axios from "axios"
 export const getAllOrder = () =>{
     return async(dispatch)=>{
         try {
+            const alamat = localStorage.getItem('role') == 1 ? '/orders/get' : `/orders/getByWarehouseID/${localStorage.getItem('wh_id')}`
+            console.log(alamat)
             dispatch({type: GET_ORDER_START})
-            const res = await Axios.get(URL + `/orders/get`)
+            const res = await Axios.get(URL + alamat)
             console.log(res.data)
             dispatch({type: GET_ORDER, payload: res.data})
 
@@ -40,7 +42,7 @@ export const getUserOrderByStatus = (body) =>{
             let id = localStorage.getItem('id')
             const res = await Axios.post(URL + `/orders/getByOrderUserIDStatus/${id}`, body)
             console.log(res.data)
-            dispatch({type: GET_ORDER_USER, payload: res.data})
+            dispatch({type: GET_ORDER, payload: res.data})
         } catch (error) {
             console.log(error.response? error.response.data : error)
         }
@@ -50,21 +52,42 @@ export const getUserOrderByStatus = (body) =>{
 export const getOrderByStatus = (status_id) =>{
     return async(dispatch)=>{
         try {
+            dispatch({type: GET_ORDER_START})
             const res = await Axios.get(URL + `/orders/getByOrderStatus/${status_id}`)
             console.log(res.data)
-            dispatch({type: GET_ORDER_ALL, payload: res.data})
+            dispatch({type: GET_ORDER, payload: res.data})
+
+            dispatch({type: GET_ORDER_END})
         } catch (error) {
             console.log(error.response? error.response.data : error)
         }
     }
 }
 // UNTUK ADMIN !! -> get order sesuai warehouse ID
-export const getOrderByWarehosue = (wh_id) =>{
+export const getOrderByWarehouse = (wh_id) =>{
     return async(dispatch)=>{
         try {
+            dispatch({type: GET_ORDER_START})
             const res = await Axios.get(URL + `/orders/getByWarehouseID/${wh_id}`)
             console.log(res.data)
-            dispatch({type: GET_ORDER_ALL, payload: res.data})
+            dispatch({type: GET_ORDER, payload: res.data})
+
+            dispatch({type: GET_ORDER_END})
+        } catch (error) {
+            console.log(error.response? error.response.data : error)
+        }
+    }
+}
+// UNTUK ADMIN !! -> get order sesuai warehouse ID dan status
+export const getOrderByWarehouseStatus = (wh_id, body) =>{
+    return async(dispatch)=>{
+        try {
+            dispatch({type: GET_ORDER_START})
+            const res = await Axios.post(URL + `/orders/getByWarehouseIDStatus/${wh_id}`, body)
+            console.log(res.data)
+            dispatch({type: GET_ORDER, payload: res.data})
+
+            dispatch({type: GET_ORDER_END})
         } catch (error) {
             console.log(error.response? error.response.data : error)
         }
@@ -75,10 +98,13 @@ export const userOrderConfirm = (order) =>{
     return async(dispatch)=>{
         try {
             let id = localStorage.getItem('id')
+            dispatch({type: GET_ORDER_START})
             const confirm = await Axios.patch(URL + `/transaction/done/${order}`)
             const res = await Axios.get(URL + `/orders/getByUserID/${id}`)
             console.log(res.data)
             dispatch({type: GET_ORDER, payload: res.data})
+
+            dispatch({type: GET_ORDER_END})
         } catch (error) {
             console.log(error.response? error.response.data : error)
         }
@@ -143,11 +169,11 @@ export const confirmPayment = (order_number) =>{
     }
 }
 // admin reject struk pembayaran jika tidak sesuai
-export const rejectPayment = (order_number) =>{
+export const rejectPayment = (order_number, body) =>{
     return async(dispatch)=>{
         try {
           dispatch({type: GET_ORDER_START})
-            const checkout = await Axios.patch(URL + `/transaction/reject/${order_number}`)
+            const checkout = await Axios.patch(URL + `/transaction/reject/${order_number}`, body)
             const res = await Axios.get(URL + `/orders/get`)
             console.log(res.data)
             dispatch({type: GET_ORDER, payload: res.data})
@@ -159,11 +185,11 @@ export const rejectPayment = (order_number) =>{
     }
 }
 // admin cancel order jika order blm dibayar melebihi batas waktu
-export const cancelOrder = (order_number) =>{
+export const cancelOrder = (order_number, body) =>{
     return async(dispatch)=>{
         try {
           dispatch({type: GET_ORDER_START})
-            const checkout = await Axios.patch(URL + `/transaction/cancel/${order_number}`)
+            const checkout = await Axios.patch(URL + `/transaction/cancel/${order_number}`, body)
             const res = await Axios.get(URL + `/orders/get`)
             console.log(res.data)
             dispatch({type: GET_ORDER, payload: res.data})
@@ -175,11 +201,11 @@ export const cancelOrder = (order_number) =>{
     }
 }
 // admin kirim barang ke user
-export const sendOrder = (order_number) =>{
+export const sendOrder = (order_number, body) =>{
     return async(dispatch)=>{
         try {
           dispatch({type: GET_ORDER_START})
-            const checkout = await Axios.patch(URL + `/transaction/send/${order_number}`)
+            const checkout = await Axios.patch(URL + `/transaction/send/${order_number}`, body)
             const res = await Axios.get(URL + `/orders/get`)
             console.log(res.data)
             dispatch({type: GET_ORDER, payload: res.data})
@@ -190,6 +216,7 @@ export const sendOrder = (order_number) =>{
         }
     }
 }
+
 export const confirmDone = (order_number) =>{
     return async(dispatch)=>{
         try {

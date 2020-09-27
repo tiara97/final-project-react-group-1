@@ -1,5 +1,5 @@
 import React from 'react'
-import {Route} from "react-router-dom"
+import {Route, Switch} from "react-router-dom"
 import { useSelector, useDispatch } from "react-redux"
 
 // import component
@@ -21,45 +21,75 @@ import Confirmation from "./pages/confirmation"
 import ProductAdmin from './pages/productAdmin'
 import TransactionAdmin from './pages/transactionAdmin'
 import AccountAdmin from "./pages/accountAdmin"
-
+import NotFound from './pages/404'
 import {userKeepLogin} from './action'
 
 
 const App = () =>{
     const dispatch = useDispatch()
-    React.useEffect(()=> {
+    React.useEffect(() => {
         dispatch(userKeepLogin())
     }, [])
 
-    const {role} = useSelector((state)=>{
-        return{
+    const { role } = useSelector((state) => {
+        return {
             role: state.userReducer.role
         }
     })
-    return(
-        <div>
-            <Navbar/>
-            <Route path="/" component={Home} exact/>
-            <Route path="/Produk" component={Products} />
-            <Route path="/Produk-Detail" component={ProductDetails} />
-            <Route path="/Kategori" component={Category}/>
-            <Route path="/Cart" component={Cart}/>
-            <Route path="/Checkout" component={CheckOut}/>
-            <Route path="/Register" component={Register} />
-            <Route path="/Login" component={Login} />
-            <Route path="/Verifikasi" component={Verification} />
-            <Route path="/Akun" component={Account} />
-            <Route path="/Konfirmasi" component={Confirmation}/>
-            <Route path="/Produk-Admin" component={ProductAdmin}/>
-            <Route path="/Transaksi-Admin" component={TransactionAdmin}/>
-            {role !== 3? 
-                (<>
-                <Route path="/Produk-Admin" component={ProductAdmin}/>
-                <Route path="/Akun-Admin" component={AccountAdmin}/>
-                </>): null}
-            <Footer/>
-        </div>
-    )
+    
+    if(role === 3){
+        return (
+            <div>
+                <Navbar/>
+                    <Switch>
+                        <Route path="/" component={Home} exact/>
+                        <Route path="/Produk" component={Products} />
+                        <Route path="/Produk-Detail" component={ProductDetails} />
+                        <Route path="/Kategori" component={Category}/>
+                        <Route path="/Cart" component={Cart}/>
+                        <Route path="/Checkout" component={CheckOut}/>
+                        <Route path="/Register" component={Register} />
+                        <Route path="/Login" component={Login} />
+                        <Route path="/Verifikasi" component={Verification} />
+                        <Route path="/Akun" component={Account} />
+                        <Route path="/Konfirmasi" component={Confirmation}/>
+                        <Route path='*' component={NotFound}/>
+                    </Switch>
+                <Footer/>
+            </div>
+        )
+    } else if (role === 1 || role === 2){
+        return (
+            <div>
+                <Navbar/>
+                    <Switch>
+                        <Route path="/" component={Home} exact/>
+                        <Route path="/Register" component={Register} />
+                        <Route path="/Login" component={Login} />
+                        <Route path="/Produk-Admin" component={ProductAdmin}/>
+                        <Route path="/Akun-Admin" component={AccountAdmin}/>
+                        <Route path='*' component={NotFound}/>
+                    </Switch>
+                <Footer/>
+            </div>
+        )
+    } else {
+        return (
+            <div>
+                <Navbar/>
+                    <Switch>
+                        <Route path="/" component={Home} exact/>
+                        <Route path="/Register" component={Register} />
+                        <Route path="/Login" component={Login} />
+                        <Route path="/Produk" component={Products} />
+                        <Route path="/Produk-Detail" component={ProductDetails} />
+                        <Route path="/Kategori" component={Category}/>
+                        <Route path='*' component={NotFound}/>
+                    </Switch>
+                <Footer/>
+            </div>
+        )
+    }
 }
 
 export default App

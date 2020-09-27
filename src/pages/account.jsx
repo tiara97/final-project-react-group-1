@@ -50,7 +50,9 @@ const useStyles = makeStyles((theme) => ({
         // display: 'flex',
         // flexDirection: 'column',
         height: "auto",
-        paddingTop: '10vh'
+        paddingTop: '10vh',
+        marginLeft: '10vw',
+        marginRight: '10vw'
     },
     backdrop: {
         zIndex: theme.zIndex.drawer + 1,
@@ -62,14 +64,14 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: 10
     },
     box: {
-        backgroundColor: 'pink',
+        backgroundColor: '#f7f7f7',
         height: 'auto',
         marginLeft: 300,
-        marginRight: 300
+        marginRight: 300,
     },
     // favorite style
     boxFavorite: {
-        backgroundColor: 'pink',
+        // backgroundColor: 'pink',
         height: 'auto',
         display: 'flex',
         flexDirection: 'column',
@@ -77,17 +79,17 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'center'
     },
     boxFav: {
-        backgroundColor: 'pink',
+        // backgroundColor: 'pink',
         display: 'grid',
         gridTemplateColumns: '30% 70%',
         // gridTemplateRows: '20% 80%',
         padding: 30,
-        marginLeft: 300,
-        marginRight: 300
+        marginLeft: 100,
+        marginRight: 100
     },
     favTitle: {
         gridColumn: '1 / span 3',
-        backgroundColor: 'lavender',
+        // backgroundColor: 'lavender',
         padding: 10
     },
     favImg: {
@@ -98,7 +100,7 @@ const useStyles = makeStyles((theme) => ({
         // padding: 10
     },
     favInfo: {
-        backgroundColor: '#f2f2f2',
+        // backgroundColor: '#f2f2f2',
         paddingTop: 10,
         paddingLeft: 30,
         display: "flex",
@@ -113,30 +115,39 @@ const useStyles = makeStyles((theme) => ({
         marginRight: 10
     },
     boxProfile: {
-        backgroundColor: 'pink',
+        // backgroundColor: '#f7f7f7',
         height: '60vh',
         display: 'flex',
         justifyContent: 'space-between',
-        marginLeft: 300,
-        marginRight: 300
+        marginLeft: 100,
+        marginRight: 100
     },
     // history style
     boxOrder: {
-        backgroundColor: 'pink',
+        // backgroundColor: 'pink',
         height: 'auto',
         display: 'grid',
-        marginLeft: 300,
-        marginRight: 300
+        marginLeft: 100,
+        marginRight: 100
         // gridTemplateColumns: '100%',
         // gridTemplateRows: '10% 10% 80%',
         // padding: 25
+    },
+    boxAddress: {
+        // backgroundColor: 'pink',
+        height: 'auto',
+        width: 'auto',
+        display: 'flex',
+        justifyContent: 'space-between',
+        marginLeft: 100,
+        marginRight: 100
     },
     orderChip: {
         marginLeft: 10
     },
     orderTitle: {
         // gridColumn: '1 / span 3',
-        backgroundColor: 'lavender',
+        // backgroundColor: 'lavender',
         padding: 5,
         display: 'flex',
         justifyContent: 'space-between'
@@ -144,7 +155,7 @@ const useStyles = makeStyles((theme) => ({
     orderDet: {
         // height: 200,
         // gridColumn: '1 / span 3',
-        backgroundColor: '#f2f2f2',
+        // backgroundColor: '#f2f2f2',
         padding: 10
     },
     orderImg: {
@@ -152,10 +163,10 @@ const useStyles = makeStyles((theme) => ({
         width: 150,
         display: 'flex',
         alignItems: 'center',
-        backgroundColor: '#f2f2f2',
+        // backgroundColor: '#f2f2f2',
     },
     orderInfo: {
-        backgroundColor: '#f2f2f2',
+        // backgroundColor: '#f2f2f2',
         paddingTop: 10,
         paddingLeft: 30,
         flexGrow: 1
@@ -170,6 +181,7 @@ const useStyles = makeStyles((theme) => ({
     },
     divTab: {
         flexGrow: 1,
+        // width: '80vw',
         backgroundColor: theme.palette.background.paper
     },
     input: {
@@ -186,14 +198,14 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        backgroundColor: '#f2f2f2',
+        // backgroundColor: '#f7f7f7',
         padding: '10px',
     },
     divInfo: {
         flexGrow: 1,
         display: 'flex',
         flexDirection: 'column',
-        backgroundColor: 'lavender',
+        // backgroundColor: 'lavender',
         padding: '10px 40px',
         justifyContent: 'space-between'
     },
@@ -399,7 +411,7 @@ const Account = ({location}) => {
         }
 
         return (
-            <Box p={2} className={classes.box}>
+            <Box p={2} className={classes.boxAddress}>
                 <TableContainer component='div'>
                     <Table className={classes.table} aria-label="simple table">
                         <TableHead>
@@ -728,17 +740,6 @@ const Account = ({location}) => {
         )
     }
 
-
-    const TabUser = (props) => {
-        return (
-            <Box p={3} className={classes.box}>
-                <h1>{username}</h1>
-                <h1>{email}</h1>
-                <h1>{status}</h1>
-                <Button className={classes.button} onClick={() => console.log('test')}>Test</Button>
-            </Box>
-        )
-    }
     return (
         <div className={classes.root}>
             <Backdrop className={classes.backdrop} open={loading}>
@@ -754,13 +755,11 @@ const Account = ({location}) => {
                     onChange={handleChange}
                     aria-label="nav tabs example"
                     centered
-
                 >
                     <Tab label="Profil" {...a11yProps(0)}/>
                     <Tab label="Alamat" {...a11yProps(1)}/>
                     <Tab label="Favorit" {...a11yProps(2)}/>
                     <Tab label="Riwayat Belanja"{...a11yProps(3)} />
-                    <Tab label="Pengaturan" {...a11yProps(4)}/>
                 </Tabs>
                 <TabPanel value={value} index={0}>
                     <TabProfile />
@@ -773,9 +772,6 @@ const Account = ({location}) => {
                 </TabPanel>
                 <TabPanel value={value} index={3}>
                     <TabHistory />
-                </TabPanel>
-                <TabPanel value={value} index={4}>
-                    <TabUser />
                 </TabPanel>
             </div>
         </div>
