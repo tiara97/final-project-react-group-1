@@ -47,7 +47,7 @@ const styles ={
         width: "100vw",
     },
     carousel:{
-        height: "70vh",
+        height: "90vh",
         width: "100%",
         backgroundSize: "cover",
         backgroundPosition: "center"

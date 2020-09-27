@@ -1,4 +1,5 @@
 import React from "react"
+import { Redirect } from "react-router-dom"
 import {useDispatch, useSelector} from "react-redux"
 import {makeStyles, 
         Paper, 
@@ -25,7 +26,8 @@ const useStyles = makeStyles((theme)=>({
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        paddingTop: "10vh"
+        paddingTop: "10vh",
+        minHeight: "90vh"
     },
     accordion:{
         boxShadow: "none",
@@ -45,6 +47,7 @@ const useStyles = makeStyles((theme)=>({
 
 const Confirmation = ({location})=>{
     const [openDialog, setOpenDialog] = React.useState(false)
+    const [toHome, setToHome] = React.useState(false)
     const classes = useStyles()
     const dispatch = useDispatch()
     const order_number = location.search.slice(1)
@@ -59,7 +62,7 @@ const Confirmation = ({location})=>{
     React.useEffect(()=>{
         console.log(order_number)
         if(order_number){
-            dispatch(getOrderByNumber(110300))
+            dispatch(getOrderByNumber(order_number))
         }
     },[])
 
@@ -75,6 +78,10 @@ const Confirmation = ({location})=>{
 
     const handleClose = () =>{
         setOpenDialog(false)
+        setToHome(true)
+    }
+    if(!error && toHome){
+        return <Redirect to="/"/>
     }
 
     const renderOrder = ()=>{
@@ -99,10 +106,10 @@ const Confirmation = ({location})=>{
                         </AccordionDetails>
                     </Accordion>
                     <Typography>Total Harga : Rp. {item.total.toLocaleString()}</Typography>
-                    <Typography>Total Ongkir : Rp. {item.total_ongkir? item.total_ongkir.toLocaleString(): null}</Typography>
+                    <Typography>Total Ongkir : Rp. {item.total_ongkir? parseInt(item.total_ongkir).toLocaleString(): null}</Typography>
                     <Typography>
                         Total yang harus dibayar : Rp. 
-                        {item.total_ongkir? (item.total + item.total_ongkir).toLocaleString() : item.total.toLocaleString()}
+                        {item.total_ongkir? (parseInt(item.total) + parseInt(item.total_ongkir)).toLocaleString() : item.total.toLocaleString()}
                     </Typography>
                     <input
                             accept="image/*"

@@ -109,7 +109,7 @@ export default function Products({location: {search}}) {
                         <MenuItem value="All">Category</MenuItem>
                 {category.map(item => {
                     return (
-                        <MenuItem value={item.category}>{item.category}</MenuItem>
+                        <MenuItem key={item.id} value={item.category}>{item.category}</MenuItem>
                         )
                     })}
                 </Select>

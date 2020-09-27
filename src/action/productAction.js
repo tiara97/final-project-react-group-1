@@ -63,6 +63,7 @@ export const getProductDetails = (id) => {
   return async (dispatch) => {
     try {
       const res = await Axios.get(URL + `/products/details/${id}`);
+      console.log(res)
       dispatch({ type: GET_PRODUCT_DETAILS, payload: res.data });
     } catch (error) {
       console.log(error.response ? error.response.data : error);
