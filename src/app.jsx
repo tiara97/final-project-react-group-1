@@ -23,17 +23,15 @@ import TransactionAdmin from './pages/transactionAdmin'
 import AccountAdmin from "./pages/accountAdmin"
 import NotFound from './pages/404'
 
-import {userKeepLogin} from './action'
-
-import {userKeepLogin} from './action'
-const App = () =>{
+import { userKeepLogin } from './action'
+const App = () => {
     const dispatch = useDispatch()
-    React.useEffect(()=> {
+    React.useEffect(() => {
         dispatch(userKeepLogin())
     }, [])
 
-    const {role} = useSelector((state)=>{
-        return{
+    const { role } = useSelector((state) => {
+        return {
             role: state.userReducer.role
         }
     })

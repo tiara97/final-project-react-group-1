@@ -137,7 +137,7 @@ const Navbar = () =>{
                                         Produk
                                     </MenuItem>
                                 </Link>
-                                <Link to="/Order-Admin">
+                                <Link to="/Transaksi-Admin">
                                     <MenuItem>
                                         <ListIcon className={classes.icon}/>
                                         Order
