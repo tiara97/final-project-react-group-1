@@ -1383,7 +1383,10 @@ export default function ProductAdmin() {
     dispatch(getWarehouse());
     dispatch(getCategory())
     dispatch(getProductCategory())
+    console.log(`role: ${role}, id: ${id}`)
     if(role === 2){
+      dispatch(getProductWarehouse(id-1, id-1))
+      dispatch(getCategoryByWarehouse(id-1, id-1))
       setFilterWarehouse(id-1)
     }
   }, []);

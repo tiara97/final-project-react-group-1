@@ -20,6 +20,7 @@ export const ADD_PRODUCT = "ADD_PRODUCT"
 export const ADD_PRODUCT_START = "ADD_PRODUCT_START"
 export const ADD_PRODUCT_END = "ADD_PRODUCT_END"
 export const ADD_PRODUCT_ERROR = "ADD_PRODUCT_ERROR"
+export const GET_TOP_PRODUCT = "GET_TOP_PRODUCT"
 
 // CART
 export const GET_CART = "GET_CART"
