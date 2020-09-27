@@ -22,6 +22,7 @@ import ProductAdmin from './pages/productAdmin'
 import TransactionAdmin from './pages/transactionAdmin'
 import AccountAdmin from "./pages/accountAdmin"
 import NotFound from './pages/404'
+import Receipt from "./pages/receipt"
 import {userKeepLogin} from './action'
 
 
@@ -50,9 +51,9 @@ const App = () =>{
                         <Route path="/Checkout" component={CheckOut}/>
                         <Route path="/Register" component={Register} />
                         <Route path="/Login" component={Login} />
-                        <Route path="/Verifikasi" component={Verification} />
                         <Route path="/Akun" component={Account} />
                         <Route path="/Konfirmasi" component={Confirmation}/>
+                        <Route path="/Receipt" component={Receipt}/>
                         <Route path='*' component={NotFound}/>
                     </Switch>
                 <Footer/>
@@ -85,6 +86,7 @@ const App = () =>{
                         <Route path="/Produk" component={Products} />
                         <Route path="/Produk-Detail" component={ProductDetails} />
                         <Route path="/Kategori" component={Category}/>
+                        <Route path="/Verifikasi" component={Verification} />
                         <Route path='*' component={NotFound}/>
                     </Switch>
                 <Footer/>
