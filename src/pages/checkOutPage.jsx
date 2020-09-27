@@ -73,6 +73,7 @@ const CheckOut = () =>{
     })
 
     React.useEffect(()=>{
+        renderWarehouse()
         dispatch(getAddress())
         dispatch(getWarehouse())
         if(address[0]){
@@ -156,12 +157,12 @@ const CheckOut = () =>{
                 
                 {error? <Typography>{error}</Typography> : <>
                 <Typography>Barang dikirim dari gudang {whName}</Typography> 
-                <Typography>Total ongkir adalah Rp. {cart[0]? cart[0].total_ongkir.toLocaleString(): null}</Typography>
-                <Typography>Total biaya yang harus dibayar adalah Rp. {cart[0]?(total + cart[0].total_ongkir).toLocaleString(): null}</Typography>
+                <Typography>Total ongkir adalah Rp. {cart[0]? parseInt(cart[0].total_ongkir).toLocaleString(): ''}</Typography>
+                <Typography>Total biaya yang harus dibayar adalah Rp. {cart[0]?(parseInt(total) + parseInt(cart[0].total_ongkir)).toLocaleString(): ''}</Typography>
                 <Typography>Pilih Metode Pembayaran</Typography>
                 </>}
               
-                <FormControl disabled={radio} component="fieldset" onChange={handleChangeRadio}>
+                <FormControl component="fieldset" onChange={handleChangeRadio}>
                     <RadioGroup aria-label="gender" name="gender1" >
                         <FormControlLabel value="female" control={<Radio />} label="Bank Transfer" />
                         <FormControlLabel value="male" control={<Radio />} label="Cicilan 0% " />

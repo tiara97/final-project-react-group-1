@@ -1,4 +1,5 @@
 import React from 'react';
+import {useSelector, useDispatch} from "react-redux"
 import clsx from 'clsx';
 import {Link} from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles';
@@ -6,6 +7,9 @@ import {Drawer, IconButton, List, ListItem, ListItemText, ListItemIcon} from "@m
 import MenuIcon from "@material-ui/icons/Menu"
 import CategoryIcon from '@material-ui/icons/Category';
 import KitchenIcon from '@material-ui/icons/Kitchen';
+import {userKeepLogin} from '../action'
+import ListIcon from '@material-ui/icons/List';
+import PersonIcon from '@material-ui/icons/Person';
 
 
 const useStyles = makeStyles((theme)=>({
@@ -40,6 +44,15 @@ export default function TemporaryDrawer() {
     right: false,
   });
 
+  const dispatch = useDispatch()
+    React.useEffect(() => {
+        dispatch(userKeepLogin())
+    }, [])
+  const{role} = useSelector((state)=>{
+    return{
+      role: state.userReducer.role
+    }
+  })
   const toggleDrawer = (anchor, open) => (event) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       return;
@@ -48,7 +61,8 @@ export default function TemporaryDrawer() {
     setState({ ...state, [anchor]: open });
   };
 
-  const categories = ["Produk", "Kategori"]
+  const menuUser = ["Produk", "Kategori"]
+  const menuAdmin = ["Produk-Admin", "Transaksi-Admin", "Akun-Admin"]
 
   const list = (anchor) => (
     <div
@@ -60,14 +74,23 @@ export default function TemporaryDrawer() {
       onKeyDown={toggleDrawer(anchor, false)}
     >
       <List className={classes.listMenu}>
-        {categories.map((text, index) => (
+        {role !== 1 && role !== 2 ? (menuUser.map((text, index) => (
           <Link to={`/${text}`} className={classes.link} key={index}>
             <ListItem button>
               <ListItemIcon>{index === 1 ? <CategoryIcon/> : <KitchenIcon/>}</ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>
           </Link>
-        ))}
+        ))):(
+          menuAdmin.map((text, index) => (
+            <Link to={`/${text}`} className={classes.link} key={index}>
+              <ListItem button>
+                <ListItemIcon>{index === 0 ? <KitchenIcon/> : (index === 1? <ListIcon/> : <PersonIcon/>)}</ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItem>
+            </Link>
+          ))
+        )}
       </List>
     </div>
   );

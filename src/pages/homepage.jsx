@@ -47,12 +47,14 @@ const useStyles = makeStyles(() => ({
         paddingTop: '100%', // 16:9
     },
     link: {
-        textDecoration: 'none'
+        textDecoration: 'none',
     },
     title: {
         fontSize: 36,
         marginLeft: '1%',
-        marginBottom: '3%'
+        marginBottom: '3%',
+        textAlign: 'center',
+        marginTop: '1%'
     },
     catalog : {
         width : '90%',
@@ -104,7 +106,7 @@ const useStyles = makeStyles(() => ({
     },
     cardCategory:{
         minWidth : '30%',
-        minHeight: '65vh',
+        height: '75vh',
         marginBottom : '5%',
         marginLeft : '3%',
         marginRight : '3%',
@@ -115,14 +117,20 @@ const useStyles = makeStyles(() => ({
     captionCategory:{
         marginBottom: '5%'
     },
+    linkCategory: {
+        marginTop: '1%',
+        textDecoration: 'underline',
+        fontStyle: 'italic'
+    }
 }))
 
 export default function Home (){
     const classes = useStyles()
 
-    const {topProduct} = useSelector((state) => {
+    const {topProduct, role} = useSelector((state) => {
         return {
-            topProduct: state.reportReducer.topProduct
+            topProduct: state.reportReducer.topProduct,
+            role: state.userReducer.role
         }
     })
 
@@ -139,7 +147,7 @@ export default function Home (){
                 <div className={classes.topProduct}>
                     {topProduct.map(item =>{
                     return (
-                        <Link to={{pathname:'/Produk-Detail', search: `id=${item.id}`, state: {id:`${item.id}`}}} key={item.id} className={classes.link}>
+                        <Link to={{pathname: `${role === 3 ? '/Produk-Detail' : ''}`, search: `${role === 3 ? `id=${item.id}` : '' }`, state: {id:`${item.id}`}}} key={item.id} className={classes.link}>
                             <Button>
                                 <Card className={classes.card}>
                                     <CardMedia className={classes.media} image={item.image[0] ? item.image[0] : null}/>
@@ -185,7 +193,7 @@ export default function Home (){
                             <Typography>
                                 Ruang keluarga adalah pusat dari semua aktivitas di rumah. Pilih sofa ukuran lebih besar untuk mengakomodasi semua anggota keluarga atau sofa multifungsi dengan penyimpanan luas yang mudah diubah menjadi tempat tidur nyaman
                             </Typography>
-                            <Link to={{pathname:'/Produk-Detail'}} className={classes.link}>
+                            <Link to={{pathname:`${role === 3 ? '/Produk' : '/'}`, search: `${role === 3 ? 'category=sofa' : ''}`}} className={classes.linkCategory}>
                                 <Typography>
                                     Lihat koleksi sofa
                                 </Typography>
@@ -198,7 +206,7 @@ export default function Home (){
                             <Typography>
                                 Sediakan penyimpanan yang mudah mereka gunakan untuk merapikan dan menyimpan mainan dan perlengkapan sekolah mereka. Hadir dalam berbagai ukuran dan dapat menyesuaikan penyimpanan dengan kebutuhan Anda.
                             </Typography>
-                            <Link to={{pathname:'/Produk-Detail' }}  className={classes.link}>
+                            <Link to={{pathname: `${role === 3 ? '/Produk' : '/'}`, search: `${role === 3 ? 'category=lemari' : ''}` }}  className={classes.linkCategory}>
                                 <Typography>
                                     Lihat koleksi lemari
                                 </Typography>
@@ -211,8 +219,8 @@ export default function Home (){
                             <Typography className={classes.captionCategory}>
                                 Ciptakan area kerja nyaman dengan menggunakan perabotan dan perlengkapan untuk bekerja di rumah. Kami memiliki meja kerja dalam berbagai gaya dan desain.
                             </Typography>
-                            <Link to={{pathname:'/Produk-Detail'}} className={classes.link}>
-                                <Typography className={classes.linkCategory}>
+                            <Link to={{pathname: `${role === 3 ? '/Produk' : '/'}`, search: `${role === 3 ? 'category=meja' : ''}`}} className={classes.linkCategory}>
+                                <Typography>
                                     Lihat koleksi meja
                                 </Typography>
                             </Link>
