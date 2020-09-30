@@ -310,7 +310,7 @@ const Account = ({location}) => {
                             Upload
                                 </Button>
                     </label>
-                    <Button className={classes.button} variant="contained" color="primary" style={{ marginTop: 10 }}>Edit Password</Button>
+                    {/* <Button className={classes.button} variant="contained" color="primary" style={{ marginTop: 10 }}>Edit Password</Button> */}
                 </div>
                 <div className={classes.divInfo}>
                     <Typography variant='h5'>{username}</Typography>
@@ -683,7 +683,7 @@ const Account = ({location}) => {
                     return (
                         <>
                             <div className={classes.orderTitle}>
-                                <Typography variant='subtitle2'>{item.order_date.slice(0, 10)}</Typography>
+                                <Typography variant='subtitle2'>{item.order_date?item.order_date.slice(0, 10) : null}</Typography>
                             </div>
                             <div className={classes.orderTitle}>
                                 <Typography variant='h6'>{item.order_number}</Typography>

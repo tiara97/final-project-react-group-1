@@ -5,7 +5,8 @@ const INITIAL_STATE={
     total: 0,
     loading: false,
     error: null,
-    errorOngkir: null
+    errorOngkir: null,
+    errorQty: null
 }
 
 const cartReducer = (state = INITIAL_STATE, action) =>{
@@ -16,6 +17,7 @@ const cartReducer = (state = INITIAL_STATE, action) =>{
             return{...state, 
                 cart: action.payload.cart? action.payload.cart : [], 
                 total: action.payload.total? action.payload.total.total_price : 0, 
+                errorQty: action.payload.error? action.payload.error : null,
                 errorOngkir: null}
         case GET_CART_END:
             return{...state, loading: false}

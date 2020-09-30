@@ -67,6 +67,7 @@ export const GET_ORDER_ID = "GET_ORDER_ID"
 export const GET_ORDER = "GET_ORDER"
 export const GET_ORDER_START = "GET_ORDER_START"
 export const GET_ORDER_END = "GET_ORDER_END"
+export const ERROR_CHECKOUT = "ERROR_CHECKOUT"
 
 // ADDRESS
 export const GET_ADDRESS = "GET_ADDRESS"
