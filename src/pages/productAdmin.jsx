@@ -40,13 +40,16 @@ import {
   getWarehouse,
   getProductWarehouse,
   editProduct,
+  editProductColor,
   editProductImage,
   editProductStock,
   deleteProduct,
+  deleteProductColor,
   deleteProductImage,
   deleteProductStock,
   transferStock,
   addProduct,
+  addProductColor,
   addProductImage,
   addProductStock,
   getCategory,
@@ -570,6 +573,186 @@ const TableProductImage = ({ product, productByTable, productWarehouse, filterWa
   );
 };
 
+const TableColor = ({ productByTable, filterWarehouse, dispatch, loading, role }) => {
+  const [editId, setEditId] = React.useState(null);
+  const [add, setAdd] = React.useState({
+    open: false
+  })
+  const [errors, setErrors] = React.useState(false)
+  const [color, setColor] = React.useState('')
+  const [code, setCode] = React.useState('')
+
+  const renderAddColor = () => {
+    return (
+      <div style={{display: 'flex', flexDirection: 'column', width: '40vw', justifyContent: 'center', alignItems: 'center'}}>
+        <div style={{margin: '0 2% 2% 0', width: "80%"}}>
+          <InputLabel htmlFor="Name" shrink>Category</InputLabel>
+          <TextField
+            error = {errors ? true : false}
+            id = "Name"
+            fullWidth
+            variant = "outlined"
+            onChange={(event) => setColor(event.target.value)}
+            />
+        </div>
+        <div style={{margin: '0 2% 2% 0', width: "80%"}}>
+            <InputLabel htmlFor="Length" shrink>Parent</InputLabel>
+            <TextField
+              error = {errors ? true : false}
+              id ="Length"
+              fullWidth
+              variant = "outlined"
+              onChange={(event) => setCode(event.target.value)}
+              />
+        </div>
+        <Typography style={{color: 'red', fontSize: 12, margin: '0 10px'}}>{errors ? errors : ''}</Typography>
+        <Button
+          variant="contained"
+          onClick={() => {
+            dispatch(addProductColor({color, code}))
+            setColor('')
+            setCode('')
+            setAdd({open: false}) }}
+        >
+          Submit
+        </Button>
+      </div>
+    )
+  }
+
+  const tableHeadColor = () => {
+    return (
+      <TableRow>
+        <TableCell>ID</TableCell>
+        <TableCell>Color</TableCell>
+        <TableCell>Color Name</TableCell>
+        <TableCell>Code</TableCell>
+        <TableCell>Action</TableCell>
+      </TableRow>
+    );
+  };
+
+  const tableBodyColor = () => {
+    return productByTable.map((item) => {
+      return item.id === editId ? (
+        <TableRow key={item.id}>
+          <TableCell>{item.id}</TableCell>
+          <TableCell>
+            <div style={{backgroundColor: `${item.code}`, width: 40, height: 40, borderRadius: '50%'}}>
+            </div>
+          </TableCell>
+          <TableCell>
+            <TextField
+              value={color}
+              onChange={(event) => setColor(event.target.value)}
+              variant="outlined"
+            />
+          </TableCell>
+          <TableCell>
+            <TextField
+              value={code}
+              onChange={(event) => setCode(event.target.value)}
+              variant="outlined"
+            />
+          </TableCell>
+          <TableCell>
+            <IconButton 
+              onClick={() =>{
+                dispatch(editProductColor(item.id, {color, code}));
+                setColor('')
+                setCode(null)
+                setEditId(null);
+            }}
+            >
+              <DoneIcon />
+            </IconButton>
+            <IconButton onClick={() => setEditId(null)}>
+              <ClearIcon />
+            </IconButton>
+          </TableCell>
+        </TableRow>
+      ) : (
+        <TableRow key={item.id}>
+          <TableCell>{item.id}</TableCell>
+          <TableCell>
+            <div style={{backgroundColor: `${item.code}`, width: 40, height: 40, borderRadius: '50%'}}>
+            </div>
+          </TableCell>
+          <TableCell>{item.color}</TableCell>
+          <TableCell>{item.code}</TableCell>
+          {
+            role === 1 ?
+              <TableCell>
+                <IconButton disabled = {filterWarehouse !== 'All'} onClick={() => {
+                  setEditId(item.id)
+                  setColor(item.color)
+                  setCode(item.code)}}
+                >
+                  <EditIcon />
+                </IconButton>
+                <IconButton disabled = {filterWarehouse !== 'All'} onClick={() => dispatch(deleteProductColor(item.id))}>
+                  <DeleteIcon />
+                </IconButton>
+              </TableCell>
+            :
+            null
+          }
+        </TableRow>
+      );
+    });
+  };
+
+  return (
+    <>
+      <Backdrop open={loading}>
+        <CircularProgress />
+      </Backdrop>
+      {
+        role === 1 ?
+          <Button
+            variant = "contained"
+            disabled = {filterWarehouse !== 'All'}
+            startIcon={<AddIcon/>}
+            onClick = {() => {setAdd({open: true})}}
+          >
+            Add Color
+          </Button>
+          :
+          null
+      }
+      <Dialog
+        open={add.open}
+        maxWidth="xl"
+        onClose={() => {
+          setAdd({ open: false })
+          setErrors(false)
+        }}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Add Color</DialogTitle>
+        <DialogContent>{renderAddColor()}</DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              setAdd({ open: false })
+              setErrors(false)
+            }}
+            color="primary"
+            autoFocus
+          >
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Table>
+        <TableHead>{tableHeadColor()}</TableHead>
+        <TableBody>{tableBodyColor()}</TableBody>
+      </Table>
+    </>
+  );
+};
+
 const TableProductStock = ({ product, productByTable, productWarehouse, productColor, filterWarehouse, warehouse , classes, dispatch, role }) => {
   const [dialog, setDialog] = React.useState({
     id: null,
@@ -675,6 +858,7 @@ const TableProductStock = ({ product, productByTable, productWarehouse, productC
       <TableRow>
         <TableCell>ID</TableCell>
         <TableCell>Name</TableCell>
+        <TableCell>Total Stock On Delivery</TableCell>
         <TableCell>Total Stock Available</TableCell>
         <TableCell>Total Stock Ordered</TableCell>
         <TableCell>Total Stock Operational</TableCell>
@@ -689,6 +873,7 @@ const TableProductStock = ({ product, productByTable, productWarehouse, productC
         <TableRow key={item.id}>
           <TableCell>{item.id}</TableCell>
           <TableCell>{item.name}</TableCell>
+          <TableCell>{item.total_stock_onDelivery ? item.total_stock_onDelivery : 0}</TableCell>
           <TableCell>{item.total_stock_available}</TableCell>
           <TableCell>{item.total_stock_ordered}</TableCell>
           <TableCell>{item.total_stock_operational}</TableCell>
@@ -867,11 +1052,11 @@ const TableProductStock = ({ product, productByTable, productWarehouse, productC
     );
   };
   const handleEdit = (id) => {
-    setName(productByTable[id-1].product_id)
-    setColor(productByTable[id-1].color_id)
-    setWarehouseId(productByTable[id-1].warehouse_id)
-    setStockAvailable(productByTable[id-1].stock_available)
-    setStockOrdered(productByTable[id-1].stock_ordered)
+    setName(productByTable[id-1] ? productByTable[id-1].product_id : null)
+    setColor(productByTable[id-1] ? productByTable[id-1].color_id : null)
+    setWarehouseId(productByTable[id-1] ? productByTable[id-1].warehouse_id : null)
+    setStockAvailable(productByTable[id-1] ? productByTable[id-1].stock_available : null)
+    setStockOrdered(productByTable[id-1] ? productByTable[id-1].stock_ordered : null)
     setEditDialog(id);
   };
   
@@ -1414,14 +1599,21 @@ export default function ProductAdmin() {
 
   const handleChange = (event, newValue) => {
     if (newValue == 0) {
-      dispatch(getProduct('only_product'));
+        dispatch(getProduct('only_product'));
     } else if (newValue == 1) {
-      dispatch(getProduct('product_img_group'));
-      dispatch(getProductByTable("product_image"));
-    } else if (newValue == 2) {
-      dispatch(getProduct('product_details'));
-      dispatch(getProductByTable("product_stock"));
-    } else if (newValue == 4) {
+        dispatch(getProduct('product_img_group'));
+        dispatch(getProductByTable("product_image"));
+    } else if (newValue == 2 && role === 1) {
+        dispatch(getProductByTable("product_color"));
+    } else if (newValue == 2 && role !== 1) {
+        dispatch(getProduct('product_details'));
+        dispatch(getProductByTable("product_stock"));
+    } else if (newValue == 3 && role === 1) {
+        dispatch(getProduct('product_details'));
+        dispatch(getProductByTable("product_stock"));
+    } else if (newValue == 4 && role !== 1) {
+        dispatch(getProductByTable("only_product"));
+    } else if (newValue == 5 && role === 1) {
       dispatch(getProductByTable("only_product"));
     }
     setValue(newValue);
@@ -1473,6 +1665,7 @@ export default function ProductAdmin() {
         >
           <Tab label="Products" />
           <Tab label="Product Image" />
+          { role === 1 ? <Tab label="Product Color" /> : null }
           <Tab label="Product Stock" />
           <Tab label="Category" />
           <Tab label="Product Category" />
@@ -1501,13 +1694,18 @@ export default function ProductAdmin() {
       <TabPanel value={value} index={1}>
         <TableProductImage role={role} product={product} productByTable={productByTable} productWarehouse={productWarehouse} filterWarehouse={filterWarehouse} dispatch={dispatch}/>
       </TabPanel>
-      <TabPanel value={value} index={2}>
+      { role === 1 ?     
+       <TabPanel value={value} index={2}>
+        <TableColor role={role} product={product} productByTable={productByTable} filterWarehouse={filterWarehouse} loading={loading} dispatch={dispatch}/>
+      </TabPanel>
+      : null }
+      <TabPanel value={value} index={role === 1 ? 3 : 2}>
         <TableProductStock role={role} product={product} productByTable={productByTable} filterWarehouse={filterWarehouse} warehouse={warehouse} productColor={productColor} dispatch={dispatch} classes={classes} productWarehouse={productWarehouse}/>
       </TabPanel>
-      <TabPanel value={value} index={3}>
+      <TabPanel value={value} index={role === 1 ? 4 : 3}>
         <TableCategory role={role} category={category} filterWarehouse={filterWarehouse} categoryWarehouse={categoryWarehouse} loading={loading} dispatch={dispatch}/>
       </TabPanel>
-      <TabPanel value={value} index={4}>
+      <TabPanel value={value} index={role === 1 ? 5 : 4}>
         <TableProductCategory role={role} category={category} procat={procat} productByTable={productByTable} productWarehouse={productWarehouse} filterWarehouse={filterWarehouse} dispatch={dispatch} loading={loading} errorAdd={errorAdd}/>
       </TabPanel>
     </div>

@@ -106,16 +106,19 @@ const Color = ({code, onPress, border = 0}) => {
 
 export default function ProductDetails ({location}) {
     const classes = useStyles()
-    const [quantity, setQuantity] = React.useState(0)
+    const [quantity, setQuantity] = React.useState(1)
     const [colorButton, setColorButton] = React.useState({
         name: '',
-        id: null
+        id: null,
+        index: null,
+        stock: 1
     })
     const [toCart, setToCart] = React.useState(false)
     const [openDialog, setOpenDialog] = React.useState(false)
     const [openLogin, setOpenLogin] = React.useState(false)
     const [toLogin, setToLogin] = React.useState(false)
     const [nonActive, setNonActive] = React.useState(false)
+    
     // import reducer
     const { productDetails, user_id, errorCart, status_id } = useSelector((state) => {
         return {
@@ -126,20 +129,13 @@ export default function ProductDetails ({location}) {
         }
     })
     const dispatch = useDispatch()
-    const stock = productDetails.stock_available ? productDetails.stock_available.reduce((a, b) => parseInt(a) + parseInt(b)) : 0
-    const color = [
-        {id: 1, name: 'Black', code: '#2d3436'}, {id: 2, name: 'White', code: '#f5f5f5'}, {id: 3, name: 'Natural', code: '#dfe4ea'},
-        {id: 4, name: 'Blue', code: '#3742fa'}, {id: 5, name: 'Green', code: '#2ed573'}, {id: 6, name: 'Red', code: '#EA2027'}
-    ]
-    const colorArr = productDetails.color ? productDetails.color : []
-    const uniqueColor = colorArr.filter((x, i, a) => a.indexOf(x) == i)
 
     React.useEffect(() => {
         dispatch(getProductDetails(location.state ? location.state.id: 0))
     }, [])
 
     const renderCarousel = () => {
-        return (productDetails.image ? productDetails.image : []).map((item, index)=>{
+        return (productDetails.product ? productDetails.product.image : []).map((item, index)=>{
             return(
                 <div key={index} style={{backgroundImage: `url(${item})`}} className={classes.carousel}>
                 </div>
@@ -148,22 +144,21 @@ export default function ProductDetails ({location}) {
     }
 
     const renderColor = () => {
-        return uniqueColor.map(item => color.filter(val => val.name === item)).map((item) => {
-            if(item[0].name == colorButton.name){
+        return (productDetails.stock ? productDetails.stock : []).map((item, index) => {
+            if(item.color[0] == colorButton.id){
                 return (
                     <Color 
-                        key = {item[0].id}
-                        code = {item[0].code}
+                        key = {item.color[0]}
+                        code = {item.color[2]}
                         border = {2}
-                        onPress = {() => setColorButton({name: item[0].name, id: item[0].id})}
-                    />
-                )
+                        />
+                        )
             } else {
                 return (
-                    <Color 
-                        key = {item[0].id}
-                        code = {item[0].code}
-                        onPress = {() => setColorButton({name: item[0].name, id: item[0].id})}
+                        <Color 
+                        key = {item.color[0]}
+                        code = {item.color[2]}
+                        onPress = {() => setColorButton({name: item.color[2], id: item.color[0], index, stock: item.stock_available.reduce((a, b) => parseInt(a) + parseInt(b))})}
                     />
                 )
             }
@@ -171,13 +166,13 @@ export default function ProductDetails ({location}) {
     }
  
     const handleCart = () => {
-        const body ={
+        const body = {
             user_id: user_id,
             product_id: location.state.id, 
             color_id: colorButton.id, 
             qty: quantity, 
-            price_each: productDetails.price,
-            weight: productDetails.weight
+            price_each: productDetails.product.price,
+            weight: productDetails.product.weight
         }
         if(!user_id){
             return setOpenLogin(true)
@@ -237,20 +232,20 @@ export default function ProductDetails ({location}) {
                 </div>
                 <div className={classes.container_content}>
                     <div className={classes.content}>
-                        <Typography style={{fontSize: 36, fontWeight: 'bold'}}>{productDetails.name ? productDetails.name : null}</Typography>
+                        <Typography style={{fontSize: 36, fontWeight: 'bold'}}>{productDetails.product ? productDetails.product.name : null}</Typography>
                         <Typography style={{marginRight: '10%'}}>{productDetails.category}</Typography>
                     </div>
                     <div className={classes.content}>
                         <Typography className={classes.title}>Harga</Typography>
-                        <Typography style={{fontSize: 42, fontWeight: 'bold'}}>Rp. {productDetails.price ? productDetails.price.toLocaleString() : null}</Typography>
+                        <Typography style={{fontSize: 42, fontWeight: 'bold'}}>Rp. {productDetails.product ? productDetails.product.price.toLocaleString() : null}</Typography>
                     </div>
                     <div className={classes.content}>
                         <Typography className={classes.title}>Deskripsi</Typography>
-                        <Typography variant="body1">{productDetails.desc}</Typography>
+                        <Typography variant="body1">{productDetails.product? productDetails.product.desc : null}</Typography>
                     </div>
                     <div className={classes.content}>
                         <Typography className={classes.title}>Material</Typography>
-                        <Typography variant="body1">{productDetails.material}</Typography>
+                        <Typography variant="body1">{productDetails.product ? productDetails.product.material : null}</Typography>
                     </div>
                     <div className={classes.content}>
                         <Typography className={classes.title}>Warna</Typography>
@@ -260,17 +255,17 @@ export default function ProductDetails ({location}) {
                     </div>
                     <div className={classes.content}>
                         <Typography className={classes.title}>Ukuran</Typography>
-                        <Typography variant="body1">Panjang: {productDetails.size ? productDetails.size[0] : null}cm, Lebar: {productDetails.size ? productDetails.size[1] : null}cm, Tinggi: {productDetails.size ? productDetails.size[2] : null}cm</Typography>
+                        <Typography variant="body1">Panjang: {productDetails.product ? productDetails.product.size[0] : null}cm, Lebar: {productDetails.product ? productDetails.product.size[1] : null}cm, Tinggi: {productDetails.product ? productDetails.product.size[2] : null}cm</Typography>
                     </div>
                     <div className={classes.content}>
                         <Typography className={classes.title}>Stok</Typography>
-                        <Typography variant="body1">Limited Stock! {productDetails.stock_available ? productDetails.stock_available.reduce((a, b) => parseInt(a) + parseInt(b)) : 0} Available</Typography>
+                        <Typography variant="body1">Limited Stock! {productDetails.stock ? productDetails.stock[colorButton.index ? colorButton.index : 0].stock_available.reduce((a, b) => parseInt(a) + parseInt(b)) : 0} Available</Typography>
                     </div>
                     <div className={classes.contentQty}>
                         <div>
 
                             <IconButton
-                            disabled={quantity <= 0 ? true : false}
+                            disabled={quantity <= 1 ? true : false}
                             variant="outlined"
                             style={{width:'50px'}}
                             onClick={() => setQuantity((prev) => prev - 1)}
@@ -278,12 +273,11 @@ export default function ProductDetails ({location}) {
                                 <RemoveCircleOutlineOutlinedIcon/>
                             </IconButton>
                             <TextField 
-                                value={quantity} 
+                                value={quantity <= colorButton.stock ? quantity : colorButton.stock} 
                                 onChange={(event)=>setQuantity(parseInt(event.target.value? event.target.value : 1))}
                                 className={classes.input}/>
-                            {/* <h3>{quantity}</h3> */}
                             <IconButton
-                            disabled={quantity >= stock ? true : false}
+                            disabled={quantity >= colorButton.stock ? true : false}
                             variant="outlined"
                             style={{width:'50px'}}
                             onClick={() => setQuantity((prev) => prev + 1)}
@@ -293,6 +287,7 @@ export default function ProductDetails ({location}) {
                         </div>
                         <Button
                             className={classes.button}
+                            disabled={colorButton.stock === 0 ? true : false}
                             variant="contained"
                             color="default"
                             startIcon={<AddShoppingCartIcon/>}

@@ -80,6 +80,7 @@ const App = () =>{
                 <Navbar/>
                     <Switch>
                         <Route path="/" component={Home} exact/>
+                        <Route path="/Verifikasi" component={Verification} />
                         <Route path="/Register" component={Register} />
                         <Route path="/Login" component={Login} />
                         <Route path="/Produk" component={Products} />

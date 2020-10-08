@@ -156,7 +156,7 @@ const CheckOut = () =>{
                 
                 {error? <Typography>{error}</Typography> : <>
                 <Typography>Barang dikirim dari gudang {whName}</Typography> 
-                <Typography>Total ongkir adalah Rp. {cart[0]? cart[0].total_ongkir.toLocaleString(): null}</Typography>
+                <Typography>Total ongkir adalah Rp. {cart[0].total_ongkir? cart[0].total_ongkir.toLocaleString(): null}</Typography>
                 <Typography>Total biaya yang harus dibayar adalah Rp. {cart[0]?(total + cart[0].total_ongkir).toLocaleString(): null}</Typography>
                 <Typography>Pilih Metode Pembayaran</Typography>
                 </>}
