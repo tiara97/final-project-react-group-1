@@ -146,6 +146,7 @@ export const uploadPayment = (order_number,data) => {
         }
         try {
             const upload = await Axios.post(URL + `/transaction/payment/upload/${order_number}`, data, option)
+            dispatch({ type: UPLOAD_PAYMENT_ERROR, payload: null })
         } catch (error) {
             console.log(error.response ? error.response.data : error)
             dispatch({ type: UPLOAD_PAYMENT_ERROR, payload: error.response.data })

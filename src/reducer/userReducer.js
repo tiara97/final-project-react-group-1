@@ -41,11 +41,8 @@ const userReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 id: action.payload.id,
-                username: action.payload.username,
-                email: action.payload.email,
-                role: action.payload.role_id,
-                status: action.payload.status_id,
-                token: action.payload.token
+                token: action.payload.token,
+                errorReg: ""
             }
         case REGISTER_END:
             return { ...state, loadingRegister: false }

@@ -73,6 +73,7 @@ const CheckOut = () =>{
     })
 
     React.useEffect(()=>{
+        renderWarehouse()
         dispatch(getAddress())
         dispatch(getWarehouse())
         if(address[0]){
@@ -161,7 +162,7 @@ const CheckOut = () =>{
                 <Typography>Pilih Metode Pembayaran</Typography>
                 </>}
               
-                <FormControl disabled={radio} component="fieldset" onChange={handleChangeRadio}>
+                <FormControl component="fieldset" onChange={handleChangeRadio}>
                     <RadioGroup aria-label="gender" name="gender1" >
                         <FormControlLabel value="female" control={<Radio />} label="Bank Transfer" />
                         <FormControlLabel value="male" control={<Radio />} label="Cicilan 0% " />
