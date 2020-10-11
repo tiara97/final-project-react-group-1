@@ -111,6 +111,21 @@ export const getUserAdmin = () => {
         }
     }
 }
+export const getUserAdminByID = (id) => {
+    return async(dispatch) =>{
+        try {
+            dispatch({type: GET_USER_START})
+
+            const res = await Axios.get(URL + "/users/getAdminByID/" + id)
+            console.log(res.data)
+            dispatch({type: GET_USER, payload: res.data})
+
+            dispatch({type: GET_USER_END})
+        } catch (error) {
+            console.log(error.response? error.response.data : error)
+        }
+    }
+}
 export const getUsersByQuery = (body) => {
     return async(dispatch) =>{
         try {

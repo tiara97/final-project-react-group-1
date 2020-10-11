@@ -74,7 +74,7 @@ export default function TemporaryDrawer() {
       onKeyDown={toggleDrawer(anchor, false)}
     >
       <List className={classes.listMenu}>
-        {role !== 1 && role !== 2 ? (menuUser.map((text, index) => (
+        {role === 3 ? (menuUser.map((text, index) => (
           <Link to={`/${text}`} className={classes.link} key={index}>
             <ListItem button>
               <ListItemIcon>{index === 1 ? <CategoryIcon/> : <KitchenIcon/>}</ListItemIcon>

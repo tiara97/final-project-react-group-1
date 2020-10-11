@@ -23,6 +23,7 @@ import TransactionAdmin from './pages/transactionAdmin'
 import AccountAdmin from "./pages/accountAdmin"
 import NotFound from './pages/404'
 import Receipt from "./pages/receipt"
+import Ongkir from "./pages/ongkir"
 import {userKeepLogin} from './action'
 
 
@@ -55,6 +56,7 @@ const App = () =>{
                         <Route path="/Konfirmasi" component={Confirmation}/>
                         <Route path="/Verifikasi" component={Verification} />
                         <Route path="/Receipt" component={Receipt}/>
+                        <Route path="/Ongkir" component={Ongkir}/>
                         <Route path='*' component={NotFound}/>
                     </Switch>
                 <Footer/>

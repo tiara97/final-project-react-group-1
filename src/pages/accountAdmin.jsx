@@ -16,7 +16,7 @@ import {makeStyles, TableContainer, Typography, Table, TableBody,
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 
-import {getUserAdmin, URL_IMG, editUser, getUserByRoleAdmin, getUserByStatusAdmin, getUsersByQuery} from "../action"
+import {getUserAdmin, URL_IMG, editUser, getUsersByQuery, getUserAdminByID} from "../action"
 
 const useStyles = makeStyles((theme)=>({
     root:{
@@ -67,7 +67,11 @@ const AccountAdmin = () =>{
     })
 
     React.useEffect(()=>{
-        dispatch(getUserAdmin())
+        if(role_id === 1){
+            dispatch(getUserAdmin())
+        }else{
+            dispatch(getUserAdminByID(localStorage.getItem("id")))
+        }
     },[])
 
     const renderTableHead = ()=>{
@@ -77,7 +81,6 @@ const AccountAdmin = () =>{
                 <TableCell>Id</TableCell>
                 <TableCell>Username</TableCell>
                 <TableCell>Email</TableCell>
-                <TableCell>Password</TableCell>
                 <TableCell>Role</TableCell>
                 <TableCell>Status</TableCell>
                 {role_id === 1?(<TableCell>Action</TableCell>) : null}
@@ -135,7 +138,6 @@ const AccountAdmin = () =>{
                     <TableCell>{item.id}</TableCell>
                     <TableCell>{item.username}</TableCell>
                     <TableCell>{item.email}</TableCell>
-                    <TableCell>{item.password}</TableCell>
                     {item.id === editIndex?(
                     <>
                         <TableCell>
@@ -249,7 +251,7 @@ const AccountAdmin = () =>{
                 <CircularProgress/>
             </Backdrop>
             <Typography>Admin Page</Typography>
-            <div className={classes.filterContainer}>
+            {role_id === 1?( <div className={classes.filterContainer}>
                 <div className={classes.filter}>
                     <InputLabel>Filter By Role</InputLabel>
                     <Select
@@ -279,6 +281,9 @@ const AccountAdmin = () =>{
                     Filter
                 </Button>
             </div>
+
+            ): null}
+           
             <TableContainer>
                 <Table>
                     <TableHead>

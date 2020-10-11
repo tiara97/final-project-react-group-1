@@ -67,6 +67,7 @@ export const GET_ORDER_ID = "GET_ORDER_ID"
 export const GET_ORDER = "GET_ORDER"
 export const GET_ORDER_START = "GET_ORDER_START"
 export const GET_ORDER_END = "GET_ORDER_END"
+export const ERROR_CHECKOUT = "ERROR_CHECKOUT"
 
 // ADDRESS
 export const GET_ADDRESS = "GET_ADDRESS"
@@ -74,5 +75,9 @@ export const ADD_ADDRESS = "ADD_ADDRESS"
 export const EDIT_ADDRESS = "EDIT_ADDRESS"
 export const DELETE_ADDRESS = "DELETE_ADDRESS"
 
+// ONGKIR
+export const GET_ONGKIR = "GET_ONGKIR"
+export const GET_ONGKIR_START = "GET_ONGKIR_START"
+export const GET_ONGKIR_END = "GET_ONGKIR_END"
 // RATING
 export const ADD_RATING = "ADD_RATING"

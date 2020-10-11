@@ -1,5 +1,5 @@
 
-import {URL, GET_ORDER_ALL, GET_ORDER_ID, UPLOAD_PAYMENT_ERROR, GET_ORDER_USER, GET_ORDER_START, GET_ORDER_END, GET_ORDER,  } from "./helper"
+import {URL, GET_ORDER_ALL, GET_ORDER_ID, UPLOAD_PAYMENT_ERROR, GET_ORDER_USER, GET_ORDER_START, GET_ORDER_END, GET_ORDER, ERROR_CHECKOUT  } from "./helper"
 import Axios from "axios"
 
 export const getAllOrder = () =>{
@@ -130,9 +130,16 @@ export const getOrderByNumber = (order_number) =>{
 export const checkoutAction = (order_number) =>{
     return async(dispatch)=>{
         try {
+            dispatch({type: GET_ORDER_START})
             const checkout = await Axios.patch(URL + "/transaction/checkout/" + order_number)
+            const res = await Axios.get(URL + "/orders/getByOrderNumber/" + order_number)
+            dispatch({type: ERROR_CHECKOUT, payload: null})
+            dispatch({type: GET_ORDER, payload: res.data})
+
+            dispatch({type: GET_ORDER_END})
         } catch (error) {
             console.log(error.response? error.response.data : error)
+            dispatch({type: ERROR_CHECKOUT, payload: error.response.data})
         }
     }
 }

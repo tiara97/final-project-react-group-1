@@ -23,65 +23,68 @@ import {
 } from "../action";
 
 const useStyles = makeStyles(() => ({
-  root: {
-    margin: 0,
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  header: {
-    height: "80vh",
-    width: "100%",
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    margin: 0,
-  },
-  title: {
-    fontSize: 36,
-    marginLeft: "1%",
-    marginBottom: '1%'
-  },
-  media: {
-    height: 0,
-    paddingTop: "100%", // 16:9
-  },
-  productCard: {
-    width: "100%",
-    display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    marginTop: "1%",
-  },
-  card: {
-    flexBasis: "19%",
-    minWidth: "15vw",
-  },
-  link: {
-    textDecoration: "none",
-    marginRight: '1%'
-  },
-  paper: {
-    width: "90vw",
-    marginTop: -30,
-    background: "#EDECE8",
-    boxShadow: "0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)",
-    paddingBottom: '2%',
-    paddingTop: '1%',
-    paddingLeft: '1%',
-    paddingRight: '1%',
-  },
-  filter: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingLeft: "1%",
-    paddingRight: "1%",
-  },
-  chip: {
-    marginTop: "1%",
-    marginLeft: "1%",
-  },
+    root: {
+        margin: 0,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center"
+      },
+      header: {
+        height: "80vh",
+        width: "100%",
+        backgroundSize: "cover", 
+        backgroundPosition: "center",
+        margin: 0,
+        animation: "fadeIn",
+        animationDuration: "2s"
+      },
+      title: {
+        fontSize: 36,
+        textAlign: "center"
+      },
+    media: {
+        height: 0,
+        paddingTop: '100%', // 16:9
+        
+    },
+    productCard: {
+        width : '100%',
+        display : 'flex',
+        flexWrap : 'wrap',
+        justifyContent : 'space-between',
+        marginTop: '1%'
+    },
+    card : {
+       
+        flexBasis : '19%',
+        minWidth : '15vw',
+        // marginBottom : '5%',
+        // marginRight : '5%',
+    },
+    link: {
+        textDecoration: 'none',
+        '&:hover': {
+            opacity: 0.6,
+            transition: "0.5s",
+            boxShadow: "0 3px 4px 0 rgba(0,0,0,0.14), 0 3px 3px -2px rgba(0,0,0,0.12), 0 1px 8px 0 rgba(0,0,0,0.20)"
+         },
+    },
+    paper:{
+        width: "90vw",
+        padding: 50,
+        marginTop: -30,
+        background: "#EDECE8",
+        boxShadow: "0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)",
+        
+    },
+    filter: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingLeft: '1%' ,
+        paddingRight: '1%' ,
+    }
 }));
 
 export default function Products({ location: { search } }) {

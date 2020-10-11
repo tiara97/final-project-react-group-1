@@ -96,3 +96,21 @@ export const updateWarehouseID = (body) =>{
         }
     }
 }
+
+export const updatePayment = (body)=>{
+    return async(dispatch)=>{
+        try {
+            dispatch({type: GET_CART_START})
+
+            const update = await Axios.patch(URL + "/cart/updatePayment", (body))
+            const res = await Axios.get(URL + "/cart/" + body.user_id)
+
+            dispatch({type: GET_CART, payload: res.data})
+            dispatch({type: GET_CART_END})
+        } catch (error) {
+            console.log(error.response? error.response.data : error)
+            
+            dispatch({type: GET_CART_END})
+        }
+    }
+}
