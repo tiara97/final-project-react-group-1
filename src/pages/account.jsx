@@ -735,11 +735,13 @@ const Account = ({ location }) => {
                                                         <DivImg ind={ind} img={value} name={value} />
                                                         <DivInfo ind={ind} price={item.price_each[ind]} color={item.color[ind]} qty={item.qty[ind]} name={item.name[ind]} />
                                                         {item.status === 'Done' ? (
-                                                            item.rating[ind] !== '0' ?
-                                                                <DivRating title='Rating' ind={ind} value={item.rating[ind]} />
-                                                                :
-                                                                <DivButton children='Beri ulasan'
-                                                                    onClick={() => setDialog({ open: true, order_number: item.order_number, product_id: item.product_id[ind], color_id: item.color_id[ind] })} />
+                                                            item.rating ? (item.rating[ind] !== '0' ?
+                                                            <DivRating title='Rating' ind={ind} value={item.rating[ind]} />
+                                                            :
+                                                            <DivButton children='Beri ulasan'
+                                                                onClick={() => setDialog({ open: true, order_number: item.order_number, product_id: item.product_id[ind], color_id: item.color_id[ind] })} />)
+                                                            :
+                                                            null
                                                         ) : null}
                                                     </div>
                                                 )
