@@ -29,10 +29,12 @@ const useStyles = makeStyles(() => ({
         backgroundSize: "cover", 
         backgroundPosition: "center",
         margin: 0,
+        animation: "fadeIn",
+        animationDuration: "2s"
       },
       title: {
         fontSize: 36,
-        marginLeft: '1%'
+        textAlign: "center"
       },
     media: {
         height: 0,
@@ -43,23 +45,31 @@ const useStyles = makeStyles(() => ({
         width : '100%',
         display : 'flex',
         flexWrap : 'wrap',
-        justifyContent : 'center',
+        justifyContent : 'space-between',
         marginTop: '1%'
     },
     card : {
+       
         flexBasis : '19%',
         minWidth : '15vw',
-        marginBottom : '5%',
-        marginRight : '5%',
+        // marginBottom : '5%',
+        // marginRight : '5%',
     },
     link: {
-        textDecoration: 'none'
+        textDecoration: 'none',
+        '&:hover': {
+            opacity: 0.6,
+            transition: "0.5s",
+            boxShadow: "0 3px 4px 0 rgba(0,0,0,0.14), 0 3px 3px -2px rgba(0,0,0,0.12), 0 1px 8px 0 rgba(0,0,0,0.20)"
+         },
     },
     paper:{
         width: "90vw",
+        padding: 50,
         marginTop: -30,
         background: "#EDECE8",
-        boxShadow: "0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)"
+        boxShadow: "0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)",
+        
     },
     filter: {
         display: 'flex',
@@ -217,7 +227,7 @@ export default function Products({location: {search}}) {
         <div className={classes.root}>
             <div className = {classes.header} style={{backgroundImage: `url(${carousel[2]? carousel[2].image : null})`}}>
             </div>
-            <Paper className={classes.paper}>
+            <Paper className={classes.paper} >
                 <Typography className={classes.title}>Products</Typography>
                 <div className={classes.filter}>
                     {filterCategory()}

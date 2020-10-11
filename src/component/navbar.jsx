@@ -1,8 +1,8 @@
 import React from "react"
 import {useDispatch, useSelector} from "react-redux"
-import {Link, Redirect} from "react-router-dom"
+import {Link} from "react-router-dom"
 import { makeStyles } from '@material-ui/core/styles';
-import {AppBar, Toolbar, Typography, Button, IconButton, Menu, MenuItem, Avatar}  from "@material-ui/core"
+import {AppBar, Toolbar, Typography, IconButton, Menu, MenuItem, Avatar, Badge}  from "@material-ui/core"
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import SearchIcon from '@material-ui/icons/Search';
@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
     title: {
       flexGrow: 1,
       color: "#fff",
-      cursor: "pointer"
+      cursor: "pointer",
     },
     icon:{
         marginRight: 10
@@ -40,7 +40,11 @@ const useStyles = makeStyles((theme) => ({
     },
     appbar:{
         backgroundColor: "rgba(149, 165, 166,0.5)"
-    }
+    },
+    customBadge: {
+        backgroundColor: "#f3f3f3",
+        color: "#333"
+      }
   }));
 
 const Navbar = () =>{
@@ -49,11 +53,12 @@ const Navbar = () =>{
     const classes = useStyles()
     const dispatch = useDispatch()
 
-    const { profile, username, role_id } = useSelector((state) => {
+    const { profile, username, role_id,cart } = useSelector((state) => {
         return {
             profile: state.profileReducer.profile,
             username: state.userReducer.username,
-            role_id: state.userReducer.role
+            role_id: state.userReducer.role,
+            cart: state.cartReducer.cart
         }
     })
     const handleOpen = (event) =>{
@@ -78,7 +83,7 @@ const Navbar = () =>{
                 
                 <div>
                     <Link to="/" className={classes.title}>
-                        <Typography variant="h6" >
+                        <Typography variant="h4" style={{fontWeight: "300"}} >
                             Furniture
                         </Typography>
                     </Link>
@@ -91,7 +96,9 @@ const Navbar = () =>{
                     <Link to="/Cart">
                         <IconButton
                             color="inherit">
-                            <ShoppingCartIcon/>
+                            <Badge badgeContent={cart.length} color="primary" classes={{ badge: classes.customBadge }}>
+                                <ShoppingCartIcon/>
+                            </Badge>
                         </IconButton>
                     </Link>
                     <IconButton

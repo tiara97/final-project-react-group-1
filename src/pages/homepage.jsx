@@ -1,6 +1,7 @@
 import React from "react"
 import { useDispatch, useSelector} from 'react-redux'
 import {getTopProduct} from '../action'
+import ScrollAnimation from "react-animate-on-scroll"
 import {
     Card,
     CardContent,
@@ -23,18 +24,28 @@ const useStyles = makeStyles(() => ({
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: '#f5f5f5'
+        backgroundColor: '#f5f5f5',
+        animation: "fadeIn",
+        animationDuration: "2s"
     },
     containerProduct:{
         marginTop: '5%',
         width: '90%',
         backgroundColor: "#EDECE8",
     },
+    containerProductScroll:{
+        width: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: 'column',
+    },
     topProduct: {
         width : '100%',
         display : 'flex',
         justifyContent : 'space-evenly',
-        marginTop: '1%'
+        marginTop: '1%',
+        marginBottom: "3%"
     },
     card : {
         flexBasis : '19%',
@@ -64,6 +75,12 @@ const useStyles = makeStyles(() => ({
         alignItems: "center",
         flexDirection: 'column',
         backgroundColor: "#EDECE8",
+    },
+    catalogScroll:{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: 'column',
     },
     contentCatalog:{
         display: "flex",
@@ -234,12 +251,24 @@ export default function Home (){
     return(
         <div className={classes.root}>
             <CarouselComp/>
-            <Paper className={classes.containerProduct}>
-                {renderCard()}
-            </Paper>
-            <Paper className={classes.catalog}>
-                {renderCatalog()}
-            </Paper>
+            <ScrollAnimation 
+                animateIn="fadeInLeft" 
+                duration="2"
+                animateOnce={true} 
+                className={classes.containerProductScroll}>
+                <Paper className={classes.containerProduct} >
+                        {renderCard()}
+                </Paper>
+            </ScrollAnimation>
+            <ScrollAnimation 
+                animateOnce={true} 
+                animateIn="fadeInRight"  
+                duration="2" 
+                className={classes.catalogScroll}>
+                    <Paper className={classes.catalog}>
+                            {renderCatalog()}
+                    </Paper>
+            </ScrollAnimation>
         </div>
     )
 }

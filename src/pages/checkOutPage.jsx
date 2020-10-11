@@ -11,8 +11,13 @@ import {makeStyles,
         InputLabel, Select, MenuItem, IconButton, TextField} from "@material-ui/core"
 import AddIcon from '@material-ui/icons/Add';
 import DialogComp from "../component/dialog"        
+import bca from "../images/bca.png"
+import bni from "../images/bni.png"
+import gopay from "../images/gopay.png"
+import kredivo from "../images/kredivo.png"
+import mandiri from "../images/mandiri.png"
 
-import {getAddress, updateWarehouseID, getWarehouse, checkoutAction, addAddress} from "../action"
+import {getAddress, updateWarehouseID, getWarehouse, checkoutAction, addAddress, updatePayment} from "../action"
 
 const useStyles = makeStyles((theme)=>({
     root:{
@@ -28,7 +33,7 @@ const useStyles = makeStyles((theme)=>({
         color: '#fff',
       },
     paper:{
-        width: "70vw",
+        width: "50vw",
         padding: 20,
         display: "flex",
         flexDirection: "column"
@@ -50,6 +55,20 @@ const useStyles = makeStyles((theme)=>({
     input:{
         display: "flex",
         flexDirection: "column"
+    },
+    divimg:{
+        marginLeft: 5,
+        width: "20vw",
+        display: "flex",
+        justifyContent: "space-evenly",
+        alignItems: "center"
+    },
+    divContent:{
+        marginBottom: 20
+    },
+    link:{
+        textDecoration: "underline",
+        color: "#3498db"
     }
 }))
 
@@ -58,7 +77,7 @@ const useStyles = makeStyles((theme)=>({
 const CheckOut = () =>{
     const classes = useStyles()
     const dispatch = useDispatch()
-    const [radio, setRadio] = React.useState(true)
+    const [payment, setPayment] = React.useState(1)
     const [pay, setPay] = React.useState(true)
     const [openAdd, setOpenAdd] = React.useState(false)
     const [confirm, setConfirm] =React.useState(false)
@@ -97,6 +116,14 @@ const CheckOut = () =>{
             }
             console.log(body)
             dispatch(updateWarehouseID(body))
+        }
+        if(payment){
+            const body = {
+                order_number: cart[0].order_number,
+                user_id: id,
+                payment_method_id: payment
+            }
+            dispatch(updatePayment(body))
         }
     },[])
 
@@ -145,10 +172,6 @@ const CheckOut = () =>{
         console.log(body)
         dispatch(addAddress(body))
         setOpenAdd(false)
-        // setAddressNew('')
-        // setCityNew('')
-        // setProvinceNew('')
-        // setPostcodeNew('')
     };
     const handleSelect = (event)=>{
         if(event.target.value === 0) return
@@ -165,7 +188,15 @@ const CheckOut = () =>{
     }
    
  
-    const handleChangeRadio = () =>{
+    const handleChangeRadio = (event) =>{
+        const body = {
+            order_number: cart[0].order_number,
+            user_id: id,
+            payment_method_id: event.target.value
+        }
+        dispatch(updatePayment(body))
+        setPayment(event.target.value)
+        console.log("radio", event.target.value)
         if(!error){
             setPay(false)
         }
@@ -198,24 +229,39 @@ const CheckOut = () =>{
             </Backdrop>
             <h1>Checkout Page</h1>
             <Paper className={classes.paper}>
-            <Typography>Pilih Alamat Pengiriman</Typography>
-
-                {renderAddress()}
-                
-                {error? <Typography>{error}</Typography> : <>
-                <Typography>Barang dikirim dari gudang { warehouse[cart[0].warehouse_id-1]? warehouse[cart[0].warehouse_id-1].name : ''}</Typography> 
-                <Typography>Total ongkir adalah Rp. {cart[0]? parseInt(cart[0].total_ongkir).toLocaleString(): '0'}</Typography>
-                <Typography>Total biaya yang harus dibayar adalah Rp. {cart[0]?(parseInt(total) + parseInt(cart[0].total_ongkir)).toLocaleString(): '0'}</Typography>
-                <Typography>Pilih Metode Pembayaran</Typography>
-                </>}
-              
-                <FormControl component="fieldset" onChange={handleChangeRadio}>
-                    <RadioGroup aria-label="gender" name="gender1" >
-                        <FormControlLabel value="female" control={<Radio />} label="Bank Transfer" />
-                        <FormControlLabel value="male" control={<Radio />} label="Cicilan 0% " />
-                        <FormControlLabel value="other" control={<Radio />} label="Gopay" />
-                    </RadioGroup>
-                </FormControl>
+                <div className={classes.divContent}>
+                    <Typography style={{fontWeight: "bold"}}>Pilih Alamat Pengiriman</Typography>
+                    {renderAddress()}
+                    {error? <Typography>{error}</Typography> : <>
+                    <Typography>Barang dikirim dari gudang { warehouse[cart[0].warehouse_id-1]? warehouse[cart[0].warehouse_id-1].name : ''}</Typography> 
+                    <Typography>Total ongkir adalah Rp. {cart[0]? parseInt(cart[0].total_ongkir).toLocaleString(): '0'}</Typography>
+                    <Typography>Total biaya yang harus dibayar adalah Rp. {cart[0]?(parseInt(total) + parseInt(cart[0].total_ongkir)).toLocaleString(): '0'}</Typography>
+                    </>}
+                    <Link to="/Ongkir" className={classes.link}>
+                    Detail Ongkos Kirim
+                    </Link>
+                </div>
+                <div className={classes.divContent}>
+                    <Typography style={{fontWeight: "bold"}}>Pilih Metode Pembayaran</Typography>
+                    <FormControl component="fieldset">
+                        <RadioGroup aria-label="payment" name="payment" value={payment} onChange={handleChangeRadio}>
+                            <FormControlLabel value={1} control={<Radio />} label="Bank Transfer" />
+                            <div className={classes.divimg}>
+                                <img src={bca} alt="bca" width="100px"/>
+                                <img src={mandiri} alt="mandiri" width="100px"/>
+                                <img src={bni} alt="bni" width="100px"/>
+                            </div>
+                            <FormControlLabel value={2} control={<Radio />} label="Cicilan 0% " />
+                            <div>
+                                <img src={kredivo} alt="kredivo" width="100px"/>
+                            </div>
+                            <FormControlLabel value={3} control={<Radio />} label="Gopay" />
+                            <div>
+                                <img src={gopay} alt="gopay" width="100px"/>
+                            </div>
+                        </RadioGroup>
+                    </FormControl>
+                </div>
 
                 <Button 
                     className={classes.button} 
