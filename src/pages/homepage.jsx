@@ -32,6 +32,7 @@ const useStyles = makeStyles(() => ({
         marginTop: '5%',
         width: '90%',
         backgroundColor: "#EDECE8",
+        paddingBottom: '2%'
     },
     containerProductScroll:{
         width: "100%",
@@ -50,8 +51,6 @@ const useStyles = makeStyles(() => ({
     card : {
         flexBasis : '19%',
         minWidth : '15vw',
-        marginBottom : '5%',
-        marginRight : '5%',
     },
     media: {
         height: 0,

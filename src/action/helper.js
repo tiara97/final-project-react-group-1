@@ -79,3 +79,5 @@ export const DELETE_ADDRESS = "DELETE_ADDRESS"
 export const GET_ONGKIR = "GET_ONGKIR"
 export const GET_ONGKIR_START = "GET_ONGKIR_START"
 export const GET_ONGKIR_END = "GET_ONGKIR_END"
+// RATING
+export const ADD_RATING = "ADD_RATING"

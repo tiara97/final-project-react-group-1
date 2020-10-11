@@ -1,14 +1,17 @@
 import React from 'react'
-import {Accordion, 
-        AccordionSummary, 
-        AccordionDetails,
-        List, Tab, Tabs, makeStyles, Box, 
-        Button, Typography, IconButton, 
-        TextField, FormControl, FormLabel, 
-        FormControlLabel, Radio, RadioGroup, 
-        Table, TableHead, TableBody, TableCell,
-        TableRow, TableContainer, Backdrop, 
-        CircularProgress, Chip } from '@material-ui/core'
+import {
+    Accordion,
+    AccordionSummary,
+    AccordionDetails,
+    List, Tab, Tabs, makeStyles, Box,
+    Button, Typography, IconButton,
+    TextField, FormControl, FormLabel,
+    FormControlLabel, Radio, RadioGroup,
+    Table, TableHead, TableBody, TableCell,
+    TableRow, TableContainer, Backdrop,
+    CircularProgress, Chip
+} from '@material-ui/core'
+import Rating from '@material-ui/lab/Rating';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import EditIcon from '@material-ui/icons/Edit';
@@ -21,8 +24,7 @@ import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import ListIcon from '@material-ui/icons/List';
 import { useSelector, useDispatch } from "react-redux"
 import { Link, Redirect } from 'react-router-dom'
-
-import { getProfile, getFavoriteByID, editProfile, uploadPic, getAddress, editAddress, deleteAddress, addAddress, addMainAddress, deleteFavorite, getUserOrder, confirmDone, getUserOrderByStatus } from '../action'
+import { getProfile, getFavoriteByID, editProfile, uploadPic, getAddress, editAddress, deleteAddress, addAddress, addMainAddress, deleteFavorite, getUserOrder, confirmDone, getUserOrderByStatus, addRating } from '../action'
 import { URL_IMG } from '../action/helper'
 import avatar from '../assets/avatar.jpg'
 import DialogComp from '../component/dialog';
@@ -30,19 +32,19 @@ import DialogComp from '../component/dialog';
 // Kontainer Tab
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
-  
+
     return (
-      <div
-        role="tabpanel"
-        hidden={value !== index}
-        id={`nav-tabpanel-${index}`}
-        aria-labelledby={`nav-tab-${index}`}
-        {...other}
-      >
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`nav-tabpanel-${index}`}
+            aria-labelledby={`nav-tab-${index}`}
+            {...other}
+        >
             {children}
-      </div>
+        </div>
     );
-  }
+}
 // Kontainer Card
 
 const useStyles = makeStyles((theme) => ({
@@ -175,12 +177,9 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1
     },
     orderBtn: {
-        backgroundColor: 'blue',
-        width: 200,
-        // display: 'flex',
-        // flexDirection: 'column',
-        // alignContent: 'center',
-        // justifyContent: 'center'
+        display: 'flex',
+        alignContent: 'center',
+        justifyContent: 'center',
     },
     divTab: {
         flexGrow: 1,
@@ -216,20 +215,21 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         justifyContent: 'center'
     },
-    button:{
+    button: {
         borderRadius: 0,
         marginTop: 5
     },
 }));
 
 
-const Account = ({location}) => {
+const Account = ({ location }) => {
     const classes = useStyles();
     const [value, setValue] = React.useState(0);
     const [loading, setLoading] = React.useState(true);
 
-    const { profile, favorite, error, order, username, email, status, addressUser } = useSelector((state) => {
+    const { id, profile, favorite, error, order, username, email, status, addressUser } = useSelector((state) => {
         return {
+            id: state.userReducer.id,
             profile: state.profileReducer.profile,
             favorite: state.favoriteReducer.favorite,
             error: state.profileReducer.error,
@@ -255,12 +255,12 @@ const Account = ({location}) => {
         setValue(newValue);
     };
 
-    const a11yProps = (index)=>{
+    const a11yProps = (index) => {
         return {
-          id: `simple-tab-${index}`,
-          'aria-controls': `simple-tabpanel-${index}`,
+            id: `simple-tab-${index}`,
+            'aria-controls': `simple-tabpanel-${index}`,
         };
-      }
+    }
 
     // fungsi untuk upload picture
     const handleUpload = (props) => {
@@ -277,7 +277,7 @@ const Account = ({location}) => {
         const [edit, setEdit] = React.useState(false);
         const [user_fullname, setFullname] = React.useState(profile.user_fullname ? profile.user_fullname : '');
         const [phone, setPhone] = React.useState(profile.phone ? profile.phone : '');
-        const [gender, setGender] = React.useState('male');
+        const [gender, setGender] = React.useState('');
 
         const handleChange = (event) => {
             setGender(event.target.value);
@@ -551,8 +551,8 @@ const Account = ({location}) => {
                         <Typography variant='body1' style={{ marginBottom: 10 }}>Color : {item.color}</Typography>
                         <Typography variant='body1' style={{ marginBottom: 10 }}>{item.desc}</Typography>
                         <div className={classes.favBtn}>
-                            <Link to={{pathname:'/Produk-Detail', search: `id=${item.product_id}`, state: {id:`${item.product_id}`}}}>
-                                <Button className={classes.button} variant="contained" color="primary" component="span" style={{marginRight: 10}} onClick={() => handleCart(item.id)}
+                            <Link to={{ pathname: '/Produk-Detail', search: `id=${item.product_id}`, state: { id: `${item.product_id}` } }}>
+                                <Button className={classes.button} variant="contained" color="primary" component="span" style={{ marginRight: 10 }} onClick={() => handleCart(item.id)}
                                     startIcon={<AddShoppingCartIcon />}>
                                     Add to Cart
                                 </Button>
@@ -571,6 +571,14 @@ const Account = ({location}) => {
         const [toReceipt, setToReceipt] = React.useState(false)
         const [orderNum, setOrderNum] = React.useState(null)
         const [chipID, setChipID] = React.useState(0)
+        const [rate, setRate] = React.useState(0)
+        const [comment, setComment] = React.useState('')
+        const [dialog, setDialog] = React.useState({
+            open: false,
+            order_number: null,
+            product_id: null,
+            color_id: null,
+        })
         const chips = [
             "Semua",
             "Waiting for payment",
@@ -600,10 +608,23 @@ const Account = ({location}) => {
                 </div>
             )
         }
+        const DivRating = (props) => {
+            const { title, ind, value } = props
+            return (
+                <div className={classes.orderInfo} key={ind}>
+                    <Typography variant='h6' style={{ marginBottom: 10 }}>{title}</Typography>
+                    <Rating
+                        name="simple-controlled"
+                        value={value}
+                        readOnly
+                    />
+                </div>
+            )
+        }
         const DivButton = (props) => {
             const { onClick, children, icon } = props
             return (
-                <div className={classes.orderBtn}>
+                <div>
                     <Button variant="contained" color="primary" component="span"
                         startIcon={icon} onClick={onClick}>
                         {children}
@@ -618,11 +639,22 @@ const Account = ({location}) => {
             )
         }
         // fungsi
-        const handleClick = () => {
-            console.log('tes')
+        const handleRate = () => {
+            console.log(id)
+            let order_number = parseInt(dialog.order_number)
+            let product_id = parseInt(dialog.product_id)
+            let color_id = parseInt(dialog.color_id)
+            const body = { order_number, user_id: id, product_id, color_id, rate, comment }
+            console.log(body)
+            dispatch(addRating(body))
+            setDialog({ open: false, order_number: null, product_id: null, color_id: null })
         }
-        const handleDoneConf =(order_number)=>{
-            dispatch(confirmDone(order_number))
+        const handleDoneConf = (order_number, product, color) => {
+            let product_id = product
+            let color_id = color
+            const body = { order_number: order_number, user_id: id, product_id, color_id }
+            console.log(body)
+            dispatch(confirmDone(order_number, body))
         }
         // chipID nya balik ke 0 sendiri gatau knp
         const handleChip = (id) => {
@@ -637,13 +669,13 @@ const Account = ({location}) => {
             dispatch(getUserOrderByStatus(body))
         }
 
-        const handletoReceipt = (order)=>{
+        const handletoReceipt = (order) => {
             setToReceipt(true)
             setOrderNum(order)
         }
-      
-        if(orderNum && toReceipt){
-            return <Redirect to={{pathname:`/Receipt`, search:`${orderNum}`}}/>
+
+        if (orderNum && toReceipt) {
+            return <Redirect to={{ pathname: `/Receipt`, search: `${orderNum}` }} />
         }
         if (order.length === 0) {
             return (
@@ -652,7 +684,7 @@ const Account = ({location}) => {
                         {chips.map((item, index) => {
                             return (
                                 <li key={index} style={{ listStyle: 'none' }}>
-                                        <ChipStatus label={item} onClick={() => handleChip(index + 1)} color={index == chipID ? 'primary' : ''} />
+                                    <ChipStatus label={item} onClick={() => handleChip(index + 1)} color={index == chipID ? 'primary' : ''} />
                                 </li>
                             )
                         })}
@@ -671,7 +703,7 @@ const Account = ({location}) => {
                         return (
                             <li key={index} style={{ listStyle: 'none' }}>
                                 {index == chipID ? (
-                                    <ChipStatus label={item} onClick={() => handleChip(index + 1)} color='primary' />
+                                    <ChipStatus label={item} onClick={() => handleChip(index + 1)} />
                                 ) : (
                                         <ChipStatus label={item} onClick={() => handleChip(index + 1)} />
                                     )}
@@ -679,73 +711,103 @@ const Account = ({location}) => {
                         )
                     })}
                 </div>
-                {order.length !== 0? (order.map((item, index) => {
+                {order.length !== 0 ? (order.map((item, index) => {
                     return (
                         <>
                             <div className={classes.orderTitle}>
-                                <Typography variant='subtitle2'>{item.order_date?item.order_date.slice(0, 10) : null}</Typography>
+                                <Typography variant='subtitle2'>{item.order_date ? item.order_date.slice(0, 10) : ''}</Typography>
                             </div>
                             <div className={classes.orderTitle}>
-                                <Typography variant='h6'>{item.order_number}</Typography>
-                                <Typography variant='h6'>Status : {item.status}</Typography>
-                                <Typography variant='h6'>Rp. {item.total.toLocaleString()}</Typography>
+                                <Typography variant='h6'>{item.order_number ? item.order_number : ''}</Typography>
+                                <Typography variant='h6'>Status : {item.status ? item.status : ''}</Typography>
+                                <Typography variant='h6'>Rp. {item.total.toLocaleString() ? item.total.toLocaleString() : ''}</Typography>
                             </div>
                             <div className={classes.orderDet}>
-                              <Accordion>
-                            <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
-                                <Typography>Produk</Typography>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                                <List>
-                                    {item.image.map((value, ind) => {
-                                        return (
-                                            <div style={{ display: 'flex', marginBottom: 10 }}>
-                                                <DivImg ind={ind} img={value} name={value} />
-                                                <DivInfo ind={ind} price={item.price_each[ind]} color={item.color[ind]} qty={item.qty[ind]} name={item.name[ind]} />
-                                            </div>
-                                        )})}
-                                </List>
-                            </AccordionDetails>
-                        </Accordion>
-                            {item.status === 'Waiting for payment' ? (
-                                <Link to={{pathname:`/Konfirmasi`, search:`${item.order_number}`}}>
-                                    <Button className={classes.button} variant="contained">
-                                        <PhotoCamera/> Upload Bukti
+                                <Accordion>
+                                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                                        <Typography>Produk</Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <List>
+                                            {item.image.map((value, ind) => {
+                                                return (
+                                                    <div style={{ display: 'flex', marginBottom: 10 }}>
+                                                        <DivImg ind={ind} img={value} name={value} />
+                                                        <DivInfo ind={ind} price={item.price_each[ind]} color={item.color[ind]} qty={item.qty[ind]} name={item.name[ind]} />
+                                                        {item.status === 'Done' ? (
+                                                            item.rating ? (item.rating[ind] !== '0' ?
+                                                            <DivRating title='Rating' ind={ind} value={item.rating[ind]} />
+                                                            :
+                                                            <DivButton children='Beri ulasan'
+                                                                onClick={() => setDialog({ open: true, order_number: item.order_number, product_id: item.product_id[ind], color_id: item.color_id[ind] })} />)
+                                                            :
+                                                            null
+                                                        ) : null}
+                                                    </div>
+                                                )
+                                            })}
+                                        </List>
+                                    </AccordionDetails>
+                                </Accordion>
+                                {item.status === 'Waiting for payment' ? (
+                                    <Link to={{ pathname: `/Konfirmasi`, search: `${item.order_number}` }}>
+                                        <Button className={classes.button} variant="contained">
+                                            <PhotoCamera /> Upload Bukti
                                     </Button>
-                                </Link>
-                               ) : null}
-                            {item.status === "On delivery"?(
-                                <Button className={classes.button} variant="contained" onClick={() => handleDoneConf(item.order_number)}>
-                                    Terima Barang
-                                </Button>
-                            ): null}
-                            {item.status === 'Done' ? (
-                                <Link to="/Produk">
-                                    <Button className={classes.button} variant="contained">
-                                    <AddShoppingCartIcon/> Beli Lagi
+                                    </Link>
+                                ) : null}
+                                {item.status === "On delivery" ? (
+                                    <Button className={classes.button} variant="contained" onClick={() => handleDoneConf(item.order_number, item.product_id, item.color_id)}>
+                                        Terima Barang
                                     </Button>
-                                </Link>
-                            ) : null}
-                            {item.status === 'On progress' ? (
-                                <Link to="/Cart">
-                                    <Button className={classes.button} variant="contained">
-                                    <ShoppingCartIcon/> Lihat Keranjang
+                                ) : null}
+                                {item.status === 'Done' ? (
+                                    <Link to="/Produk">
+                                        <Button className={classes.button} variant="contained">
+                                            <AddShoppingCartIcon /> Beli Lagi
                                     </Button>
-                                </Link>
-                            ) : null}
-                            {item.status === "Payment success" || item.status === "On delivery" || item.status === "Done"?
-                                (<Button
-                                    style={{marginLeft: 5}} 
-                                    className={classes.button} 
-                                    variant="contained" 
-                                    onClick={()=>handletoReceipt(item.order_number)}>
-                                    <ListIcon/> Lihat Receipt
-                                    </Button>):null}
-                           
+                                    </Link>
+                                ) : null}
+                                {item.status === 'On progress' ? (
+                                    <Link to="/Cart">
+                                        <Button className={classes.button} variant="contained">
+                                            <ShoppingCartIcon /> Lihat Keranjang
+                                    </Button>
+                                    </Link>
+                                ) : null}
+                                {item.status === "Payment success" || item.status === "On delivery" || item.status === "Done" ?
+                                    (<Button
+                                        style={{ marginLeft: 5 }}
+                                        className={classes.button}
+                                        variant="contained"
+                                        onClick={() => handletoReceipt(item.order_number)}>
+                                        <ListIcon /> Lihat Receipt
+                                    </Button>) : null}
+
                             </div>
                         </>
                     )
-                })): null}
+                })) : null}
+                <DialogComp open={dialog.open} onClose={() => setDialog({ open: false, order_number: null, product_id: null, color_id: null })}
+                    text={<div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <Typography style={{ marginBottom: 10 }}>Beri ulasanmu!</Typography>
+                        <Rating
+                            style={{ marginBottom: 10 }}
+                            name="simple-controlled"
+                            value={rate}
+                            onChange={(event, newValue) => {
+                                setRate(newValue);
+                            }}
+                        />
+                        <TextField style={{ marginBottom: 10 }} id="outlined-basic" label="Comment" variant="outlined" onChange={(event) => setComment(event.target.value)} multiline rows={3} />
+                    </div>}
+                    action={
+                        <Button
+                            variant="contained"
+                            onClick={() => handleRate()}>
+                            Submit
+                        </Button>
+                    } />
             </Box>
         )
     }
@@ -766,9 +828,9 @@ const Account = ({location}) => {
                     aria-label="nav tabs example"
                     centered
                 >
-                    <Tab label="Profil" {...a11yProps(0)}/>
-                    <Tab label="Alamat" {...a11yProps(1)}/>
-                    <Tab label="Favorit" {...a11yProps(2)}/>
+                    <Tab label="Profil" {...a11yProps(0)} />
+                    <Tab label="Alamat" {...a11yProps(1)} />
+                    <Tab label="Favorit" {...a11yProps(2)} />
                     <Tab label="Riwayat Belanja"{...a11yProps(3)} />
                 </Tabs>
                 <TabPanel value={value} index={0}>
