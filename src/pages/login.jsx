@@ -99,7 +99,7 @@ const useStyles = makeStyles((theme) => ({
     root: {
         backgroundColor: '#f7f7f7',
         width: '100vw',
-        height: '80vh',
+        height: '90vh',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',

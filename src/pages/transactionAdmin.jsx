@@ -1,5 +1,6 @@
 import React from 'react'
 import { Tab, Tabs, makeStyles, Box, Button, Typography, IconButton, TextField, Table, TableHead, TableBody, TableCell, TableRow, TableContainer, Backdrop, Select, CircularProgress, Chip, Collapse, FormControl, InputLabel, TablePagination } from '@material-ui/core'
+import Rating from '@material-ui/lab/Rating';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
@@ -95,7 +96,7 @@ const TableHistory = ({ order, warehouse, role, id, wh_id }) => {
             <TableRow key={index}>
               <TableCell>{item.order_number}</TableCell>
               <TableCell>{item.user_id}</TableCell>
-              <TableCell>{item.order_date.slice(0, 10)}</TableCell>
+              <TableCell>{item.order_date ? item.order_date.slice(0, 10) : ''}</TableCell>
               <TableCell>{item.required_date ? item.required_date.slice(0, 10) : ''}</TableCell>
               <TableCell>{item.upload_date ? item.upload_date.slice(0, 10) : ''}</TableCell>
               <TableCell>{item.send_date ? item.send_date.slice(0, 10) : ''}</TableCell>
@@ -147,6 +148,10 @@ const TableHistory = ({ order, warehouse, role, id, wh_id }) => {
                           <TableCell>Color</TableCell>
                           <TableCell align="right">Amount</TableCell>
                           <TableCell align="right">Total price (Rp)</TableCell>
+                          {item.status === 'Done' ? (
+                          <TableCell>Rating</TableCell>) 
+                          :
+                          null}
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -162,6 +167,23 @@ const TableHistory = ({ order, warehouse, role, id, wh_id }) => {
                                 <TableCell align="right">
                                   {(item.qty[ind] * item.price_each[ind]).toLocaleString()}
                                 </TableCell>
+                                {item.status === 'Done' ? (
+                                  <TableCell>
+                                  {item.rating ? (
+                                    item.rating[ind] !== '0' ?
+                                      <Rating
+                                        name="simple-controlled"
+                                        value={item.rating[ind]}
+                                        readOnly
+                                      />
+                                      :
+                                      <Typography>Belum dinilai</Typography>
+                                  )
+                                    :
+                                    <Typography>Belum dinilai</Typography>}
+                              </TableCell>
+                                ) :
+                                null}
                               </TableRow>
                             )
                           })
@@ -192,14 +214,14 @@ const TableHistory = ({ order, warehouse, role, id, wh_id }) => {
   // send order to user
   const handleSend = (order_number, warehouse_id) => {
     console.log(order_number, warehouse_id)
-    const body = {wh_id : warehouse_id}
+    const body = { wh_id: warehouse_id }
     console.log(body)
     dispatch(sendOrder(order_number, body))
   }
   // open dialog for checking payment
   const handlePayment = (note, order_number, warehouse) => {
     console.log(note, order_number, warehouse)
-    setOpenDialog({ open: true, payment_note: note, order_number: order_number, warehouse_id: warehouse})
+    setOpenDialog({ open: true, payment_note: note, order_number: order_number, warehouse_id: warehouse })
   }
   // payment success confirmation
   const handleConfirmPay = () => {
@@ -210,23 +232,23 @@ const TableHistory = ({ order, warehouse, role, id, wh_id }) => {
   // reject order because user did not pay within time limit
   const handleRejectPay = () => {
     console.log(openDialog.order_number)
-    const body = {wh_id : openDialog.warehouse_id}
+    const body = { wh_id: openDialog.warehouse_id }
     console.log(body)
     dispatch(rejectPayment(openDialog.order_number, body))
-    setOpenDialog({ open: false, payment_note: null, order_number: null, warehouse_id:null })
+    setOpenDialog({ open: false, payment_note: null, order_number: null, warehouse_id: null })
   }
   // open dialog for canceling order
   const handleCancelOrder = (order_number, warehouse) => {
     console.log(order_number, warehouse)
-    setOpenDialogCancel({ open: true, order_number: order_number, warehouse_id: warehouse})
+    setOpenDialogCancel({ open: true, order_number: order_number, warehouse_id: warehouse })
   }
   // cancel order
   const handleCancel = () => {
     console.log(openDialogCancel.order_number)
-    const body = {wh_id : openDialogCancel.warehouse_id}
+    const body = { wh_id: openDialogCancel.warehouse_id }
     console.log(body)
     dispatch(cancelOrder(openDialogCancel.order_number, body))
-    setOpenDialogCancel({ open: false, order_number: null, warehouse_id:null })
+    setOpenDialogCancel({ open: false, order_number: null, warehouse_id: null })
   }
   // open detail for each order
   const handleOpen = (index) => {
@@ -280,7 +302,7 @@ const TableHistory = ({ order, warehouse, role, id, wh_id }) => {
           <FormControl className={classes.formControl}>
             <InputLabel htmlFor="outlined-age-native-simple">Warehouse</InputLabel>
             <Select
-              style={{marginRight: 10}}
+              style={{ marginRight: 10 }}
               native
               value={select}
               onChange={handleSelectWh}
@@ -302,31 +324,31 @@ const TableHistory = ({ order, warehouse, role, id, wh_id }) => {
             null
           )}
         <FormControl className={classes.formControl}>
-            <InputLabel htmlFor="outlined-age-native-simple">Status</InputLabel>
-            <Select
-              native
-              value={selectSt}
-              onChange={handleSelectSt}
-              label="Status"
-              inputProps={{
-                name: 'Status',
-                id: 'outlined-age-native-simple',
-              }}
-            >
-              <option aria-label="None" label='All' value={0} />
-              {chips.map((item, index) => {
-                return (
-                  <option key={index} value={index + 2}>{item}</option>
-                )
-              })}
-            </Select>
-          </FormControl>
+          <InputLabel htmlFor="outlined-age-native-simple">Status</InputLabel>
+          <Select
+            native
+            value={selectSt}
+            onChange={handleSelectSt}
+            label="Status"
+            inputProps={{
+              name: 'Status',
+              id: 'outlined-age-native-simple',
+            }}
+          >
+            <option aria-label="None" label='All' value={0} />
+            {chips.map((item, index) => {
+              return (
+                <option key={index} value={index + 2}>{item}</option>
+              )
+            })}
+          </Select>
+        </FormControl>
       </div>
       <Table>
         {tableHead()}
         {tableBody()}
       </Table>
-      <DialogComp open={openDialog.open} onClose={() => setOpenDialog({ open: false, payment_note: null, order_number: null, warehouse_id:null })}
+      <DialogComp open={openDialog.open} onClose={() => setOpenDialog({ open: false, payment_note: null, order_number: null, warehouse_id: null })}
         text={
           <>
             <Typography>Payment Confirmation # {openDialog.order_number}</Typography>
@@ -342,7 +364,7 @@ const TableHistory = ({ order, warehouse, role, id, wh_id }) => {
             <DivButton onClick={() => handleRejectPay()} children='Reject' color='secondary' />
           </>
         } />
-      <DialogComp open={openDialogCancel.open} onClose={() => setOpenDialogCancel({ open: false, order_number: null, warehouse_id:null })}
+      <DialogComp open={openDialogCancel.open} onClose={() => setOpenDialogCancel({ open: false, order_number: null, warehouse_id: null })}
         text={
           <>
             <Typography variant='h5'>Warning !</Typography>
@@ -352,7 +374,7 @@ const TableHistory = ({ order, warehouse, role, id, wh_id }) => {
         action={
           <>
             <DivButton onClick={() => handleCancel()} children='Yes, I am sure' color='primary' />
-            <DivButton onClick={() => setOpenDialogCancel({ open: false, order_number: null, warehouse_id:null })} children='No' color='secondary' />
+            <DivButton onClick={() => setOpenDialogCancel({ open: false, order_number: null, warehouse_id: null })} children='No' color='secondary' />
           </>
         } />
     </div>
@@ -390,11 +412,11 @@ const TransactionAdmin = () => {
     console.log(role, id)
   }, []);
 
-  warehouse.forEach((item, index)=> {
-        if(item.admin_id == id) {
-          wh_id = item.id
-        } 
-      })
+  warehouse.forEach((item, index) => {
+    if (item.admin_id == id) {
+      wh_id = item.id
+    }
+  })
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
