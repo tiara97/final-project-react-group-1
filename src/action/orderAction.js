@@ -218,11 +218,11 @@ export const sendOrder = (order_number, body) =>{
     }
 }
 
-export const confirmDone = (order_number) =>{
+export const confirmDone = (order_number, body) =>{
     return async(dispatch)=>{
         try {
             dispatch({type: GET_ORDER_START})
-            const confirm = await Axios.patch(URL + `/transaction/done/${order_number}`)
+            const confirm = await Axios.patch(URL + `/transaction/done/${order_number}`, body)
             let id = localStorage.getItem('id')
             const res = await Axios.get(URL + `/orders/getByUserID/${id}`)
             console.log(res.data)
