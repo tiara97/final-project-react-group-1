@@ -216,7 +216,7 @@ const CheckOut = () =>{
         setToConfirmPage(true)
     }
 
-    if(toConfirmPage && !loading && errorCheckout && !loadingCheckOut){
+    if(toConfirmPage && !loading && !errorCheckout && !loadingCheckOut){
         return <Redirect to={{pathname:`/Konfirmasi`, search:`${cart[0].order_number}`}}/>
     }
 
