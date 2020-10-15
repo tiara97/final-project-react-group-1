@@ -241,6 +241,7 @@ const Account = ({ location }) => {
         }
     })
     const dispatch = useDispatch()
+    
     React.useEffect(() => {
         console.log(loading)
         dispatch(getFavoriteByID())
