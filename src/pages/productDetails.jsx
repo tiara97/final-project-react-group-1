@@ -139,6 +139,9 @@ export default function ProductDetails ({location}) {
     })
 
     const dispatch = useDispatch()
+    
+    let fav_id = favorite.filter((item) => item.name === productDetails.name)
+    console.log(fav_id)
 
     React.useEffect(() => {
         dispatch(getProductDetails(location.state ? location.state.id: 0))
