@@ -4,6 +4,7 @@ import Axios from "axios"
 export const getAddress = (id) => {
     return async (dispatch) => {
         try {
+            console.log('tes')
             const id = localStorage.getItem('id')
             const res = await Axios.get(URL + `/address/get/${id}`)
             console.log(res.data)
