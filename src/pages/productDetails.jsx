@@ -140,7 +140,7 @@ export default function ProductDetails ({location}) {
 
     const dispatch = useDispatch()
     
-    let fav_id = favorite.filter((item) => item.name === productDetails.name)
+    let fav_id = favorite.filter((item) => item.name === productDetails.product.name)
     console.log(fav_id)
 
     React.useEffect(() => {
@@ -343,7 +343,7 @@ export default function ProductDetails ({location}) {
                         <IconButton
 
                             style={{ width: '50px', color: 'red' }}
-                            onClick={fav_id.length > 0 ? () => handleDelFav() : () => handleFav(productDetails.id, colorButton.id, productDetails.price)}
+                            onClick={fav_id.length > 0 ? () => handleDelFav() : () => handleFav(productDetails.product.id, colorButton.id, productDetails.product.price)}
                         >
 
                             {fav_id.length > 0 ? (
