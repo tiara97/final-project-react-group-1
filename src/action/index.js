@@ -11,4 +11,5 @@ export * from "./addressAction"
 export * from "./favoriteAction"
 export * from "./productCategoryAction"
 export * from './reportAction'
+export * from "./ongkirAction"
 export * from './ratingAction'

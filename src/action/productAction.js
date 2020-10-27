@@ -101,6 +101,23 @@ export const addProduct = (body) => {
   };
 };
 
+export const addProductColor = (body) => {
+  return async (dispatch) => {
+    try {
+      dispatch({type: ADD_PRODUCT_START})
+
+      await Axios.post(URL + "/products/add/color", body)
+      const res = await Axios.get(URL + "/products/table/product_color")
+      dispatch({type: GET_PRODUCT_TABLE, payload: res.data})
+
+      dispatch({type: ADD_PRODUCT_END})
+    } catch (error) {
+      dispatch({type: ADD_PRODUCT_ERROR, payload: error.response.data})
+      console.log(error.response ? error.response.data : error);
+    }
+  };
+};
+
 export const addProductImage = (body) => {
   return async (dispatch) => {
     try {
@@ -160,6 +177,24 @@ export const editProduct = (product_id, body) => {
   };
 };
 
+export const editProductColor = (color_id, body) => {
+  return async (dispatch) => {
+    try {
+      dispatch({ type: GET_PRODUCT_START });
+      // edit product
+      await Axios.patch(URL + `/products/edit/color/${color_id}`, body);
+
+      // get product
+      const res = await Axios.get(URL + `/products/table/product_color`);
+      dispatch({ type: GET_PRODUCT_TABLE, payload: res.data });
+
+      dispatch({ type: GET_PRODUCT_END });
+    } catch (error) {
+      console.log(error.response ? error.response.data : error);
+    }
+  };
+};
+
 export const editProductImage = (product_id, body) => {
   return async (dispatch) => {
     try {
@@ -211,6 +246,25 @@ export const deleteProduct = (id) => {
             // get product
             const res = await Axios.get(URL + "/products/get/only_product")
             dispatch({type: GET_PRODUCT, payload: res.data})
+      
+            dispatch({ type: GET_PRODUCT_END });
+        } catch (error) {
+            console.log(error.response ? error.response.data : error);
+        }
+    }
+}
+
+export const deleteProductColor = (id) => {
+    return async (dispatch) => {
+        try {
+            dispatch({ type: GET_PRODUCT_START });
+
+            // delete product
+            await Axios.delete(URL + `/products/delete/color/${id}`);
+      
+            // get product
+            const res = await Axios.get(URL + "/products/table/product_color")
+            dispatch({type: GET_PRODUCT_TABLE, payload: res.data})
       
             dispatch({ type: GET_PRODUCT_END });
         } catch (error) {

@@ -2,13 +2,14 @@ import React from "react"
 import{ Dialog,
         DialogActions, 
         DialogContent, 
-        DialogContentText} from "@material-ui/core" 
+        DialogTitle} from "@material-ui/core" 
 
-const DialogComp = ({open, onClose, text, action }) =>{
+const DialogComp = ({open, onClose, text, action, title }) =>{
     return(
         <Dialog 
         open={open}
         onClose={onClose}>
+        <DialogTitle>{title}</DialogTitle>
         <DialogContent>
                 {text}
         </DialogContent>

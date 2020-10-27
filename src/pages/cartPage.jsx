@@ -1,6 +1,6 @@
 import React from "react"
 import {useSelector, useDispatch} from "react-redux"
-import {Link} from "react-router-dom"
+import {Link, Redirect} from "react-router-dom"
 import {makeStyles, 
         Table, 
         TableBody, 
@@ -61,20 +61,42 @@ const Cart = () =>{
     const [delIndex, setDelIndex] = React.useState(null)
     const [qtyEdit, setQtyEdit] = React.useState(0)
     const [openDel, setOpenDel] = React.useState(false)
+    const [checkOut, setCheckout] = React.useState(false)
     const classes = useStyles()
     const dispatch = useDispatch()
     
     // import redux
-    const {cart, total, loading, errorCart, id} = useSelector((state)=>{
+    const {cart, total, loading, errorCart, id, errorQty} = useSelector((state)=>{
         return{
             cart: state.cartReducer.cart,
+            errorQty: state.cartReducer.errorQty,
             total: state.cartReducer.total,
             loading: state.cartReducer.loading,
             errorCart: state.cartReducer.error,
             id: state.userReducer.id
         }
     })
+    const Color = ({ code, onPress, border = 0 }) => {
+        return (
+            <div
+                onClick={onPress}
+                style={
+                    {
+                        backgroundColor: code,
+                        width: 40,
+                        height: 40,
+                        borderRadius: '50%',
+                        marginRight: '2%',
+                        border: `black solid ${border}px`
+                    }}>
+            </div>
+        )
+    }
     
+    const color = [
+        { id: 1, name: 'Black', code: '#2d3436' }, { id: 2, name: 'White', code: '#f5f5f5' }, { id: 3, name: 'Natural', code: '#dfe4ea' },
+        { id: 4, name: 'Blue', code: '#3742fa' }, { id: 5, name: 'Green', code: '#2ed573' }, { id: 6, name: 'Red', code: '#EA2027' }
+    ]
 
     React.useEffect(()=>{
         if(id){
@@ -123,29 +145,53 @@ const Cart = () =>{
     const renderTable = ()=>{
 
         return cart.length > 0? (cart.map((item)=>{
-            return item.id === editIndex? (
-                <TableRow key={item.id}>
+          
+            const renderColor = () => {
+                return color.map((value) => {
+                    if(item.color === value.name){
+                        return (
+                            <Color
+                                key={value.id}
+                                code={value.code}
+                            />
+                        )
+                    }
+                    
+                })
+            }
+             return (
+             <TableRow key={item.id}>
                     <TableCell className={classes.product}>
-                        <img src={item.image} width="100px" alt="product-image"/>                       
-                        {item.name}</TableCell>
-                    <TableCell>Rp. {parseInt(item.price_each).toLocaleString()}</TableCell>
-                    <TableCell>
-                        <IconButton 
-                            disabled={qtyEdit === 1} 
-                            onClick={()=>setQtyEdit((prevstate)=>parseInt(prevstate - 1))}>
-                            <RemoveCircleOutlineOutlinedIcon/>
-                        </IconButton>
-                        <TextField 
-                            value={qtyEdit} 
-                            onChange={(event)=>setQtyEdit(parseInt(event.target.value? event.target.value : 1))}
-                            className={classes.input}/>
-                        {/* {qtyEdit} */}
-                        <IconButton onClick={()=>setQtyEdit((prevstate)=>parseInt(prevstate + 1))}>
-                            <AddIcon/>
-                        </IconButton>
-                        </TableCell>
-                    <TableCell>Rp. {(item.price_each * item.qty).toLocaleString()}</TableCell>
-                    <TableCell>
+                        <img src={item.image} width="100px" alt="product-image"/>   
+                        <Typography>{item.name}</Typography>
+                        <Typography color="secondary"> {item.error? `*${item.error}` : null}</Typography>               
+                     </TableCell>
+                    <TableCell align="center">
+                        <div style={{ width: '100%', display: 'flex' }}>
+                          {renderColor()}
+                        </div>
+                    </TableCell>
+                    <TableCell align="center">Rp. {parseInt(item.price_each).toLocaleString()}</TableCell>
+                    {item.id === editIndex? (
+                         <TableCell align="center">
+                         <IconButton 
+                             disabled={qtyEdit === 1} 
+                             onClick={()=>setQtyEdit((prevstate)=>parseInt(prevstate - 1))}>
+                             <RemoveCircleOutlineOutlinedIcon/>
+                         </IconButton>
+                         <TextField 
+                             value={qtyEdit} 
+                             onChange={(event)=>setQtyEdit(parseInt(event.target.value? event.target.value : 1))}
+                             className={classes.input}/>
+                         <IconButton onClick={()=>setQtyEdit((prevstate)=>parseInt(prevstate + 1))}>
+                             <AddIcon/>
+                         </IconButton>
+                         </TableCell>
+                    ) : ( <TableCell align="center">{item.qty}</TableCell>)}
+                   
+                    <TableCell align="center">Rp. {(item.price_each * item.qty).toLocaleString()}</TableCell>
+                    {item.id === editIndex?(
+                        <TableCell align="center">
                         <IconButton onClick={()=> handleDone(item)}>
                             <DoneIcon/>
                         </IconButton>
@@ -153,24 +199,14 @@ const Cart = () =>{
                             <ClearIcon/>
                         </IconButton>
                     </TableCell>
-                </TableRow>
-                ):
-                (<>
-                <TableRow key={item.id}>
-                    <TableCell className={classes.product}>
-                        <img src={item.image} width="100px" alt="product-image"/>   
-                        {item.name}</TableCell>
-                    <TableCell>Rp. {parseInt(item.price_each).toLocaleString()}</TableCell>
-                    <TableCell>{item.qty}</TableCell>
-                    <TableCell>Rp. {(item.price_each * item.qty).toLocaleString()}</TableCell>
-                    <TableCell>
+                    ):(  <TableCell align="center">
                         <IconButton onClick={()=> handleEdit(item.id, item.qty)}>
                             <EditIcon/>
                         </IconButton>
                         <IconButton onClick={()=> handleOpenDel(item.id)}>
                             <DeleteIcon/>
                         </IconButton>
-                    </TableCell>
+                    </TableCell>)}
                     <DialogComp
                         open={openDel}
                         onClose={handleCloseDel}
@@ -187,8 +223,7 @@ const Cart = () =>{
                             </Button>
                             </>}/>
                 </TableRow>
-             </>
-            )
+                )
         })) : (
         <TableRow>
             <TableCell colSpan="5" align="center">
@@ -198,7 +233,9 @@ const Cart = () =>{
         )
     }
 
-    
+    if(checkOut){
+        return <Redirect to="/Checkout"/>
+    }
     return(
         <div className={classes.root}>
             <Backdrop className={classes.backdrop} open={loading}>
@@ -209,28 +246,30 @@ const Cart = () =>{
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell>Produk</TableCell>
-                            <TableCell>Harga</TableCell>
-                            <TableCell>Jumlah</TableCell>
-                            <TableCell>Total</TableCell>
-                            <TableCell>Edit/Hapus</TableCell>
+                            <TableCell align="center">Produk</TableCell>
+                            <TableCell align="center">Warna</TableCell>
+                            <TableCell align="center">Harga</TableCell>
+                            <TableCell align="center">Jumlah</TableCell>
+                            <TableCell align="center">Total</TableCell>
+                            <TableCell align="center">Edit/Hapus</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {renderTable()}
                         {cart.length > 0? (
                         <TableRow>
-                            <TableCell colSpan="3" align="right">Total</TableCell>
-                            <TableCell>Rp. {total.toLocaleString()}</TableCell>
-                            <TableCell>
-                                <Link to="/Checkout">
+                            <TableCell colSpan="4" align="right">Total</TableCell>
+                            <TableCell align="center">Rp. {total.toLocaleString()}</TableCell>
+                            <TableCell align="center">
+                                
                                     <Button
+                                        disabled={errorQty}
+                                        onClick={()=> setCheckout(true)}
                                         className={classes.button}
                                         variant="contained" 
                                         color="primary">
                                         Checkout
                                     </Button>
-                                </Link>
                             </TableCell>
                         </TableRow>) 
                         :(null)}

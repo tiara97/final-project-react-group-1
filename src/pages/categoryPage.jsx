@@ -40,8 +40,6 @@ const useStyles = makeStyles(()=>({
   },
   title:{
       fontSize: 42,
-      fontWeight: 'bold',
-      fontFamily: 'Roboto sans'
   }
 }))
 
